@@ -58,6 +58,7 @@ class _CalendarPageState extends State<CalendarPage> {
         dateStringBuilder: (date, {secondaryDate}) {
           return monthYearFormat.format(date);
         },
+        // ignore: avoid_print
         onEventTap: (events, date) => print(events),
       ),
     );

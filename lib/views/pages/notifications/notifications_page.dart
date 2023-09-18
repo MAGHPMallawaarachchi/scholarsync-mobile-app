@@ -23,7 +23,7 @@ class NotificationsPage extends StatelessWidget {
       body: Padding(
         padding: const EdgeInsets.only(bottom: 20, left: 20, right: 20),
         child: SingleChildScrollView(
-            physics: BouncingScrollPhysics(),
+            physics: const BouncingScrollPhysics(),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [

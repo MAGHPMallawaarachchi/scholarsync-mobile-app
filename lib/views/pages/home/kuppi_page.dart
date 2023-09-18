@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:go_router/go_router.dart';
 import 'package:scholarsync/views/widgets/button_icon.dart';
 import 'package:scholarsync/views/widgets/search_bar.dart';
 import 'package:scholarsync/constants/icon_constants.dart';

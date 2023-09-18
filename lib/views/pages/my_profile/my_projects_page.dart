@@ -7,7 +7,6 @@ import 'package:scholarsync/views/widgets/search_bar.dart';
 import 'package:scholarsync/views/widgets/text_form_field.dart';
 import 'package:scholarsync/constants/icon_constants.dart';
 import 'package:scholarsync/views/widgets/app_bar.dart';
-import 'package:scholarsync/views/pages/home/home_page.dart';
 import 'package:scholarsync/themes/palette.dart';
 
 void main() {

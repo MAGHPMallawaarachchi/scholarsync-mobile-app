@@ -32,7 +32,7 @@ class FeedbackFormState extends State<FeedbackForm> {
         centerTitle: true,
       ),
       body: SingleChildScrollView(
-        physics: BouncingScrollPhysics(),
+        physics: const BouncingScrollPhysics(),
         child: Form(
           key: _formKey,
           child: Center(
@@ -81,7 +81,7 @@ class FeedbackFormState extends State<FeedbackForm> {
                       ),
                       const SizedBox(height: 20),
                       SingleChildScrollView(
-                        physics: BouncingScrollPhysics(),
+                        physics: const BouncingScrollPhysics(),
                         child: Column(
                           children: [
                             const Text(
