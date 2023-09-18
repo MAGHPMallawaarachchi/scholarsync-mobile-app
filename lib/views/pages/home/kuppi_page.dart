@@ -22,7 +22,7 @@ class _KuppiPageState extends State<KuppiPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: UIConstants.appBar(
+        appBar: CustomAppBar.appBar(
           title: 'Kuppi Sessions',
           fontSize: 18,
           fontWeight: FontWeight.w600,

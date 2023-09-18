@@ -25,7 +25,7 @@ class _MyProjectsPageState extends State<MyProjectsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: UIConstants.appBar(
+      appBar: CustomAppBar.appBar(
         title: 'My Projects',
         fontSize: 22,
         fontWeight: FontWeight.w600,
@@ -33,67 +33,62 @@ class _MyProjectsPageState extends State<MyProjectsPage> {
         leftIcon: IconConstants.leftArrowIcon,
         rightIcon: IconConstants.hamburgerMenuIcon,
         onLeftIconPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => const HomePage()),
-          );
+          Navigator.pop(context);
         },
-        onRightIconPressed: () {
-          /* Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => const LogInPage()),
-          );*/
-        },
+        onRightIconPressed: () {},
       ),
-      body: Column(
-        children: [
-          CustomSearchBar(
-            hint: 'Search for projects...',
-            onSearchSubmitted: (query) {},
-            // Handle search query change
-          ),
-          Expanded(
-            child: GridView.count(
-              crossAxisCount: 2,
-              mainAxisSpacing: 20.0,
-              crossAxisSpacing: 25.0,
-              padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 25),
-              children: [
-                const ProjectBox(
-                  projectNumber: '1',
-                  projectName: 'Project Name 1',
-                  date: '2023-07-23',
-                  githubLink: 'https://github.com/project1',
-                ),
-                const ProjectBox(
-                  projectNumber: '2',
-                  projectName: 'Project Name 2',
-                  date: '2023-07-24',
-                  githubLink: 'https://github.com/project2',
-                ),
-                const ProjectBox(
-                  projectNumber: '3',
-                  projectName: 'Project Name 3',
-                  date: '2023-07-25',
-                  githubLink: 'https://github.com/project3',
-                ),
-                const ProjectBox(
-                  projectNumber: '4',
-                  projectName: 'Project Name 4',
-                  date: '2023-07-26',
-                  githubLink: 'https://github.com/project4',
-                ),
-                const ProjectBox(
-                  projectNumber: '5',
-                  projectName: 'Project Name 5',
-                  date: '2023-07-26',
-                  githubLink: 'https://github.com/project4',
-                ),
-                _buildAddProjectBox(),
-              ],
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+        child: Column(
+          children: [
+            CustomSearchBar(
+              hint: 'Search for projects...',
+              onSearchSubmitted: (query) {},
+              // Handle search query change
             ),
-          ),
-        ],
+            const SizedBox(height: 20),
+            Expanded(
+              child: GridView.count(
+                crossAxisCount: 2,
+                mainAxisSpacing: 20.0,
+                crossAxisSpacing: 20.0,
+                children: [
+                  const ProjectBox(
+                    projectNumber: '1',
+                    projectName: 'Project Name 1',
+                    date: '2023-07-23',
+                    githubLink: 'https://github.com/project1',
+                  ),
+                  const ProjectBox(
+                    projectNumber: '2',
+                    projectName: 'Project Name 2',
+                    date: '2023-07-24',
+                    githubLink: 'https://github.com/project2',
+                  ),
+                  const ProjectBox(
+                    projectNumber: '3',
+                    projectName: 'Project Name 3',
+                    date: '2023-07-25',
+                    githubLink: 'https://github.com/project3',
+                  ),
+                  const ProjectBox(
+                    projectNumber: '4',
+                    projectName: 'Project Name 4',
+                    date: '2023-07-26',
+                    githubLink: 'https://github.com/project4',
+                  ),
+                  const ProjectBox(
+                    projectNumber: '5',
+                    projectName: 'Project Name 5',
+                    date: '2023-07-26',
+                    githubLink: 'https://github.com/project4',
+                  ),
+                  _buildAddProjectBox(),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -103,12 +98,12 @@ class _MyProjectsPageState extends State<MyProjectsPage> {
       decoration: BoxDecoration(
         color: PaletteLightMode.backgroundColor,
         borderRadius: BorderRadius.circular(8),
-        boxShadow: [
+        boxShadow: const [
           BoxShadow(
-            color: PaletteLightMode.shadowColor.withOpacity(0.3),
-            spreadRadius: 2,
-            blurRadius: 4,
-            offset: const Offset(0, 2),
+            color: PaletteLightMode.shadowColor,
+            offset: Offset(8, 8),
+            blurRadius: 24,
+            spreadRadius: 0,
           ),
         ],
       ),

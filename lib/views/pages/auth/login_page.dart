@@ -43,6 +43,7 @@ class _LogInPageState extends State<LogInPage> {
           // White box
           Center(
             child: SingleChildScrollView(
+              physics: BouncingScrollPhysics(),
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: Container(

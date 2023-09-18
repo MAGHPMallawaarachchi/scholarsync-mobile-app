@@ -4,6 +4,8 @@ import 'package:scholarsync/constants/icon_constants.dart';
 import 'package:scholarsync/constants/image_constants.dart';
 import 'package:scholarsync/themes/palette.dart';
 
+import '../../../widgets/circular_icon_button.dart';
+
 class ProfileInfo extends StatelessWidget {
   const ProfileInfo({super.key});
 
@@ -34,22 +36,12 @@ class ProfileInfo extends StatelessWidget {
                       backgroundImage: AssetImage(
                           ImageConstants.kuppiImg1), // Add your image path here
                     ),
-                    Container(
-                      width: 32, // Set the desired width for the container
-                      height: 32, // Set the desired height for the container
-                      decoration: const BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: PaletteLightMode
-                            .secondaryGreenColor, // Choose the background color you want for the camera icon
-                      ),
-                      child: IconButton(
-                        onPressed: () {
-                          // Handle camera icon pressed (profile edit page)
-                        },
-                        iconSize: 18, // Set the desired icon size
-                        icon: SvgPicture.asset(IconConstants.cameraIcon),
-                        color: PaletteLightMode.whiteColor,
-                      ),
+                    CircularIconButton(
+                      buttonSize: 25,
+                      iconAsset: IconConstants.cameraIcon,
+                      iconColor: PaletteLightMode.whiteColor,
+                      buttonColor: PaletteLightMode.secondaryGreenColor,
+                      onPressed: () {},
                     ),
                   ],
                 ),

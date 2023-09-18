@@ -25,7 +25,7 @@ class _AcademicStaffPageState extends State<AcademicStaffPage>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: UIConstants.appBar(
+      appBar: CustomAppBar.appBar(
         title: 'Academic Staff',
         fontSize: 22,
         fontWeight: FontWeight.w600,

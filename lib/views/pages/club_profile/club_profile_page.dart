@@ -28,7 +28,7 @@ class _ClubProfilePageState extends State<ClubProfilePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: UIConstants.appBar(
+      appBar: CustomAppBar.appBar(
         title: clubName,
         fontSize: 22,
         fontWeight: FontWeight.bold,

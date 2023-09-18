@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:scholarsync/themes/palette.dart';
 
-class UIConstants {
+class CustomAppBar {
   static AppBar appBar({
     VoidCallback? onLeftIconPressed,
     String? leftIcon,

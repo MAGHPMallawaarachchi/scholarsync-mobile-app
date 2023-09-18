@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:scholarsync/views/pages/my_profile/my_projects_page.dart';
 import 'package:scholarsync/views/pages/my_profile/widgets/project_box.dart';
 import 'package:scholarsync/constants/icon_constants.dart';
 import 'package:scholarsync/views/widgets/app_bar.dart';
@@ -16,30 +17,22 @@ class _MyProfilePageState extends State<MyProfilePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: UIConstants.appBar(
+      appBar: CustomAppBar.appBar(
         title: 'My Profile',
         fontSize: 22,
         fontWeight: FontWeight.w600,
         titleCenter: false,
         rightIcon: IconConstants.hamburgerMenuIcon,
-        onRightIconPressed: () {
-          /* Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => const LogInPage()),
-          );*/
-        },
+        onRightIconPressed: () {},
       ),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Padding(
-            padding: EdgeInsets.symmetric(horizontal: 18, vertical: 10),
-            child: ProfileInfo(),
-          ),
-          const SizedBox(height: 11),
-          Padding(
-            padding: const EdgeInsets.only(left: 25, right: 25),
-            child: Row(
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const ProfileInfo(),
+            const SizedBox(height: 15),
+            Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 const Text(
@@ -51,7 +44,9 @@ class _MyProfilePageState extends State<MyProfilePage> {
                 ),
                 TextButton(
                   onPressed: () {
-                    // Handle "View All" click
+                    Route route = MaterialPageRoute(
+                        builder: (context) => const MyProjectsPage());
+                    Navigator.push(context, route);
                   },
                   child: const Text(
                     'View All',
@@ -63,49 +58,38 @@ class _MyProfilePageState extends State<MyProfilePage> {
                 ),
               ],
             ),
-          ),
-          const SizedBox(height: 5),
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.only(
-                  left: 5, right: 5, bottom: 25), // Add bottom padding
-              child: Scrollbar(
-                child: GridView.count(
-                  crossAxisCount: 2,
-                  mainAxisSpacing: 18.0,
-                  crossAxisSpacing: 25.0,
-                  padding: const EdgeInsets.only(left: 25, right: 25),
-                  children: const [
-                    ProjectBox(
-                      projectNumber: '1',
-                      projectName: 'Project Name 1',
-                      date: '2023-07-23',
-                      githubLink: 'https://github.com/project1',
+            const SizedBox(height: 15),
+            Expanded(
+              child: CustomScrollView(
+                physics: const BouncingScrollPhysics(),
+                slivers: [
+                  SliverPadding(
+                    padding: const EdgeInsets.all(0),
+                    sliver: SliverGrid(
+                      gridDelegate:
+                          const SliverGridDelegateWithMaxCrossAxisExtent(
+                        maxCrossAxisExtent: 200.0,
+                        mainAxisSpacing: 20.0,
+                        crossAxisSpacing: 20.0,
+                      ),
+                      delegate: SliverChildBuilderDelegate(
+                        (BuildContext context, int index) {
+                          return const ProjectBox(
+                            projectNumber: '1',
+                            projectName: 'Project Name 1',
+                            date: '2023-07-23',
+                            githubLink: 'https://github.com/project1',
+                          );
+                        },
+                        childCount: 4,
+                      ),
                     ),
-                    ProjectBox(
-                      projectNumber: '2',
-                      projectName: 'Project Name 2',
-                      date: '2023-07-24',
-                      githubLink: 'https://github.com/project2',
-                    ),
-                    ProjectBox(
-                      projectNumber: '3',
-                      projectName: 'Project Name 3',
-                      date: '2023-07-25',
-                      githubLink: 'https://github.com/project3',
-                    ),
-                    ProjectBox(
-                      projectNumber: '4',
-                      projectName: 'Project Name 4',
-                      date: '2023-07-26',
-                      githubLink: 'https://github.com/project4',
-                    ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

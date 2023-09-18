@@ -30,7 +30,7 @@ class _CalendarPageState extends State<CalendarPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: UIConstants.appBar(
+      appBar: CustomAppBar.appBar(
           title: 'Calendar',
           fontSize: 22,
           fontWeight: FontWeight.w600,
@@ -42,7 +42,7 @@ class _CalendarPageState extends State<CalendarPage> {
       body: DayView(
         controller: eventController,
         showVerticalLine: true,
-        minDay: DateTime(2020),
+        minDay: DateTime(2023),
         maxDay: DateTime(2030),
         heightPerMinute: 1,
         scrollPhysics: const BouncingScrollPhysics(),
