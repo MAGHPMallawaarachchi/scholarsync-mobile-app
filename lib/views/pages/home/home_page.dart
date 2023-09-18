@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:go_router/go_router.dart';
+import 'package:scholarsync/views/pages/home/kuppi_page.dart';
 import 'package:scholarsync/views/widgets/search_bar.dart';
 import 'package:scholarsync/constants/icon_constants.dart';
 import 'package:scholarsync/constants/image_constants.dart';
@@ -124,7 +124,9 @@ class _HomePageState extends State<HomePage> {
                   fontText: 'Kuppi Sessions',
                   secondText: 'view all',
                   onTap: () {
-                    return context.go('/kuppi');
+                    Route route = MaterialPageRoute(
+                        builder: (context) => const KuppiPage());
+                    Navigator.push(context, route);
                   }),
               const SizedBox(
                 height: 5,

@@ -31,7 +31,7 @@ class _KuppiPageState extends State<KuppiPage> {
           rightIcon: IconConstants.hamburgerMenuIcon,
           leftIconToolTip: 'Back to login page',
           onLeftIconPressed: () {
-            return context.go('/');
+            Navigator.pop(context);
           },
           onRightIconPressed: () {},
         ),
