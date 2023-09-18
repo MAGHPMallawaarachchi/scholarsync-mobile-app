@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "89946636904",
+    "project_id": "scholarsync-5cac5",
+    "storage_bucket": "scholarsync-5cac5.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:89946636904:android:31edcda54dc4a9b23db1dd",
+        "android_client_info": {
+          "package_name": "com.kamikazekoders.scholarsync"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBRepPG_Sh7VZhXcV4k-UK1H4lqjuFfsc8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
