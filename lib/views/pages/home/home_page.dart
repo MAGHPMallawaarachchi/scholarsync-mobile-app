@@ -4,6 +4,7 @@ import 'package:scholarsync/views/pages/home/kuppi_page.dart';
 import 'package:scholarsync/views/widgets/search_bar.dart';
 import 'package:scholarsync/constants/icon_constants.dart';
 import 'package:scholarsync/constants/image_constants.dart';
+import '../../../themes/app_theme.dart';
 import '../../widgets/custom_carousel.dart';
 import '../../widgets/text_container.dart';
 import '../../../themes/palette.dart';
@@ -24,15 +25,11 @@ class _HomePageState extends State<HomePage> {
         title: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Padding(
-              padding: EdgeInsets.only(top: 15),
+            Padding(
+              padding: const EdgeInsets.only(top: 15),
               child: Text(
                 'Hi, ATD Gamage',
-                style: TextStyle(
-                  color: PaletteLightMode.titleColor,
-                  fontSize: 22,
-                  fontWeight: FontWeight.bold,
-                ),
+                style: getTextTheme(context, true).headlineLarge,
               ),
             ),
             Row(
@@ -42,7 +39,7 @@ class _HomePageState extends State<HomePage> {
                   width: 20,
                   height: 20,
                   colorFilter: const ColorFilter.mode(
-                    PaletteLightMode.secondaryGreenColor,
+                    CommonColors.secondaryGreenColor,
                     BlendMode.srcIn,
                   ),
                 ),
@@ -52,7 +49,7 @@ class _HomePageState extends State<HomePage> {
                 const Text(
                   'NSBM Green University',
                   style: TextStyle(
-                    color: PaletteLightMode.secondaryGreenColor,
+                    color: CommonColors.secondaryGreenColor,
                     fontSize: 14,
                     fontWeight: FontWeight.normal,
                   ),
@@ -72,7 +69,7 @@ class _HomePageState extends State<HomePage> {
             icon: SvgPicture.asset(
               IconConstants.hamburgerMenuIcon,
               colorFilter: const ColorFilter.mode(
-                PaletteLightMode.secondaryGreenColor,
+                CommonColors.secondaryGreenColor,
                 BlendMode.srcIn,
               ),
               width: 40,

@@ -10,15 +10,15 @@ class NotificationsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar.appBar(
-        title: 'Notifications',
-        fontSize: 22,
-        fontWeight: FontWeight.bold,
-        titleCenter: false,
-        rightIcon: IconConstants.hamburgerMenuIcon,
-        onRightIconPressed: () {},
+      appBar: const PreferredSize(
+        preferredSize: Size.fromHeight(kToolbarHeight),
+        child: CustomAppBar(
+          title: 'Notifications',
+          fontSize: 20.0,
+          fontWeight: FontWeight.bold,
+          titleCenter: false,
+        ),
       ),
-      backgroundColor: PaletteLightMode.backgroundColor,
       //body
       body: Padding(
         padding: const EdgeInsets.only(bottom: 20, left: 20, right: 20),
@@ -41,7 +41,7 @@ class NotificationsPage extends StatelessWidget {
                   decoration: const BoxDecoration(
                     boxShadow: [
                       BoxShadow(
-                        color: PaletteLightMode.shadowColor,
+                        color: CommonColors.shadowColor,
                         offset: Offset(8, 8),
                         blurRadius: 24,
                         spreadRadius: 0,
@@ -100,7 +100,7 @@ class NotificationsPage extends StatelessWidget {
                   decoration: const BoxDecoration(
                     boxShadow: [
                       BoxShadow(
-                        color: PaletteLightMode.shadowColor,
+                        color: CommonColors.shadowColor,
                         offset: Offset(8, 8),
                         blurRadius: 24,
                         spreadRadius: 0,
@@ -133,7 +133,7 @@ class NotificationsPage extends StatelessWidget {
                       // rightIcon: IconConstants.moonIcon,
                       leftIconScale: 50,
                       rightIconScale: 50,
-                      borderColor: PaletteLightMode.transparentColor,
+                      borderColor: CommonColors.transparentColor,
                       borderWidth: 0,
                       backgroundColor: Colors.white,
                       boxwidth: 369.84,
@@ -160,7 +160,7 @@ class NotificationsPage extends StatelessWidget {
                   decoration: const BoxDecoration(
                     boxShadow: [
                       BoxShadow(
-                        color: PaletteLightMode.shadowColor,
+                        color: CommonColors.shadowColor,
                         offset: Offset(8, 8),
                         blurRadius: 24,
                         spreadRadius: 0,
@@ -193,7 +193,7 @@ class NotificationsPage extends StatelessWidget {
                       // rightIcon: IconConstants.moonIcon,
                       leftIconScale: 50,
                       rightIconScale: 50,
-                      borderColor: PaletteLightMode.transparentColor,
+                      borderColor: CommonColors.transparentColor,
                       borderWidth: 0,
                       backgroundColor: Colors.white,
                       boxwidth: 369.84,

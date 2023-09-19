@@ -24,10 +24,10 @@ class _BottomNavBarState extends State<BottomNavBar> {
       width: double.infinity,
       height: 75,
       decoration: const BoxDecoration(
-        color: PaletteLightMode.primaryGreenColor,
+        color: CommonColors.primaryGreenColor,
         boxShadow: [
           BoxShadow(
-            color: PaletteLightMode.shadowColor,
+            color: CommonColors.shadowColor,
             offset: Offset(8, 8),
             blurRadius: 24,
             spreadRadius: 0,

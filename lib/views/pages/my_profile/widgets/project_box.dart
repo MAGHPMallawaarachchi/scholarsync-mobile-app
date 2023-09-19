@@ -26,7 +26,7 @@ class ProjectBox extends StatelessWidget {
         borderRadius: BorderRadius.circular(8),
         boxShadow: const [
           BoxShadow(
-            color: PaletteLightMode.shadowColor,
+            color: CommonColors.shadowColor,
             offset: Offset(8, 8),
             blurRadius: 24,
             spreadRadius: 0,
@@ -70,7 +70,7 @@ class ProjectBox extends StatelessWidget {
                 height: 20,
                 decoration: BoxDecoration(
                   shape: BoxShape.rectangle,
-                  color: PaletteLightMode.secondaryGreenColor,
+                  color: CommonColors.secondaryGreenColor,
                   borderRadius: BorderRadius.circular(7),
                 ),
                 child: const Padding(
@@ -81,7 +81,7 @@ class ProjectBox extends StatelessWidget {
                       style: TextStyle(
                           fontSize: 11,
                           fontWeight: FontWeight.bold,
-                          color: PaletteLightMode.whiteColor),
+                          color: CommonColors.whiteColor),
                     ),
                   ),
                 ),

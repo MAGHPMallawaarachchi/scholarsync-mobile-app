@@ -17,13 +17,14 @@ class _MyProfilePageState extends State<MyProfilePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar.appBar(
-        title: 'My Profile',
-        fontSize: 22,
-        fontWeight: FontWeight.w600,
-        titleCenter: false,
-        rightIcon: IconConstants.hamburgerMenuIcon,
-        onRightIconPressed: () {},
+      appBar: const PreferredSize(
+        preferredSize: Size.fromHeight(kToolbarHeight),
+        child: CustomAppBar(
+          title: 'My Profile',
+          fontSize: 20.0,
+          fontWeight: FontWeight.bold,
+          titleCenter: false,
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),

@@ -21,18 +21,15 @@ class _KuppiPageState extends State<KuppiPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: CustomAppBar.appBar(
-          title: 'Kuppi Sessions',
-          fontSize: 18,
-          fontWeight: FontWeight.w600,
-          titleCenter: true,
-          leftIcon: IconConstants.leftArrowIcon,
-          rightIcon: IconConstants.hamburgerMenuIcon,
-          leftIconToolTip: 'Back to login page',
-          onLeftIconPressed: () {
-            Navigator.pop(context);
-          },
-          onRightIconPressed: () {},
+        appBar: const PreferredSize(
+          preferredSize: Size.fromHeight(kToolbarHeight),
+          child: CustomAppBar(
+            title: 'Kuppi Sessions',
+            fontSize: 20.0,
+            fontWeight: FontWeight.bold,
+            titleCenter: true,
+            leftIcon: true,
+          ),
         ),
         body: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -66,7 +63,7 @@ class _KuppiPageState extends State<KuppiPage> {
           ],
         ),
         floatingActionButton: FloatingActionButton(
-          backgroundColor: PaletteLightMode.secondaryGreenColor,
+          backgroundColor: CommonColors.secondaryGreenColor,
           tooltip: 'Increment',
           onPressed: () {
             _showFormDialog(context);
@@ -74,7 +71,7 @@ class _KuppiPageState extends State<KuppiPage> {
           child: SvgPicture.asset(
             IconConstants.addButtonIcon,
             colorFilter: const ColorFilter.mode(
-              PaletteLightMode.whiteColor,
+              CommonColors.whiteColor,
               BlendMode.srcIn,
             ),
             width: 25,
@@ -100,11 +97,11 @@ void _showFormDialog(BuildContext context) {
                 width: 150,
                 height: 150,
                 decoration: BoxDecoration(
-                  color: PaletteLightMode.whiteColor,
+                  color: CommonColors.whiteColor,
                   borderRadius: BorderRadius.circular(10),
                   boxShadow: const [
                     BoxShadow(
-                      color: PaletteLightMode.shadowColor,
+                      color: CommonColors.shadowColor,
                       offset: Offset(8, 8),
                       blurRadius: 24,
                       spreadRadius: 0,
@@ -121,7 +118,7 @@ void _showFormDialog(BuildContext context) {
                   ),
                   child: ButtonIcon(
                     icon: IconConstants.cameraIcon,
-                    iconColor: PaletteLightMode.whiteColor,
+                    iconColor: CommonColors.whiteColor,
                     size: 20,
                     onTap: () {},
                   )),

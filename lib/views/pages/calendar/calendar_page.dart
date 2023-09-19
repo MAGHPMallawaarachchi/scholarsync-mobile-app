@@ -1,6 +1,7 @@
 import 'package:calendar_view/calendar_view.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:scholarsync/constants/icon_constants.dart';
 import 'package:scholarsync/views/widgets/app_bar.dart';
 import 'package:scholarsync/themes/palette.dart';
@@ -30,15 +31,15 @@ class _CalendarPageState extends State<CalendarPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar.appBar(
+      appBar: const PreferredSize(
+        preferredSize: Size.fromHeight(kToolbarHeight),
+        child: CustomAppBar(
           title: 'Calendar',
-          fontSize: 22,
-          fontWeight: FontWeight.w600,
+          fontSize: 20.0,
+          fontWeight: FontWeight.bold,
           titleCenter: false,
-          rightIcon: IconConstants.hamburgerMenuIcon,
-          onRightIconPressed: () {
-            //Icon funtion
-          }),
+        ),
+      ),
       body: DayView(
         controller: eventController,
         showVerticalLine: true,

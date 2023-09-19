@@ -149,8 +149,8 @@ class _CarouselState extends State<Carousel> {
                               child: CircularIconButton(
                                 buttonSize: 25,
                                 iconAsset: IconConstants.deleteIcon,
-                                iconColor: PaletteLightMode.whiteColor,
-                                buttonColor: PaletteLightMode.primaryRedColor,
+                                iconColor: CommonColors.whiteColor,
+                                buttonColor: CommonColors.primaryRedColor,
                                 onPressed: widget.onPressedDeleteButton,
                               ),
                             ),
@@ -175,7 +175,7 @@ class _CarouselState extends State<Carousel> {
                   Icons.circle,
                   size: 10,
                   color: pageNo == index
-                      ? PaletteLightMode.secondaryGreenColor
+                      ? CommonColors.secondaryGreenColor
                       : PaletteLightMode.secondaryTextColor,
                 ),
               ),

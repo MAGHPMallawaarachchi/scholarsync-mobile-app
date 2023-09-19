@@ -15,7 +15,7 @@ class CustomTextContainer extends StatefulWidget {
     required this.heading,
     required this.text,
     this.headingSize = 16.0,
-    this.backgroundColor = PaletteLightMode.whiteColor,
+    this.backgroundColor = CommonColors.whiteColor,
     this.borderRadius = 10.0,
     this.padding = 20.0,
   }) : super(key: key);
@@ -36,7 +36,7 @@ class _CustomTextContainerState extends State<CustomTextContainer> {
         borderRadius: BorderRadius.circular(widget.borderRadius),
         boxShadow: const [
           BoxShadow(
-            color: PaletteLightMode.shadowColor,
+            color: CommonColors.shadowColor,
             offset: Offset(8, 8),
             blurRadius: 24,
             spreadRadius: 0,

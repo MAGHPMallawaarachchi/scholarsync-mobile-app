@@ -22,11 +22,11 @@ class _NavigationItemState extends State<NavigationItem> {
   @override
   Widget build(BuildContext context) {
     final iconColor = widget.isSelected
-        ? PaletteLightMode.whiteColor
-        : PaletteLightMode.secondaryGreenColor;
+        ? CommonColors.whiteColor
+        : CommonColors.secondaryGreenColor;
     final lineColor = widget.isSelected
-        ? PaletteLightMode.secondaryGreenColor
-        : PaletteLightMode.transparentColor;
+        ? CommonColors.secondaryGreenColor
+        : CommonColors.transparentColor;
 
     return Expanded(
       child: InkWell(

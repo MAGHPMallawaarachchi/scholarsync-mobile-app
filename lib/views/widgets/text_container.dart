@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../themes/app_theme.dart';
 import '../../themes/palette.dart';
 
 class TextContainer extends StatelessWidget {
@@ -20,7 +21,7 @@ class TextContainer extends StatelessWidget {
   );
 
   static const TextStyle secondaryTextStyle = TextStyle(
-    color: PaletteLightMode.secondaryGreenColor,
+    color: CommonColors.secondaryGreenColor,
     fontSize: 12,
     fontWeight: FontWeight.w600,
   );
@@ -32,7 +33,7 @@ class TextContainer extends StatelessWidget {
       children: [
         Text(
           fontText,
-          style: titleTextStyle,
+          style: getTextTheme(context, true).headlineLarge,
         ),
         if (secondText != null && onTap != null)
           TextButton(

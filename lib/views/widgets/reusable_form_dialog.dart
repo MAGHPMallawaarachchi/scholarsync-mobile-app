@@ -54,8 +54,8 @@ class _ReusableFormDialogState extends State<ReusableFormDialog> {
                 child: CircularIconButton(
                   buttonSize: 30,
                   iconAsset: IconConstants.closeIcon,
-                  iconColor: PaletteLightMode.secondaryGreenColor,
-                  buttonColor: PaletteLightMode.whiteColor,
+                  iconColor: CommonColors.secondaryGreenColor,
+                  buttonColor: CommonColors.whiteColor,
                   onPressed: () {
                     Navigator.of(context).pop();
                   },
@@ -87,7 +87,7 @@ class _ReusableFormDialogState extends State<ReusableFormDialog> {
                     Navigator.pop(context);
                   }
                 },
-                backgroundColor: PaletteLightMode.secondaryGreenColor,
+                backgroundColor: CommonColors.secondaryGreenColor,
               ),
             ],
           ),

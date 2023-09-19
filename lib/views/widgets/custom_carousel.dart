@@ -105,8 +105,8 @@ class _CustomCarouselState extends State<CustomCarousel> {
                           child: CircularIconButton(
                             buttonSize: 25,
                             iconAsset: IconConstants.deleteIcon,
-                            iconColor: PaletteLightMode.whiteColor,
-                            buttonColor: PaletteLightMode.primaryRedColor,
+                            iconColor: CommonColors.whiteColor,
+                            buttonColor: CommonColors.primaryRedColor,
                             onPressed: () {},
                           ),
                         ),
@@ -129,7 +129,7 @@ class _CustomCarouselState extends State<CustomCarousel> {
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   color: _currentPage == index
-                      ? PaletteLightMode.secondaryGreenColor
+                      ? CommonColors.secondaryGreenColor
                       : PaletteLightMode.secondaryTextColor,
                 ),
               ),

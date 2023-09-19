@@ -28,13 +28,14 @@ class _ClubProfilePageState extends State<ClubProfilePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar.appBar(
-        title: clubName,
-        fontSize: 22,
-        fontWeight: FontWeight.bold,
-        titleCenter: false,
-        rightIcon: IconConstants.hamburgerMenuIcon,
-        onRightIconPressed: () {},
+      appBar: PreferredSize(
+        preferredSize: const Size.fromHeight(kToolbarHeight),
+        child: CustomAppBar(
+          title: clubName,
+          fontSize: 20.0,
+          fontWeight: FontWeight.bold,
+          titleCenter: false,
+        ),
       ),
       body: SingleChildScrollView(
         physics: const BouncingScrollPhysics(),
@@ -62,7 +63,7 @@ class _ClubProfilePageState extends State<ClubProfilePage> {
                     _showFormDialog(context);
                   },
                   height: 20,
-                  backgroundColor: PaletteLightMode.secondaryGreenColor,
+                  backgroundColor: CommonColors.secondaryGreenColor,
                 ),
               const SizedBox(height: 20),
               CustomTextContainer(
@@ -152,8 +153,8 @@ class _ClubProfilePageState extends State<ClubProfilePage> {
             child: CircularIconButton(
               buttonSize: 20,
               iconAsset: IconConstants.cameraIcon,
-              iconColor: PaletteLightMode.whiteColor,
-              buttonColor: PaletteLightMode.secondaryGreenColor,
+              iconColor: CommonColors.whiteColor,
+              buttonColor: CommonColors.secondaryGreenColor,
               onPressed: () {},
             ),
           ),
@@ -198,8 +199,8 @@ class _ClubProfilePageState extends State<ClubProfilePage> {
             child: CircularIconButton(
               buttonSize: buttonSize,
               iconAsset: IconConstants.cameraIcon,
-              iconColor: PaletteLightMode.whiteColor,
-              buttonColor: PaletteLightMode.secondaryGreenColor,
+              iconColor: CommonColors.whiteColor,
+              buttonColor: CommonColors.secondaryGreenColor,
               onPressed: () {},
             ),
           ),

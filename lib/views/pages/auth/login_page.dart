@@ -82,8 +82,7 @@ class _LogInPageState extends State<LogInPage> {
                           decoration: InputDecoration(
                             focusedBorder: const UnderlineInputBorder(
                                 borderSide: BorderSide(
-                                    color:
-                                        PaletteLightMode.secondaryGreenColor)),
+                                    color: CommonColors.secondaryGreenColor)),
                             contentPadding: const EdgeInsets.all(22),
                             hintText: 'Password',
                             hintStyle: const TextStyle(
@@ -117,7 +116,7 @@ class _LogInPageState extends State<LogInPage> {
                           children: [
                             Checkbox(
                               value: isChecked,
-                              activeColor: PaletteLightMode.secondaryGreenColor,
+                              activeColor: CommonColors.secondaryGreenColor,
                               tristate: false,
                               onChanged: (bool? value) {
                                 setState(() {
@@ -147,8 +146,8 @@ class _LogInPageState extends State<LogInPage> {
                             //button onTap Funtion
                           },
                           lable: 'Login',
-                          backgroundColor: PaletteLightMode.secondaryGreenColor,
-                          textColor: PaletteLightMode.secondaryGreenColor,
+                          backgroundColor: CommonColors.secondaryGreenColor,
+                          textColor: CommonColors.secondaryGreenColor,
                           fontsize: 14,
                         ),
                       ),

@@ -23,7 +23,7 @@ class LecturerInformation extends StatelessWidget {
         borderRadius: BorderRadius.circular(8.0),
         boxShadow: const [
           BoxShadow(
-            color: PaletteLightMode.shadowColor,
+            color: CommonColors.shadowColor,
             offset: Offset(2, 4),
             blurRadius: 10.0,
           ),

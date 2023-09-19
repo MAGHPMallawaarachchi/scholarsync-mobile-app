@@ -25,25 +25,15 @@ class _AcademicStaffPageState extends State<AcademicStaffPage>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar.appBar(
-        title: 'Academic Staff',
-        fontSize: 22,
-        fontWeight: FontWeight.w600,
-        titleCenter: true,
-        leftIcon: IconConstants.leftArrowIcon,
-        rightIcon: IconConstants.hamburgerMenuIcon,
-        onLeftIconPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => const HomePage()),
-          );
-        },
-        onRightIconPressed: () {
-          /* Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => const LogInPage()),
-          );*/
-        },
+      appBar: const PreferredSize(
+        preferredSize: Size.fromHeight(kToolbarHeight),
+        child: CustomAppBar(
+          title: 'Academic Staff',
+          fontSize: 20.0,
+          fontWeight: FontWeight.bold,
+          titleCenter: false,
+          leftIcon: true,
+        ),
       ),
       body: Column(
         children: [

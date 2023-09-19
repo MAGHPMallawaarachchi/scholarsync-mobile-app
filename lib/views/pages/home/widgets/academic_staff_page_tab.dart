@@ -9,7 +9,7 @@ class AcademicStaffPageTabs extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: PaletteLightMode.transparentColor,
+      color: CommonColors.transparentColor,
       margin: const EdgeInsets.symmetric(vertical: 50),
       padding: const EdgeInsets.symmetric(horizontal: 16.0),
       child: TabBar(
@@ -20,7 +20,7 @@ class AcademicStaffPageTabs extends StatelessWidget {
         // Set the color of unselected tabs' text
         indicator: BoxDecoration(
           borderRadius: BorderRadius.circular(30.0),
-          color: PaletteLightMode.secondaryGreenColor,
+          color: CommonColors.secondaryGreenColor,
           // Set the background color of the selected tab indicator
         ),
         indicatorSize: TabBarIndicatorSize.tab,

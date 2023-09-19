@@ -51,7 +51,7 @@ class _DrawerMenuState extends State<DrawerMenu> {
     return SizedBox(
       width: drawerWidth,
       child: Drawer(
-        backgroundColor: PaletteLightMode.whiteColor,
+        backgroundColor: CommonColors.whiteColor,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(35.0),
         ),
@@ -66,14 +66,14 @@ class _DrawerMenuState extends State<DrawerMenu> {
                 children: [
                   CircleAvatar(
                     radius: 40,
-                    backgroundColor: PaletteLightMode.primaryGreenColor,
+                    backgroundColor: CommonColors.primaryGreenColor,
                     backgroundImage: NetworkImage(_userImage),
                   ),
                   const SizedBox(height: 10),
                   Text(
                     _userName,
                     style: const TextStyle(
-                      color: PaletteLightMode.primaryGreenColor,
+                      color: CommonColors.primaryGreenColor,
                       fontSize: 16,
                     ),
                   ),
@@ -88,7 +88,7 @@ class _DrawerMenuState extends State<DrawerMenu> {
               leading: ButtonIcon(
                 icon: IconConstants.personIcon,
                 size: 16.0,
-                iconColor: PaletteLightMode.primaryGreenColor,
+                iconColor: CommonColors.primaryGreenColor,
                 onTap: () {
                   Navigator.pop(context);
                 },

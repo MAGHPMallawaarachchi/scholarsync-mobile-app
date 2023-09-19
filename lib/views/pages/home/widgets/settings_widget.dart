@@ -25,10 +25,10 @@ class _SettingsWidgetState extends State<SettingsWidget> {
     return Container(
       decoration: const BoxDecoration(
         borderRadius: BorderRadius.all(Radius.circular(18)),
-        color: PaletteLightMode.whiteColor,
+        color: CommonColors.whiteColor,
         boxShadow: [
           BoxShadow(
-            color: PaletteLightMode.shadowColor,
+            color: CommonColors.shadowColor,
             offset: Offset(8, 8),
             blurRadius: 24,
             spreadRadius: 0,
@@ -60,8 +60,8 @@ class _SettingsWidgetState extends State<SettingsWidget> {
           Switch(
             value: widget.isSwitched,
             onChanged: widget.onToggle,
-            activeTrackColor: PaletteLightMode.secondaryGreenColor,
-            activeColor: PaletteLightMode.secondaryGreenColor,
+            activeTrackColor: CommonColors.secondaryGreenColor,
+            activeColor: CommonColors.secondaryGreenColor,
           ),
         ],
       ),

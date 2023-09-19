@@ -14,9 +14,9 @@ class ProfileInfo extends StatelessWidget {
       width: 700,
       height: 220,
       decoration: BoxDecoration(
-        color: PaletteLightMode.primaryGreenColor,
+        color: CommonColors.primaryGreenColor,
         border: Border.all(
-          color: PaletteLightMode.primaryGreenColor,
+          color: CommonColors.primaryGreenColor,
           width: 1.0,
         ),
         borderRadius: BorderRadius.circular(8.0),
@@ -38,8 +38,8 @@ class ProfileInfo extends StatelessWidget {
                     CircularIconButton(
                       buttonSize: 25,
                       iconAsset: IconConstants.cameraIcon,
-                      iconColor: PaletteLightMode.whiteColor,
-                      buttonColor: PaletteLightMode.secondaryGreenColor,
+                      iconColor: CommonColors.whiteColor,
+                      buttonColor: CommonColors.secondaryGreenColor,
                       onPressed: () {},
                     ),
                   ],
@@ -49,7 +49,7 @@ class ProfileInfo extends StatelessWidget {
                   'ATD Gamage - 24598',
                   style: TextStyle(
                     fontSize: 20,
-                    color: PaletteLightMode.whiteColor,
+                    color: CommonColors.whiteColor,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
@@ -57,14 +57,14 @@ class ProfileInfo extends StatelessWidget {
                 const Text(
                   'Bsc.(Hons) in Software Engineering - 24598',
                   style: TextStyle(
-                    color: PaletteLightMode.whiteColor,
+                    color: CommonColors.whiteColor,
                     fontSize: 14,
                   ),
                 ),
                 const Text(
                   'Batch - 21.1',
                   style: TextStyle(
-                    color: PaletteLightMode.whiteColor,
+                    color: CommonColors.whiteColor,
                     fontSize: 14,
                   ),
                 ),

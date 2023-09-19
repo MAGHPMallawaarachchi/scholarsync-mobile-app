@@ -1,56 +1,55 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:scholarsync/themes/palette.dart';
+import '../../themes/app_theme.dart';
 
-class CustomAppBar {
-  static AppBar appBar({
-    VoidCallback? onLeftIconPressed,
-    String? leftIcon,
-    String? leftIconToolTip,
-    required String title,
-    required double fontSize,
-    required FontWeight fontWeight,
-    required bool titleCenter,
-    required String rightIcon,
-    required VoidCallback onRightIconPressed,
-  }) {
+class CustomAppBar extends StatelessWidget {
+  final bool? leftIcon;
+  final String? leftIconToolTip;
+  final String title;
+  final double fontSize;
+  final FontWeight fontWeight;
+  final bool titleCenter;
+
+  const CustomAppBar({
+    Key? key,
+    this.leftIcon,
+    this.leftIconToolTip,
+    required this.title,
+    required this.fontSize,
+    required this.fontWeight,
+    required this.titleCenter,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
     return AppBar(
-      title: Text(title),
-      titleTextStyle: TextStyle(
-        color: PaletteLightMode.titleColor,
-        fontSize: fontSize,
-        fontWeight: fontWeight,
+      title: Text(
+        title,
+        style: getTextTheme(context, true).headlineLarge,
       ),
       centerTitle: titleCenter,
       leading: leftIcon != null
           ? IconButton(
-              icon: SvgPicture.asset(
-                leftIcon,
-                colorFilter: const ColorFilter.mode(
-                  PaletteLightMode.secondaryGreenColor,
-                  BlendMode.srcIn,
-                ),
-                width: 40,
-                height: 40,
+              icon: Icon(
+                PhosphorIcons.bold.arrowLeft,
+                color: CommonColors.secondaryGreenColor,
+                size: 28.0,
               ),
-              tooltip: leftIconToolTip,
-              onPressed: onLeftIconPressed,
+              onPressed: () {
+                Navigator.pop(context);
+              },
             )
           : null,
       actions: <Widget>[
         IconButton(
-          icon: SvgPicture.asset(
-            rightIcon,
-            colorFilter: const ColorFilter.mode(
-              PaletteLightMode.secondaryGreenColor,
-              BlendMode.srcIn,
-            ),
-            width: 40,
-            height: 40,
+          icon: Icon(
+            PhosphorIcons.bold.list,
+            color: CommonColors.secondaryGreenColor,
+            size: 28.0,
           ),
-          tooltip: 'Menu',
-          onPressed: onRightIconPressed,
-        ),
+          onPressed: () {},
+        )
       ],
     );
   }

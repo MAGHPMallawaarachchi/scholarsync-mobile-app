@@ -42,7 +42,7 @@ class _CustomSearchBarState extends State<CustomSearchBar> {
   void _onFocusChange() {
     setState(() {
       _currentIconColor = _focusNode.hasFocus
-          ? PaletteLightMode.secondaryGreenColor
+          ? CommonColors.secondaryGreenColor
           : widget.iconColor;
     });
   }
@@ -65,12 +65,12 @@ class _CustomSearchBarState extends State<CustomSearchBar> {
       child: Theme(
         data: Theme.of(context).copyWith(
           // Set hoverColor to transparent to remove the transparency effect
-          hoverColor: PaletteLightMode.transparentColor,
+          hoverColor: CommonColors.transparentColor,
         ),
         child: TextField(
           onSubmitted: widget.onSearchSubmitted,
           style: TextStyle(color: widget.textColor),
-          cursorColor: PaletteLightMode.secondaryGreenColor,
+          cursorColor: CommonColors.secondaryGreenColor,
           focusNode: _focusNode,
           decoration: InputDecoration(
             filled: true,
@@ -87,7 +87,7 @@ class _CustomSearchBarState extends State<CustomSearchBar> {
             ),
             focusedBorder: OutlineInputBorder(
               borderSide: const BorderSide(
-                  color: PaletteLightMode.secondaryGreenColor, width: 1.0),
+                  color: CommonColors.secondaryGreenColor, width: 1.0),
               borderRadius: BorderRadius.circular(12),
             ),
           ),

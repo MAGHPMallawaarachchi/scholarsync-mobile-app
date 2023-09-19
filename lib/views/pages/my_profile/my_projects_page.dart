@@ -24,17 +24,15 @@ class _MyProjectsPageState extends State<MyProjectsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar.appBar(
-        title: 'My Projects',
-        fontSize: 22,
-        fontWeight: FontWeight.w600,
-        titleCenter: true,
-        leftIcon: IconConstants.leftArrowIcon,
-        rightIcon: IconConstants.hamburgerMenuIcon,
-        onLeftIconPressed: () {
-          Navigator.pop(context);
-        },
-        onRightIconPressed: () {},
+      appBar: const PreferredSize(
+        preferredSize: Size.fromHeight(kToolbarHeight),
+        child: CustomAppBar(
+          title: 'My Projects',
+          fontSize: 20.0,
+          fontWeight: FontWeight.bold,
+          titleCenter: true,
+          leftIcon: true,
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
@@ -99,7 +97,7 @@ class _MyProjectsPageState extends State<MyProjectsPage> {
         borderRadius: BorderRadius.circular(8),
         boxShadow: const [
           BoxShadow(
-            color: PaletteLightMode.shadowColor,
+            color: CommonColors.shadowColor,
             offset: Offset(8, 8),
             blurRadius: 24,
             spreadRadius: 0,
@@ -114,7 +112,7 @@ class _MyProjectsPageState extends State<MyProjectsPage> {
             width: 48,
             height: 48,
             decoration: const BoxDecoration(
-              color: PaletteLightMode.secondaryGreenColor,
+              color: CommonColors.secondaryGreenColor,
               shape: BoxShape.circle,
             ),
           ),
@@ -122,7 +120,7 @@ class _MyProjectsPageState extends State<MyProjectsPage> {
           IconButton(
             icon: SvgPicture.asset(
               IconConstants.addButtonIcon,
-              color: PaletteLightMode.whiteColor,
+              color: CommonColors.whiteColor,
             ),
             tooltip: 'Increment',
             onPressed: () {

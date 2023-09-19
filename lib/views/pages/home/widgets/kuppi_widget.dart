@@ -27,11 +27,11 @@ class _KuppiWidgetState extends State<KuppiWidget> {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: PaletteLightMode.whiteColor,
+        color: CommonColors.whiteColor,
         borderRadius: BorderRadius.circular(10),
         boxShadow: const [
           BoxShadow(
-            color: PaletteLightMode.shadowColor,
+            color: CommonColors.shadowColor,
             offset: Offset(8, 8),
             blurRadius: 24,
             spreadRadius: 0,
@@ -106,7 +106,7 @@ class _KuppiWidgetState extends State<KuppiWidget> {
                     style: const TextStyle(
                       fontSize: 12,
                       fontWeight: FontWeight.w700,
-                      color: PaletteLightMode.secondaryGreenColor,
+                      color: CommonColors.secondaryGreenColor,
                     ),
                   ),
                 ),
@@ -123,7 +123,7 @@ class _KuppiWidgetState extends State<KuppiWidget> {
                             borderRadius: BorderRadius.circular(18),
                           ),
                           padding: const EdgeInsets.symmetric(horizontal: 34),
-                          backgroundColor: PaletteLightMode.secondaryGreenColor,
+                          backgroundColor: CommonColors.secondaryGreenColor,
                         ),
                         child: const Text('Join'),
                       ),
@@ -137,7 +137,7 @@ class _KuppiWidgetState extends State<KuppiWidget> {
                         },
                         icon: Icon(
                           isFavorite ? Icons.favorite : Icons.favorite_border,
-                          color: PaletteLightMode.secondaryGreenColor,
+                          color: CommonColors.secondaryGreenColor,
                         ),
                       ),
                     ],

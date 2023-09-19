@@ -8,7 +8,6 @@ class IconConstants {
   static const String likeOutlinedIcon = '$_svgPath/like_outlined.svg';
   static const String logoutIcon = '$_svgPath/logout.svg';
   static const String mailIcon = '$_svgPath/mail.svg';
-  static const String moonIcon = '$_svgPath/moon.svg';
   static const String notifFilledIcon = '$_svgPath/notif_filled.svg';
   static const String notifOutlinedIcon = '$_svgPath/notif_outlined.svg';
   static const String peopleIcon = '$_svgPath/people.svg';
@@ -36,4 +35,5 @@ class IconConstants {
   static const String horizontalDotsIcon = '$_svgPath/horizontal_dots.svg';
   static const String projectManagementIcon =
       '$_svgPath/project_management.svg';
+  static const String sunMoon = '$_svgPath/sun_moon.svg';
 }

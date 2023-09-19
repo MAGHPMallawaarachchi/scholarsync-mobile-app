@@ -70,7 +70,7 @@ class _MainAppState extends State<MainApp> {
       initialRoute: '/',
       debugShowCheckedModeBanner: false,
       title: 'ScholarSync',
-      theme: AppThemeLight.theme,
+      theme: getAppTheme(context, true),
       home: WillPopScope(
         onWillPop: () async {
           final isFirstRouteInCurrentTab =
@@ -96,10 +96,10 @@ class _MainAppState extends State<MainApp> {
             width: MediaQuery.of(context).size.width,
             height: 75,
             decoration: const BoxDecoration(
-              color: PaletteLightMode.primaryGreenColor,
+              color: CommonColors.primaryGreenColor,
               boxShadow: [
                 BoxShadow(
-                  color: PaletteLightMode.shadowColor,
+                  color: CommonColors.shadowColor,
                   offset: Offset(8, 8),
                   blurRadius: 24,
                   spreadRadius: 0,

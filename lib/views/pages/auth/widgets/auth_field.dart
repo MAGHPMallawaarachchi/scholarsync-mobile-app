@@ -22,8 +22,7 @@ class AuthField extends StatelessWidget {
       controller: controller,
       decoration: InputDecoration(
           focusedBorder: const UnderlineInputBorder(
-              borderSide:
-                  BorderSide(color: PaletteLightMode.secondaryGreenColor)),
+              borderSide: BorderSide(color: CommonColors.secondaryGreenColor)),
           contentPadding: const EdgeInsets.all(22),
           hintText: hintText,
           hintStyle: TextStyle(

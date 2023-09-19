@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
-import 'package:scholarsync/constants/icon_constants.dart';
 import 'package:scholarsync/themes/palette.dart';
 import 'package:scholarsync/views/widgets/app_bar.dart';
 import 'widgets/settings_widget.dart';
@@ -10,20 +9,17 @@ class SettingsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar.appBar(
-        title: 'Settings',
-        fontSize: 22,
-        fontWeight: FontWeight.bold,
-        titleCenter: true,
-        rightIcon: IconConstants.hamburgerMenuIcon,
-        leftIcon: IconConstants.leftArrowIcon,
-        leftIconToolTip: 'go to the next page',
-        onLeftIconPressed: () {
-          Navigator.pop(context);
-        },
-        onRightIconPressed: () {},
+      appBar: const PreferredSize(
+        preferredSize:
+            Size.fromHeight(kToolbarHeight), // Set the preferred height
+        child: CustomAppBar(
+          title: 'Settings',
+          fontSize: 20.0,
+          fontWeight: FontWeight.bold,
+          titleCenter: true,
+          leftIcon: true,
+        ),
       ),
-      backgroundColor: PaletteLightMode.backgroundColor,
       //body
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
