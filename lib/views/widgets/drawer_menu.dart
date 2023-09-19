@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:scholarsync/constants/icon_constants.dart';
+import 'package:scholarsync/views/pages/home/settings_page.dart';
 import '../../themes/palette.dart';
 import 'button_icon.dart';
 
@@ -45,8 +46,7 @@ class _DrawerMenuState extends State<DrawerMenu> {
 
   @override
   Widget build(BuildContext context) {
-    double drawerWidth =
-        MediaQuery.of(context).size.width * 0.7; 
+    double drawerWidth = MediaQuery.of(context).size.width * 0.7;
 
     return SizedBox(
       width: drawerWidth,
@@ -54,110 +54,121 @@ class _DrawerMenuState extends State<DrawerMenu> {
         backgroundColor: PaletteLightMode.whiteColor,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(35.0),
-         ),
-         
-          child: Container(
-          child: ListView(
-            padding: EdgeInsets.zero,
-            children: [
-              DrawerHeader(
-                decoration: const BoxDecoration(
-                  color: PaletteLightMode.backgroundColor,
-                ),
-                child: Column(
-                  children: [
-                    CircleAvatar(
-                      radius: 40,
-                      backgroundColor: PaletteLightMode.primaryGreenColor,
-                      backgroundImage:
-                          NetworkImage(_userImage), 
-                    ),
-                    const SizedBox(height: 10),
-                    Text(
-                      _userName,
-                      style: const TextStyle(
-                        color: PaletteLightMode.primaryGreenColor,
-                        fontSize: 16,
-                      ),
-                    ),
-                  ],
-                ),
+        ),
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: [
+            DrawerHeader(
+              decoration: const BoxDecoration(
+                color: PaletteLightMode.backgroundColor,
               ),
-         ListTile(
-                title: const Text(
+              child: Column(
+                children: [
+                  CircleAvatar(
+                    radius: 40,
+                    backgroundColor: PaletteLightMode.primaryGreenColor,
+                    backgroundImage: NetworkImage(_userImage),
+                  ),
+                  const SizedBox(height: 10),
+                  Text(
+                    _userName,
+                    style: const TextStyle(
+                      color: PaletteLightMode.primaryGreenColor,
+                      fontSize: 16,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            ListTile(
+              title: const Text(
                 'My Profile',
-                style: TextStyle(color: PaletteLightMode.titleColor),  
-                ),
-                leading: ButtonIcon(
-                  icon: IconConstants.personIcon,
-                  size: 16.0,
-                  iconColor: PaletteLightMode.primaryGreenColor,
-                  onTap: () {
-                    Navigator.pop(context);
-                  },
-                ), 
+                style: TextStyle(color: PaletteLightMode.titleColor),
               ),
-              ListTile(
-                title: const Text('Settings', style: TextStyle(color: PaletteLightMode.titleColor),),
+              leading: ButtonIcon(
+                icon: IconConstants.personIcon,
+                size: 16.0,
+                iconColor: PaletteLightMode.primaryGreenColor,
+                onTap: () {
+                  Navigator.pop(context);
+                },
+              ),
+            ),
+            GestureDetector(
+              child: ListTile(
+                title: const Text(
+                  'Settings',
+                  style: TextStyle(color: PaletteLightMode.titleColor),
+                ),
                 leading: ButtonIcon(
                   icon: IconConstants.settingOutlinedIcon,
                   size: 16.0,
                   backgroundColor: Colors.transparent,
                   iconColor: Colors.black,
                   // isSelected: widget.selectedIndex == 1,
-                  onTap: () {
-                    // widget.onItemTapped(1);
-                    Navigator.pop(context);
-                  },
+                  onTap: () {},
                 ),
               ),
-              ListTile(
-                title: const Text('Academic Staff', style: TextStyle(color: PaletteLightMode.titleColor),),
-                leading: ButtonIcon(
-                  icon: IconConstants.teacherIcon,
-                  size: 16.0,
-                  backgroundColor: Colors.transparent,
-                  iconColor: Colors.black,
-                  // isSelected: widget.selectedIndex == 2,
-                  onTap: () {
-                    // widget.onItemTapped(2);
-                    Navigator.pop(context);
-                  },
-                ),
+              onTap: () {
+                Route route = MaterialPageRoute(
+                    builder: (context) => const SettingsPage());
+                Navigator.push(context, route);
+              },
+            ),
+            ListTile(
+              title: const Text(
+                'Academic Staff',
+                style: TextStyle(color: PaletteLightMode.titleColor),
               ),
-                  ListTile(
-                 title: const Text('Give Feedback', style: TextStyle(color: PaletteLightMode.titleColor),),
-                leading: ButtonIcon(
-                  icon: IconConstants.personIcon,
-                  size: 16.0,
-                  backgroundColor: Colors.transparent,
-                  iconColor: Colors.black,
-                  // isSelected: widget.selectedIndex == 0, // Highlight if selected
-                  onTap: () {
-                    // widget.onItemTapped(0);
-                    Navigator.pop(context);
-                  },
-                ),
+              leading: ButtonIcon(
+                icon: IconConstants.teacherIcon,
+                size: 16.0,
+                backgroundColor: Colors.transparent,
+                iconColor: Colors.black,
+                // isSelected: widget.selectedIndex == 2,
+                onTap: () {
+                  // widget.onItemTapped(2);
+                  Navigator.pop(context);
+                },
               ),
-                  ListTile(
-                 title: const Text('Log Out', style: TextStyle(color: PaletteLightMode.titleColor),),
-                leading: ButtonIcon(
-                  icon: IconConstants.personIcon,
-                  size: 16.0,
-                  backgroundColor: Colors.transparent,
-                  iconColor: Colors.black,
-                  // isSelected: widget.selectedIndex == 0, // Highlight if selected
-                  onTap: () {
-                    // widget.onItemTapped(0);
-                    Navigator.pop(context);
-                  },
-                ),
+            ),
+            ListTile(
+              title: const Text(
+                'Give Feedback',
+                style: TextStyle(color: PaletteLightMode.titleColor),
               ),
-            ],
-          ),
+              leading: ButtonIcon(
+                icon: IconConstants.personIcon,
+                size: 16.0,
+                backgroundColor: Colors.transparent,
+                iconColor: Colors.black,
+                // isSelected: widget.selectedIndex == 0, // Highlight if selected
+                onTap: () {
+                  // widget.onItemTapped(0);
+                  Navigator.pop(context);
+                },
+              ),
+            ),
+            ListTile(
+              title: const Text(
+                'Log Out',
+                style: TextStyle(color: PaletteLightMode.titleColor),
+              ),
+              leading: ButtonIcon(
+                icon: IconConstants.personIcon,
+                size: 16.0,
+                backgroundColor: Colors.transparent,
+                iconColor: Colors.black,
+                // isSelected: widget.selectedIndex == 0, // Highlight if selected
+                onTap: () {
+                  // widget.onItemTapped(0);
+                  Navigator.pop(context);
+                },
+              ),
+            ),
+          ],
         ),
-     ),
+      ),
     );
+  }
 }
-}
-

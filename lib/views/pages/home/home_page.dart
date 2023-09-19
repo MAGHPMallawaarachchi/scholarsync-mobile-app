@@ -152,7 +152,9 @@ class _HomePageState extends State<HomePage> {
                 fontText: 'Clubs & Organizations',
                 secondText: 'view all',
                 onTap: () {
-                  //onTap funtion for the text
+                  Route route = MaterialPageRoute(
+                      builder: (context) => const KuppiPage());
+                  Navigator.push(context, route);
                 },
               ),
               const SizedBox(
