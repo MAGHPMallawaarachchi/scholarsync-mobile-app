@@ -26,7 +26,7 @@ class CustomAppBar extends StatelessWidget {
     return AppBar(
       title: Text(
         title,
-        style: getTextTheme(context, true).headlineLarge,
+        style: Theme.of(context).textTheme.headlineLarge,
       ),
       centerTitle: titleCenter,
       leading: leftIcon != null

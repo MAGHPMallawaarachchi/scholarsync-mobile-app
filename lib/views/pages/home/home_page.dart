@@ -6,7 +6,6 @@ import 'package:scholarsync/constants/icon_constants.dart';
 import 'package:scholarsync/constants/image_constants.dart';
 import '../../../themes/app_theme.dart';
 import '../../widgets/custom_carousel.dart';
-import '../../widgets/text_container.dart';
 import '../../../themes/palette.dart';
 import 'widgets/image_row.dart';
 
@@ -27,10 +26,8 @@ class _HomePageState extends State<HomePage> {
           children: [
             Padding(
               padding: const EdgeInsets.only(top: 15),
-              child: Text(
-                'Hi, ATD Gamage',
-                style: getTextTheme(context, true).headlineLarge,
-              ),
+              child: Text('Hi, ATD Gamage',
+                  style: Theme.of(context).textTheme.headlineLarge),
             ),
             Row(
               children: [

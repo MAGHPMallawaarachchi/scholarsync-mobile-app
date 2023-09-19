@@ -22,6 +22,8 @@ dependencies:
   firebase_core: ^2.15.1
   cloud_firestore: ^4.9.1
   phosphor_flutter: ^2.0.0
+  riverpod: ^2.4.0
+  provider: ^6.0.5
 
 dev_dependencies:
   flutter_test:

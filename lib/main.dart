@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:scholarsync/themes/app_theme.dart';
 import 'package:scholarsync/views/pages/home/home_page.dart';
 import 'package:scholarsync/views/pages/home/kuppi_page.dart';
@@ -61,76 +62,76 @@ class _MainAppState extends State<MainApp> {
   ];
 
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      routes: {
-        '/home': (context) => const HomePage(),
-        '/home/kuppi': (context) => const KuppiPage(),
-      },
-      initialRoute: '/',
-      debugShowCheckedModeBanner: false,
-      title: 'ScholarSync',
-      theme: getAppTheme(context, true),
-      home: WillPopScope(
-        onWillPop: () async {
-          final isFirstRouteInCurrentTab =
-              !await _navigatorKeys[currentPage]!.currentState!.maybePop();
-          if (isFirstRouteInCurrentTab) {
-            if (currentPage != 'home') {
-              _selectTab('home', 0);
-              return false;
-            }
-          }
-          return isFirstRouteInCurrentTab;
-        },
-        child: Scaffold(
-          drawer: const DrawerMenu(),
-          body: Stack(children: <Widget>[
-            _buildOffstageNavigator('home'),
-            _buildOffstageNavigator('calendar'),
-            _buildOffstageNavigator('add'),
-            _buildOffstageNavigator('notifications'),
-            _buildOffstageNavigator('my_profile'),
-          ]),
-          bottomNavigationBar: Container(
-            width: MediaQuery.of(context).size.width,
-            height: 75,
-            decoration: const BoxDecoration(
-              color: CommonColors.primaryGreenColor,
-              boxShadow: [
-                BoxShadow(
-                  color: CommonColors.shadowColor,
-                  offset: Offset(8, 8),
-                  blurRadius: 24,
-                  spreadRadius: 0,
+  Widget build(BuildContext context) => ChangeNotifierProvider(
+      create: (context) => ThemeProvider(),
+      builder: (context, _) {
+        final themeProvider = Provider.of<ThemeProvider>(context);
+        return MaterialApp(
+          debugShowCheckedModeBanner: false,
+          title: 'ScholarSync',
+          theme: getAppTheme(context, false),
+          darkTheme: getAppTheme(context, true),
+          themeMode: themeProvider.themeMode,
+          home: WillPopScope(
+            onWillPop: () async {
+              final isFirstRouteInCurrentTab =
+                  !await _navigatorKeys[currentPage]!.currentState!.maybePop();
+              if (isFirstRouteInCurrentTab) {
+                if (currentPage != 'home') {
+                  _selectTab('home', 0);
+                  return false;
+                }
+              }
+              return isFirstRouteInCurrentTab;
+            },
+            child: Scaffold(
+              drawer: const DrawerMenu(),
+              body: Stack(children: <Widget>[
+                _buildOffstageNavigator('home'),
+                _buildOffstageNavigator('calendar'),
+                _buildOffstageNavigator('add'),
+                _buildOffstageNavigator('notifications'),
+                _buildOffstageNavigator('my_profile'),
+              ]),
+              bottomNavigationBar: Container(
+                width: MediaQuery.of(context).size.width,
+                height: 75,
+                decoration: const BoxDecoration(
+                  color: CommonColors.primaryGreenColor,
+                  boxShadow: [
+                    BoxShadow(
+                      color: CommonColors.shadowColor,
+                      offset: Offset(8, 8),
+                      blurRadius: 24,
+                      spreadRadius: 0,
+                    ),
+                  ],
                 ),
-              ],
-            ),
-            child: Padding(
-              padding: const EdgeInsets.only(top: 8.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  _buildNavItem(0, IconConstants.homeIcon),
-                  _buildNavItem(1, IconConstants.calendarIcon),
-                  NavigationAddItem(
-                    isSelected: currentIndex == 2,
-                    onTap: () {
-                      setState(() {
-                        currentIndex = 2;
-                      });
-                    },
+                child: Padding(
+                  padding: const EdgeInsets.only(top: 8.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      _buildNavItem(0, IconConstants.homeIcon),
+                      _buildNavItem(1, IconConstants.calendarIcon),
+                      NavigationAddItem(
+                        isSelected: currentIndex == 2,
+                        onTap: () {
+                          setState(() {
+                            currentIndex = 2;
+                          });
+                        },
+                      ),
+                      _buildNavItem(3, IconConstants.bellFilledIcon),
+                      _buildNavItem(4, IconConstants.personIcon),
+                    ],
                   ),
-                  _buildNavItem(3, IconConstants.bellFilledIcon),
-                  _buildNavItem(4, IconConstants.personIcon),
-                ],
+                ),
               ),
             ),
           ),
-        ),
-      ),
-    );
-  }
+        );
+      });
 
   Widget _buildOffstageNavigator(String tabItem) {
     return Offstage(
@@ -149,9 +150,9 @@ class _MainAppState extends State<MainApp> {
       isSelected: isSelected,
       iconName: iconName,
       onTap: () {
-        // setState(() {
-        //   currentIndex = index;
-        // });
+        setState(() {
+          currentIndex = index;
+        });
         _selectTab(pageKeys[index], index);
       },
     );

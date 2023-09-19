@@ -1,26 +1,23 @@
 import 'package:flutter/material.dart';
 import '../../../../themes/palette.dart';
-import 'change_theme_button.dart';
 
-class SettingsWidget extends StatefulWidget {
+class NotificationWidget extends StatefulWidget {
   final IconData leftIcon;
-  final bool isSwitched;
   final String text;
-  final Function(bool) onToggle;
+  final String subtitle;
 
-  const SettingsWidget({
+  const NotificationWidget({
     required this.leftIcon,
-    required this.isSwitched,
     required this.text,
-    required this.onToggle,
+    required this.subtitle,
     Key? key,
   }) : super(key: key);
 
   @override
-  State<SettingsWidget> createState() => _SettingsWidgetState();
+  State<NotificationWidget> createState() => _NotificationWidgetState();
 }
 
-class _SettingsWidgetState extends State<SettingsWidget> {
+class _NotificationWidgetState extends State<NotificationWidget> {
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -47,24 +44,31 @@ class _SettingsWidgetState extends State<SettingsWidget> {
                 size: 28.0,
               ),
               const SizedBox(width: 10),
-              Text(
-                widget.text,
-                style: const TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w400,
-                  color: PaletteLightMode.textColor,
-                ),
-                textAlign: TextAlign.left,
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    widget.text,
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w400,
+                      color: PaletteLightMode.textColor,
+                    ),
+                    textAlign: TextAlign.left,
+                  ),
+                  Text(
+                    widget.subtitle,
+                    style: const TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w400,
+                      color: PaletteLightMode.secondaryTextColor,
+                    ),
+                    textAlign: TextAlign.left,
+                  )
+                ],
               ),
             ],
           ),
-          ChangeThemeButton(),
-          // Switch(
-          //   value: widget.isSwitched,
-          //   onChanged: widget.onToggle,
-          //   activeTrackColor: CommonColors.secondaryGreenColor,
-          //   activeColor: CommonColors.secondaryGreenColor,
-          // ),
         ],
       ),
     );
