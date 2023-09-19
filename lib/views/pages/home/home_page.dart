@@ -58,11 +58,6 @@ class _HomePageState extends State<HomePage> {
             ),
           ],
         ),
-        titleTextStyle: const TextStyle(
-          color: PaletteLightMode.titleColor,
-          fontSize: 22,
-          fontWeight: FontWeight.bold,
-        ),
         centerTitle: false,
         actions: <Widget>[
           IconButton(
@@ -116,20 +111,31 @@ class _HomePageState extends State<HomePage> {
                 ),
               ),
 
-              //text
-              TextContainer(
-                  fontText: 'Kuppi Sessions',
-                  secondText: 'view all',
-                  onTap: () {
-                    Route route = MaterialPageRoute(
-                        builder: (context) => const KuppiPage());
-                    Navigator.push(context, route);
-                  }),
-              const SizedBox(
-                height: 5,
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'Kuppi Sessions',
+                    style: getTextTheme(context, true).headlineMedium,
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      Route route = MaterialPageRoute(
+                          builder: (context) => const KuppiPage());
+                      Navigator.push(context, route);
+                    },
+                    child: Text(
+                      'view all',
+                      style: getTextTheme(context, true).displaySmall,
+                    ),
+                  ),
+                ],
               ),
 
-              //imageRow
+              const SizedBox(
+                height: 10,
+              ),
+
               ImageRow(
                 containerSize: MediaQuery.of(context).size.width * 0.4,
                 isCircle: false,
@@ -140,25 +146,23 @@ class _HomePageState extends State<HomePage> {
                   ImageConstants.img1,
                 ],
               ),
-              const SizedBox(
-                height: 10,
+
+              const SizedBox(height: 30),
+
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Clubs & Societies',
+                    style: getTextTheme(context, true).headlineMedium,
+                    textAlign: TextAlign.left,
+                  ),
+                ],
               ),
 
-              //text
-              TextContainer(
-                fontText: 'Clubs & Organizations',
-                secondText: 'view all',
-                onTap: () {
-                  Route route = MaterialPageRoute(
-                      builder: (context) => const KuppiPage());
-                  Navigator.push(context, route);
-                },
-              ),
               const SizedBox(
-                height: 5,
+                height: 20,
               ),
-
-              //imageRow
               ImageRow(
                 containerSize: MediaQuery.of(context).size.width * 0.2,
                 isCircle: true,

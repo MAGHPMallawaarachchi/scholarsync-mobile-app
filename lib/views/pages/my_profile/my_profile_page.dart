@@ -6,6 +6,8 @@ import 'package:scholarsync/views/widgets/app_bar.dart';
 import 'package:scholarsync/views/pages/my_profile/widgets/profile_info.dart';
 import 'package:scholarsync/themes/palette.dart';
 
+import '../../../themes/app_theme.dart';
+
 class MyProfilePage extends StatefulWidget {
   const MyProfilePage({super.key});
 
@@ -36,12 +38,9 @@ class _MyProfilePageState extends State<MyProfilePage> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Text(
+                Text(
                   'My Projects',
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                  ),
+                  style: getTextTheme(context, true).headlineMedium,
                 ),
                 TextButton(
                   onPressed: () {
@@ -49,11 +48,15 @@ class _MyProfilePageState extends State<MyProfilePage> {
                         builder: (context) => const MyProjectsPage());
                     Navigator.push(context, route);
                   },
-                  child: const Text(
-                    'View All',
-                    style: TextStyle(
-                      color: PaletteLightMode.textColor,
-                      fontSize: 16,
+                  child: TextButton(
+                    onPressed: () {
+                      Route route = MaterialPageRoute(
+                          builder: (context) => const MyProjectsPage());
+                      Navigator.push(context, route);
+                    },
+                    child: Text(
+                      'view all',
+                      style: getTextTheme(context, true).displaySmall,
                     ),
                   ),
                 ),

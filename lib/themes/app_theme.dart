@@ -3,21 +3,25 @@ import 'package:scholarsync/themes/palette.dart';
 
 TextTheme getTextTheme(BuildContext context, bool isDarkTheme) {
   return Theme.of(context).textTheme.copyWith(
-        headlineLarge: TextStyle(
-          fontSize: 22,
-          fontWeight: FontWeight.w600,
-          color: isDarkTheme
-              ? PaletteDarkMode.titleColor
-              : PaletteLightMode.titleColor,
-        ),
-        headlineMedium: TextStyle(
-          fontSize: 18,
-          fontWeight: FontWeight.w600,
-          color: isDarkTheme
-              ? PaletteDarkMode.titleColor
-              : PaletteLightMode.titleColor,
-        ),
-      );
+      headlineLarge: TextStyle(
+        fontSize: 22,
+        fontWeight: FontWeight.w600,
+        color: isDarkTheme
+            ? PaletteDarkMode.titleColor
+            : PaletteLightMode.titleColor,
+      ),
+      headlineMedium: TextStyle(
+        fontSize: 18,
+        fontWeight: FontWeight.w600,
+        color: isDarkTheme
+            ? PaletteDarkMode.textColor
+            : PaletteLightMode.textColor,
+      ),
+      displaySmall: const TextStyle(
+        fontSize: 14,
+        fontWeight: FontWeight.w600,
+        color: CommonColors.secondaryGreenColor,
+      ));
 }
 
 ThemeData getAppTheme(BuildContext context, bool isDarkTheme) {
