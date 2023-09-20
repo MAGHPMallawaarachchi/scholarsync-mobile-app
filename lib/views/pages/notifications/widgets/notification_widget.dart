@@ -21,10 +21,10 @@ class _NotificationWidgetState extends State<NotificationWidget> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: const BoxDecoration(
-        borderRadius: BorderRadius.all(Radius.circular(18)),
-        color: CommonColors.whiteColor,
-        boxShadow: [
+      decoration: BoxDecoration(
+        borderRadius: const BorderRadius.all(Radius.circular(18)),
+        color: Theme.of(context).dialogBackgroundColor,
+        boxShadow: const [
           BoxShadow(
             color: CommonColors.shadowColor,
             offset: Offset(8, 8),
@@ -33,7 +33,7 @@ class _NotificationWidgetState extends State<NotificationWidget> {
           ),
         ],
       ),
-      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+      padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -49,20 +49,13 @@ class _NotificationWidgetState extends State<NotificationWidget> {
                 children: [
                   Text(
                     widget.text,
-                    style: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w400,
-                      color: PaletteLightMode.textColor,
-                    ),
+                    style: Theme.of(context).textTheme.bodyMedium,
                     textAlign: TextAlign.left,
                   ),
+                  const SizedBox(height: 5),
                   Text(
                     widget.subtitle,
-                    style: const TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w400,
-                      color: PaletteLightMode.secondaryTextColor,
-                    ),
+                    style: Theme.of(context).textTheme.bodySmall,
                     textAlign: TextAlign.left,
                   )
                 ],

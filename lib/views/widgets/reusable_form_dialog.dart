@@ -38,11 +38,7 @@ class _ReusableFormDialogState extends State<ReusableFormDialog> {
         children: [
           Text(
             widget.title,
-            style: const TextStyle(
-              fontWeight: FontWeight.w700,
-              fontSize: 17,
-              color: PaletteLightMode.textColor,
-            ),
+            style: Theme.of(context).textTheme.displayLarge,
           ),
           Expanded(
             child: Align(

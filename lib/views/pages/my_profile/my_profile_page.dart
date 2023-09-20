@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:scholarsync/views/pages/my_profile/my_projects_page.dart';
 import 'package:scholarsync/views/pages/my_profile/widgets/project_box.dart';
-import 'package:scholarsync/constants/icon_constants.dart';
 import 'package:scholarsync/views/widgets/app_bar.dart';
 import 'package:scholarsync/views/pages/my_profile/widgets/profile_info.dart';
-import 'package:scholarsync/themes/palette.dart';
 
 import '../../../themes/app_theme.dart';
 

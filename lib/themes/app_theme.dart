@@ -50,6 +50,20 @@ TextTheme getTextTheme(BuildContext context, bool isDarkTheme) {
               ? PaletteDarkMode.secondaryTextColor
               : PaletteLightMode.secondaryTextColor,
         ),
+        bodySmall: TextStyle(
+          fontSize: 11,
+          fontWeight: FontWeight.w500,
+          color: isDarkTheme
+              ? PaletteDarkMode.secondaryTextColor
+              : PaletteLightMode.secondaryTextColor,
+        ),
+        bodyMedium: TextStyle(
+          fontSize: 16,
+          fontWeight: FontWeight.w400,
+          color: isDarkTheme
+              ? PaletteDarkMode.textColor
+              : PaletteLightMode.textColor,
+        ),
       );
 }
 

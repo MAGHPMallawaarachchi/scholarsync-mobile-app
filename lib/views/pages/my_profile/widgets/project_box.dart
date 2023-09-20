@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:scholarsync/constants/icon_constants.dart';
 import 'package:scholarsync/themes/palette.dart';
 
@@ -22,7 +23,7 @@ class ProjectBox extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(15),
       decoration: BoxDecoration(
-        color: PaletteLightMode.backgroundColor,
+        color: Theme.of(context).dialogBackgroundColor,
         borderRadius: BorderRadius.circular(8),
         boxShadow: const [
           BoxShadow(
@@ -40,21 +41,16 @@ class ProjectBox extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               SvgPicture.asset(IconConstants.projectManagementIcon),
-              Text('Project $projectNumber'),
-              SvgPicture.asset(IconConstants.horizontalDotsIcon),
+              Text('Project $projectNumber',
+                  style: Theme.of(context).textTheme.displaySmall),
+              Icon(PhosphorIcons.fill.dotsThreeOutline),
             ],
           ),
           const SizedBox(height: 20),
-          Text(
-            projectName,
-            style: const TextStyle(
-              color: PaletteLightMode.titleColor,
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
+          Text(projectName, style: Theme.of(context).textTheme.headlineMedium),
           const Spacer(),
           Row(
+            mainAxisAlignment: MainAxisAlignment.end,
             children: [
               const SizedBox(width: 0.5),
               SizedBox(
@@ -62,7 +58,7 @@ class ProjectBox extends StatelessWidget {
                   height: 20,
                   child: Text(
                     date,
-                    style: const TextStyle(fontSize: 11),
+                    style: Theme.of(context).textTheme.bodySmall,
                   )),
               const Spacer(),
               Container(

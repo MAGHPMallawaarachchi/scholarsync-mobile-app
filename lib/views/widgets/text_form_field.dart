@@ -46,11 +46,7 @@ class _ReusableTextFieldState extends State<ReusableTextField> {
       children: [
         Text(
           widget.labelText,
-          style: const TextStyle(
-            color: PaletteLightMode.textColor,
-            fontWeight: FontWeight.w500,
-            fontSize: 14.0,
-          ),
+          style: Theme.of(context).textTheme.displayMedium,
         ),
         const SizedBox(
           height: 4,

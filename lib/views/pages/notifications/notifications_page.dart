@@ -25,19 +25,15 @@ class NotificationsPage extends StatelessWidget {
       ),
       //body
       body: Padding(
-        padding: const EdgeInsets.only(bottom: 20, left: 20, right: 20),
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
         child: SingleChildScrollView(
             physics: const BouncingScrollPhysics(),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
+                Text(
                   'Today',
-                  style: TextStyle(
-                    fontSize: 14,
-                    fontFamily: "inter",
-                    color: PaletteLightMode.textColor,
-                  ),
+                  style: Theme.of(context).textTheme.bodySmall,
                 ),
                 const SizedBox(height: 10),
                 // Notification 01

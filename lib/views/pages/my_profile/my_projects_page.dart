@@ -96,7 +96,7 @@ class _MyProjectsPageState extends State<MyProjectsPage> {
   Widget _buildAddProjectBox() {
     return Container(
       decoration: BoxDecoration(
-        color: PaletteLightMode.backgroundColor,
+        color: Theme.of(context).dialogBackgroundColor,
         borderRadius: BorderRadius.circular(8),
         boxShadow: const [
           BoxShadow(
