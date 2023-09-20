@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
-import 'package:scholarsync/views/widgets/rounded_small_button.dart';
-import 'package:scholarsync/constants/icon_constants.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:scholarsync/constants/image_constants.dart';
-import 'package:scholarsync/views/pages/auth/widgets/auth_field.dart';
 import 'package:scholarsync/themes/palette.dart';
+import 'package:scholarsync/views/widgets/custom_elevated_button.dart';
+
+import 'widgets/auth_field.dart';
 
 class LogInPage extends StatefulWidget {
-  const LogInPage({super.key});
+  const LogInPage({Key? key}) : super(key: key);
 
   @override
   State<LogInPage> createState() => _LogInPageState();
@@ -17,7 +17,6 @@ class _LogInPageState extends State<LogInPage> {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
   bool isChecked = false;
-  bool _obscureText = true;
 
   @override
   void dispose() {
@@ -42,117 +41,102 @@ class _LogInPageState extends State<LogInPage> {
           ),
           // White box
           Center(
-            child: SingleChildScrollView(
-              physics: const BouncingScrollPhysics(),
+            child: Container(
+              height: MediaQuery.of(context).size.height * 0.5,
+              width: MediaQuery.of(context).size.width * 0.85,
+              decoration: BoxDecoration(
+                color: Theme.of(context).scaffoldBackgroundColor,
+                borderRadius: const BorderRadius.all(Radius.circular(20)),
+              ),
               child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: Container(
-                  width: 350,
-                  height: 400,
-                  decoration: const BoxDecoration(
-                    color: PaletteLightMode.backgroundColor,
-                  ),
-                  child: Column(
-                    children: [
-                      // Logo
-                      Image.asset(
-                        ImageConstants.logo,
-                        width: 120,
-                        height: 120,
-                        alignment: Alignment.center,
+                padding: const EdgeInsets.all(20),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Image.asset(
+                      ImageConstants.logo,
+                      width: 120,
+                      height: 120,
+                    ),
+                    const SizedBox(height: 20),
+                    // Email Input
+                    Padding(
+                      padding: const EdgeInsets.all(10),
+                      child: AuthField(
+                        controller: emailController,
+                        hintText: 'Enter your email',
+                        fontSize: 16,
+                        leftIcon: PhosphorIcons.regular.envelope,
                       ),
-                      const SizedBox(height: 0),
-                      // Text field
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 20),
-                        child: AuthField(
-                          controller: emailController,
-                          hintText: 'Email',
-                          fontSize: 14,
-                          leftIcon: IconConstants.mailIcon,
-                        ),
+                    ),
+                    // Password Input
+                    Padding(
+                      padding: const EdgeInsets.all(10),
+                      child: AuthField(
+                        isObsecure: true,
+                        controller: passwordController,
+                        hintText: 'Enter your password',
+                        fontSize: 16,
+                        leftIcon: PhosphorIcons.regular.lockKey,
                       ),
-                      const SizedBox(height: 15),
-                      // Password Text field
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 20),
-                        child: TextFormField(
-                          controller: passwordController,
-                          obscureText: _obscureText,
-                          decoration: InputDecoration(
-                            focusedBorder: const UnderlineInputBorder(
-                                borderSide: BorderSide(
-                                    color: CommonColors.secondaryGreenColor)),
-                            contentPadding: const EdgeInsets.all(22),
-                            hintText: 'Password',
-                            hintStyle: const TextStyle(
-                              fontSize: 14,
+                    ),
+                    const SizedBox(height: 10),
+                    // Remember Me Checkbox
+                    Row(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(left: 25),
+                          child: Container(
+                            width: 18,
+                            height: 18,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              border: Border.all(
+                                color: isChecked
+                                    ? CommonColors.secondaryGreenColor
+                                    : Colors.grey,
+                                width: 1,
+                              ),
                             ),
-                            prefixIcon: Transform.scale(
-                              scale: 0.6,
-                              child: SvgPicture.asset(IconConstants.lockIcon),
-                            ),
-                            suffixIcon: Transform.scale(
-                              scale: 1.3,
-                              child: IconButton(
-                                  onPressed: () {
-                                    setState(() {
-                                      _obscureText = !_obscureText;
-                                    });
-                                  },
-                                  icon: SvgPicture.asset(_obscureText
-                                      ? IconConstants.eyeOpenIcon
-                                      : IconConstants.eyeCloseIcon)),
+                            child: InkWell(
+                              onTap: () {
+                                setState(() {
+                                  isChecked = !isChecked;
+                                });
+                              },
+                              borderRadius: BorderRadius.circular(
+                                  30), // Match the container's shape
+                              child: Container(
+                                width: 18, // Match the container's size
+                                height: 18, // Match the container's size
+                                decoration: isChecked
+                                    ? const BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        color: CommonColors
+                                            .secondaryGreenColor, // Fill color when selected
+                                      )
+                                    : null,
+                                child: isChecked
+                                    ? const Icon(
+                                        Icons.check,
+                                        color: Colors
+                                            .white, // Icon color when selected
+                                        size: 12,
+                                      )
+                                    : null,
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                      const SizedBox(height: 15),
-                      // Text span
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 20),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            Checkbox(
-                              value: isChecked,
-                              activeColor: CommonColors.secondaryGreenColor,
-                              tristate: false,
-                              onChanged: (bool? value) {
-                                setState(() {
-                                  isChecked = value ?? false;
-                                });
-                              },
-                              shape: const CircleBorder(),
-                            ),
-                            RichText(
-                              text: const TextSpan(
-                                text: "Remember me",
-                                style: TextStyle(
-                                  fontSize: 12,
-                                  color: PaletteLightMode.textColor,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      const SizedBox(height: 10),
-                      //button
-                      Align(
-                        alignment: Alignment.center,
-                        child: RoundedSmallbutton(
-                          onTap: () {
-                            //button onTap Funtion
-                          },
-                          lable: 'Login',
-                          backgroundColor: CommonColors.secondaryGreenColor,
-                          textColor: CommonColors.secondaryGreenColor,
-                          fontsize: 14,
-                        ),
-                      ),
-                    ],
-                  ),
+                        const SizedBox(width: 5),
+                        Text('Remember me',
+                            style: Theme.of(context).textTheme.bodySmall),
+                      ],
+                    ),
+                    const SizedBox(height: 20),
+                    // Log In Button
+                    CustomElevatedButton(label: 'Log In', onPressed: () {}),
+                  ],
                 ),
               ),
             ),
