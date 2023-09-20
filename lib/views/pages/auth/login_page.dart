@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:scholarsync/constants/image_constants.dart';
@@ -17,6 +18,13 @@ class _LogInPageState extends State<LogInPage> {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
   bool isChecked = false;
+
+  Future signIn() async {
+    await FirebaseAuth.instance.signInWithEmailAndPassword(
+      email: emailController.text.trim(),
+      password: passwordController.text.trim(),
+    );
+  }
 
   @override
   void dispose() {
@@ -135,7 +143,11 @@ class _LogInPageState extends State<LogInPage> {
                     ),
                     const SizedBox(height: 20),
                     // Log In Button
-                    CustomElevatedButton(label: 'Log In', onPressed: () {}),
+                    CustomElevatedButton(
+                        label: 'Log In',
+                        onPressed: () {
+                          signIn();
+                        }),
                   ],
                 ),
               ),
