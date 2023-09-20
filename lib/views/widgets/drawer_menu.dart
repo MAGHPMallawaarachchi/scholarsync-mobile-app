@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:scholarsync/constants/icon_constants.dart';
@@ -180,12 +181,7 @@ class _DrawerMenuState extends State<DrawerMenu> {
               size: 25,
             ),
             onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const SettingsPage(),
-                ),
-              );
+              FirebaseAuth.instance.signOut();
             },
           ),
         ],
