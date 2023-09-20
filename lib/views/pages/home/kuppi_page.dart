@@ -1,5 +1,9 @@
+import 'dart:io';
+
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:intl/intl.dart';
 import 'package:scholarsync/views/widgets/button_icon.dart';
 import 'package:scholarsync/views/widgets/search_bar.dart';
 import 'package:scholarsync/constants/icon_constants.dart';
@@ -10,6 +14,10 @@ import 'package:scholarsync/constants/image_constants.dart';
 import 'package:scholarsync/views/widgets/reusable_form_dialog.dart';
 import 'package:scholarsync/themes/palette.dart';
 
+import '../../../controllers/kuppi_service.dart';
+import '../../../model/kuppi.dart';
+import 'widgets/image_form_field.dart';
+
 class KuppiPage extends StatefulWidget {
   const KuppiPage({super.key});
 
@@ -18,162 +26,342 @@ class KuppiPage extends StatefulWidget {
 }
 
 class _KuppiPageState extends State<KuppiPage> {
+  File? _selectedImage;
+  bool _isImageSelected = false;
+  String? downloadURL;
+  String _searchQuery = '';
+
+  final KuppiRepository _kuppiRepository = KuppiRepository();
+
+  final _nameController = TextEditingController();
+  final _dateController = TextEditingController();
+  final _conductorController = TextEditingController();
+  final _linkController = TextEditingController();
+
+  Future<void> createNewKuppiSession() async {
+    try {
+      await uploadImage();
+
+      KuppiSession kuppiSession = KuppiSession(
+        id: '',
+        name: _nameController.text.trim(),
+        date: DateTime.parse(_dateController.text.trim()),
+        conductor: _conductorController.text.trim(),
+        link: _linkController.text.trim(),
+        imageUrl: downloadURL!,
+      );
+
+      await _kuppiRepository.createKuppiSession(kuppiSession);
+      setState(() {});
+    } catch (e) {
+      // print(e);
+    }
+  }
+
+  void _handleDelete(KuppiSession session) async {
+    await _kuppiRepository.deleteKuppiSession(session.id);
+    _deleteImage(session);
+  }
+
+  void _deleteImage(KuppiSession session) async {
+    var imageRef = FirebaseStorage.instance.refFromURL(session.imageUrl);
+    await imageRef.delete();
+  }
+
+  Future uploadImage() async {
+    String imageName = _selectedImage!.path.split('/').last;
+    Reference ref =
+        FirebaseStorage.instance.ref().child('kuppi_images/$imageName');
+    await ref.putFile(_selectedImage!);
+    downloadURL = await ref.getDownloadURL();
+  }
+
+  String formatDate(DateTime date) {
+    String day = DateFormat('d').format(date);
+    String month = DateFormat('MMMM').format(date);
+    String year = DateFormat('y').format(date);
+
+    String daySuffix = day.endsWith('1')
+        ? 'st'
+        : day.endsWith('2')
+            ? 'nd'
+            : day.endsWith('3')
+                ? 'rd'
+                : 'th';
+
+    return '$day$daySuffix $month $year';
+  }
+
+  List<KuppiSession> _filterSessions(List<KuppiSession> sessions) {
+    if (_searchQuery.isEmpty) {
+      return sessions; // Return all sessions if search query is empty
+    } else {
+      final query = _searchQuery.toLowerCase();
+      return sessions.where((session) {
+        return session.name.toLowerCase().contains(query);
+      }).toList();
+    }
+  }
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _dateController.dispose();
+    _conductorController.dispose();
+    _linkController.dispose();
+    super.dispose();
+  }
+
+  void _resetFormFields() {
+    setState(() {
+      _nameController.clear();
+      _dateController.clear();
+      _conductorController.clear();
+      _linkController.clear();
+      _selectedImage = null;
+      _isImageSelected = false;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: PreferredSize(
-          preferredSize: const Size.fromHeight(kToolbarHeight),
-          child: CustomAppBar(
-            title: 'Kuppi Sessions',
-            fontSize: 20.0,
-            fontWeight: FontWeight.bold,
-            titleCenter: true,
-            leftIcon: true,
-            onPressedListButton: () {
-              Scaffold.of(context).openDrawer();
-            },
-          ),
-        ),
-        body: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              CustomSearchBar(
-                hint: 'Search for kuppi sessions...',
-                onSearchSubmitted: (query) {},
-              ),
-              const SizedBox(height: 18),
-              Expanded(
-                child: ListView(
-                  physics: const BouncingScrollPhysics(),
-                  padding: const EdgeInsets.only(bottom: 20),
-                  children: const [
-                    KuppiWidget(
-                      title: 'MICROPYTHON',
-                      subtitle: 'by ATD Gamage',
-                      date: '30th July, 2023',
-                      imagePath: ImageConstants.kuppi1,
-                    ),
-                    SizedBox(height: 20),
-                    KuppiWidget(
-                      title: 'Mathematics for Computing',
-                      subtitle: 'by ATD Gamage',
-                      date: '30th July, 2023',
-                      imagePath: ImageConstants.kuppi1,
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ),
-        floatingActionButton: FloatingActionButton(
-          backgroundColor: CommonColors.secondaryGreenColor,
-          tooltip: 'Increment',
-          onPressed: () {
-            _showFormDialog(context);
-          },
-          child: SvgPicture.asset(
-            IconConstants.addButtonIcon,
-            colorFilter: const ColorFilter.mode(
-              CommonColors.whiteColor,
-              BlendMode.srcIn,
+    return GestureDetector(
+      onTap: () {
+        FocusScope.of(context).unfocus();
+      },
+      child: Scaffold(
+          appBar: PreferredSize(
+            preferredSize: const Size.fromHeight(kToolbarHeight),
+            child: CustomAppBar(
+              title: 'Kuppi Sessions',
+              fontSize: 20.0,
+              fontWeight: FontWeight.bold,
+              titleCenter: true,
+              leftIcon: true,
+              onPressedListButton: () {
+                Scaffold.of(context).openDrawer();
+              },
             ),
-            width: 25,
-            height: 25,
           ),
-        ));
-  }
-}
-
-void _showFormDialog(BuildContext context) {
-  showDialog(
-    context: context,
-    builder: (BuildContext context) {
-      return ReusableFormDialog(
-        title: 'Add New Kuppi Session',
-        buttonLabel: 'Add',
-        formFields: [
-          const SizedBox(height: 5),
-          Stack(
-            alignment: Alignment.center,
-            children: [
-              Container(
-                width: 150,
-                height: 150,
-                decoration: BoxDecoration(
-                  color: CommonColors.whiteColor,
-                  borderRadius: BorderRadius.circular(10),
-                  boxShadow: const [
-                    BoxShadow(
-                      color: CommonColors.shadowColor,
-                      offset: Offset(8, 8),
-                      blurRadius: 24,
-                      spreadRadius: 0,
-                    )
-                  ],
+          body: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                CustomSearchBar(
+                  hint: 'Search for kuppi sessions...',
+                  onSearchSubmitted: (query) {
+                    setState(() {
+                      _searchQuery = query.trim();
+                    });
+                    FocusScope.of(context).unfocus();
+                  },
                 ),
-              ),
-              Container(
-                  width: 40,
-                  height: 40,
-                  decoration: const BoxDecoration(
-                    color: PaletteLightMode.secondaryTextColor,
-                    shape: BoxShape.circle,
+                const SizedBox(height: 18),
+                Expanded(
+                  child: FutureBuilder<List<KuppiSession>>(
+                    future: _kuppiRepository.getKuppiSessions(),
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return const Center(
+                          child: CircularProgressIndicator(
+                            color: CommonColors.secondaryGreenColor,
+                          ),
+                        );
+                      } else if (snapshot.hasError) {
+                        return const Center(
+                          child: Text('Error fetching Kuppi sessions'),
+                        );
+                      } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                        return const Center(
+                          child: Text('No Kuppi sessions available'),
+                        );
+                      } else {
+                        final filteredSessions =
+                            _filterSessions(snapshot.data!);
+
+                        return ListView.builder(
+                          physics: const BouncingScrollPhysics(),
+                          padding: const EdgeInsets.only(bottom: 20),
+                          // itemCount: snapshot.data!.length,
+                          itemCount: filteredSessions.length,
+                          itemBuilder: (context, index) {
+                            KuppiSession session = filteredSessions[index];
+                            return Padding(
+                              padding: const EdgeInsets.only(bottom: 15),
+                              child: KuppiWidget(
+                                id: session.id,
+                                title: session.name,
+                                subtitle: 'by ${session.conductor}',
+                                date: formatDate(session.date),
+                                imageUrl: session.imageUrl,
+                                link: session.link,
+                                onDelete: () {
+                                  Future.delayed(Duration.zero).then((value) {
+                                    _handleDelete(session);
+                                  });
+                                  setState(() {});
+                                },
+                                onEdit: () {
+                                  Future.delayed(Duration.zero).then((value) {
+                                    _showFormDialog(context, session: session);
+                                  });
+                                  setState(() {});
+                                },
+                              ),
+                            );
+                          },
+                        );
+                      }
+                    },
                   ),
-                  child: ButtonIcon(
-                    icon: IconConstants.cameraIcon,
-                    iconColor: CommonColors.whiteColor,
-                    size: 20,
-                    onTap: () {},
-                  )),
-            ],
+                ),
+              ],
+            ),
           ),
-          const SizedBox(height: 15),
-          ReusableTextField(
-            labelText: 'Name',
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return 'Please enter a name';
-              }
-              return null;
+          floatingActionButton: FloatingActionButton(
+            backgroundColor: CommonColors.secondaryGreenColor,
+            tooltip: 'Increment',
+            onPressed: () {
+              _showFormDialog(context);
             },
-            onSaved: (value) {},
-          ),
-          ReusableTextField(
-            labelText: 'Date',
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return 'Please enter a name';
+            child: SvgPicture.asset(
+              IconConstants.addButtonIcon,
+              colorFilter: const ColorFilter.mode(
+                CommonColors.whiteColor,
+                BlendMode.srcIn,
+              ),
+              width: 25,
+              height: 25,
+            ),
+          )),
+    );
+  }
+
+  void _showFormDialog(BuildContext context, {KuppiSession? session}) async {
+    final parentContext = context;
+    bool isEditing = session != null;
+
+    if (isEditing) {
+      _nameController.text = session.name;
+      _dateController.text = DateFormat('yyyy-MM-dd').format(session.date);
+      _conductorController.text = session.conductor;
+      _linkController.text = session.link;
+      downloadURL = session.imageUrl;
+    } else {
+      _resetFormFields();
+    }
+
+    showDialog(
+      context: parentContext,
+      builder: (BuildContext context) {
+        return ReusableFormDialog(
+          title: isEditing ? 'Edit Kuppi Session' : 'Add New Kuppi Session',
+          buttonLabel: isEditing ? 'Save' : 'Add',
+          formFields: [
+            ImageFormField(
+              initialImageUrl: isEditing ? session.imageUrl : null,
+              isEditing: isEditing,
+              validator: (selectedImage) {
+                if (_isImageSelected == false) {
+                  return 'Please select an image';
+                }
+                return null;
+              },
+              onImageSelected: (selectedImage) {
+                setState(() {
+                  _selectedImage = selectedImage;
+                  _isImageSelected = true;
+                });
+              },
+            ),
+            ReusableTextField(
+              controller: _nameController,
+              labelText: 'Name',
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Please enter a name';
+                }
+                if (value.length > 30) {
+                  return 'Name must not exceed 30 characters';
+                }
+                return null;
+              },
+              onSaved: (value) {},
+            ),
+            ReusableTextField(
+              controller: _dateController,
+              labelText: 'Date',
+              isDateField: true,
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Please enter a date';
+                }
+                return null;
+              },
+              onSaved: (value) {},
+            ),
+            ReusableTextField(
+              controller: _conductorController,
+              labelText: 'Conducted by',
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Please enter the conductor';
+                }
+                return null;
+              },
+              onSaved: (value) {},
+            ),
+            ReusableTextField(
+              controller: _linkController,
+              labelText: 'Link to join',
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Please enter the link to join';
+                }
+
+                final Uri uri = Uri.parse(value);
+                if (uri.scheme.isEmpty || uri.host.isEmpty) {
+                  return 'Please enter a valid URL';
+                }
+                return null;
+              },
+              onSaved: (value) {},
+            ),
+          ],
+          onSubmit: (formData) async {
+            if (_isImageSelected) {
+              if (isEditing) {
+                // Delete the old image
+                _deleteImage(session);
+
+                // Upload the new image and get the download URL
+                await uploadImage();
+
+                // Update the session properties
+                session.name = _nameController.text.trim();
+                session.date = DateTime.parse(_dateController.text.trim());
+                session.conductor = _conductorController.text.trim();
+                session.link = _linkController.text.trim();
+                session.imageUrl = downloadURL!;
+
+                // Update the session in the repository
+                await _kuppiRepository.updateKuppiSession(session);
+
+                setState(() {});
+              } else {
+                // Create a new session
+                await createNewKuppiSession();
               }
-              return null;
-            },
-            onSaved: (value) {},
-          ),
-          ReusableTextField(
-            labelText: 'Conducted by',
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return 'Please enter the name of the conductor';
-              }
-              return null;
-            },
-            onSaved: (value) {},
-          ),
-          ReusableTextField(
-            labelText: 'Link to join',
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return 'Please enter the link to join';
-              }
-              return null;
-            },
-            onSaved: (value) {},
-          ),
-        ],
-        onSubmit: (formData) {},
-      );
-    },
-  );
+            }
+          },
+          onPop: () {
+            setState(() {
+              _selectedImage = null;
+            });
+          },
+        );
+      },
+    );
+  }
 }

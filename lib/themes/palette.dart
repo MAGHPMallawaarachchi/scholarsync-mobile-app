@@ -24,4 +24,5 @@ class CommonColors {
   static const Color primaryRedColor = Color(0xFFCC0025);
   static const Color transparentColor = Color(0x00000000);
   static const Color shadowColor = Color.fromRGBO(11, 24, 43, 0.08);
+  static const Color errorColor = Color(0xFFae0000);
 }

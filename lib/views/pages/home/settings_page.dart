@@ -27,14 +27,9 @@ class SettingsPage extends StatelessWidget {
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          const Text(
+          Text(
             'General',
-            style: TextStyle(
-              fontSize: 16,
-              fontFamily: "inter",
-              fontWeight: FontWeight.w600,
-              color: PaletteLightMode.textColor,
-            ),
+            style: Theme.of(context).textTheme.bodyMedium,
           ),
           const SizedBox(height: 20),
           //settings widget 01
@@ -46,14 +41,9 @@ class SettingsPage extends StatelessWidget {
             isSwitched: false,
           ),
           const SizedBox(height: 20),
-          const Text(
+          Text(
             'Theme',
-            style: TextStyle(
-              fontSize: 16,
-              fontFamily: "inter",
-              fontWeight: FontWeight.w600,
-              color: PaletteLightMode.textColor,
-            ),
+            style: Theme.of(context).textTheme.bodyMedium,
           ),
           const SizedBox(height: 20),
           SettingsWidget(

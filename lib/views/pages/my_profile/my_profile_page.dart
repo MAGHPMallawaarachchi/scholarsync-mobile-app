@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:scholarsync/themes/palette.dart';
+import 'package:scholarsync/utils/format_date.dart';
 import 'package:scholarsync/views/pages/my_profile/my_projects_page.dart';
 import 'package:scholarsync/views/pages/my_profile/widgets/project_box.dart';
 import 'package:scholarsync/views/widgets/app_bar.dart';
 import 'package:scholarsync/views/pages/my_profile/widgets/profile_info.dart';
 
-import '../../../controllers/student_controller.dart';
+import '../../../controllers/student_service.dart';
+import '../../../model/project.dart';
 import '../../../model/student.dart';
 import '../../../themes/app_theme.dart';
 
@@ -17,13 +19,8 @@ class MyProfilePage extends StatefulWidget {
 }
 
 class _MyProfilePageState extends State<MyProfilePage> {
-  // Future<Map<String, dynamic>> _fetchUser() async {
-  //   final userData = await StudentController.fetchUserData();
-  //   return userData;
-  // }
-
   Future<Student?> _fetchUser() async {
-    final userData = await StudentController.fetchUserData();
+    final userData = await StudentService.fetchUserData();
     return userData;
   }
 
@@ -98,32 +95,66 @@ class _MyProfilePageState extends State<MyProfilePage> {
                       ),
                       const SizedBox(height: 15),
                       Expanded(
-                        child: CustomScrollView(
-                          physics: const BouncingScrollPhysics(),
-                          slivers: [
-                            SliverPadding(
-                              padding: const EdgeInsets.all(0),
-                              sliver: SliverGrid(
-                                gridDelegate:
-                                    const SliverGridDelegateWithMaxCrossAxisExtent(
-                                  maxCrossAxisExtent: 200.0,
-                                  mainAxisSpacing: 20.0,
-                                  crossAxisSpacing: 20.0,
+                        child: FutureBuilder(
+                          future: StudentService.fetchProjectsForStudent(),
+                          builder: (context, projectSnapshot) {
+                            if (projectSnapshot.connectionState ==
+                                ConnectionState.waiting) {
+                              return const Center(
+                                child: CircularProgressIndicator(
+                                  color: CommonColors.secondaryGreenColor,
                                 ),
-                                delegate: SliverChildBuilderDelegate(
-                                  (BuildContext context, int index) {
-                                    return const ProjectBox(
-                                      projectNumber: '1',
-                                      projectName: 'Project Name 1',
-                                      date: '2023-07-23',
-                                      githubLink: 'https://github.com/project1',
-                                    );
-                                  },
-                                  childCount: 4,
-                                ),
-                              ),
-                            ),
-                          ],
+                              );
+                            } else if (projectSnapshot.hasError) {
+                              return Center(
+                                  child: Text('Error${projectSnapshot.error}'));
+                            } else if (projectSnapshot.data != null &&
+                                projectSnapshot.data!.isNotEmpty) {
+                              final List<Project>? projects =
+                                  projectSnapshot.data;
+                              return CustomScrollView(
+                                physics: const BouncingScrollPhysics(),
+                                slivers: [
+                                  SliverPadding(
+                                    padding: const EdgeInsets.all(0),
+                                    sliver: SliverGrid(
+                                      gridDelegate:
+                                          const SliverGridDelegateWithMaxCrossAxisExtent(
+                                        maxCrossAxisExtent: 200.0,
+                                        mainAxisSpacing: 20.0,
+                                        crossAxisSpacing: 20.0,
+                                      ),
+                                      delegate: SliverChildBuilderDelegate(
+                                        (BuildContext context, int index) {
+                                          if (index < projects.length) {
+                                            final project = projects[index];
+                                            return ProjectBox(
+                                              projectNumber:
+                                                  (index + 1).toString(),
+                                              projectName: project.name,
+                                              date:
+                                                  FormatDate.projectformatDate(
+                                                      DateTime.parse(project
+                                                          .date
+                                                          .toString())),
+                                              githubLink: project.link,
+                                            );
+                                          } else {
+                                            return Container();
+                                          }
+                                        },
+                                        childCount: projects!.length < 4
+                                            ? projects.length
+                                            : 4,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              );
+                            } else {
+                              return const Center(child: Text('No projects'));
+                            }
+                          },
                         ),
                       ),
                     ],

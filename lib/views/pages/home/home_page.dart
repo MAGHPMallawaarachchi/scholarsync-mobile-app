@@ -4,7 +4,7 @@ import 'package:scholarsync/model/student.dart';
 import 'package:scholarsync/views/pages/home/kuppi_page.dart';
 import 'package:scholarsync/views/widgets/search_bar.dart';
 import 'package:scholarsync/constants/image_constants.dart';
-import '../../../controllers/student_controller.dart';
+import '../../../controllers/student_service.dart';
 import '../../../themes/app_theme.dart';
 import '../../widgets/custom_carousel.dart';
 import '../../../themes/palette.dart';
@@ -19,7 +19,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   Future<Student?> _fetchUser() async {
-    final userData = await StudentController.fetchUserData();
+    final userData = await StudentService.fetchUserData();
     return userData;
   }
 

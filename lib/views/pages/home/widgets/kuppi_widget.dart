@@ -1,19 +1,27 @@
 import 'package:flutter/material.dart';
-import 'package:phosphor_flutter/phosphor_flutter.dart';
-import 'package:scholarsync/themes/palette.dart';
+import 'package:url_launcher/url_launcher.dart';
+import '../../../../themes/palette.dart';
 
 class KuppiWidget extends StatefulWidget {
+  final String id;
   final String title;
   final String subtitle;
-  final String imagePath;
+  final String imageUrl;
+  final String link;
   final String date;
+  final VoidCallback onDelete;
+  final VoidCallback onEdit;
 
   const KuppiWidget({
     Key? key,
+    required this.id,
     required this.title,
     required this.subtitle,
-    required this.imagePath,
+    required this.imageUrl,
+    required this.link,
     required this.date,
+    required this.onDelete,
+    required this.onEdit,
   }) : super(key: key);
 
   @override
@@ -42,13 +50,19 @@ class _KuppiWidgetState extends State<KuppiWidget> {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Image.asset(
-            widget.imagePath,
-            width: 160,
-            height: 160,
-            fit: BoxFit.cover,
+          ClipRRect(
+            borderRadius: const BorderRadius.only(
+              topLeft: Radius.circular(10),
+              bottomLeft: Radius.circular(10),
+            ),
+            child: Image.network(
+              widget.imageUrl,
+              width: 160,
+              height: 160,
+              fit: BoxFit.cover,
+            ),
           ),
-          const SizedBox(width: 12),
+          const SizedBox(width: 8),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -64,26 +78,23 @@ class _KuppiWidgetState extends State<KuppiWidget> {
                           Flexible(
                             child: Text(
                               widget.title,
-                              style: const TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w600,
-                                color: PaletteLightMode.titleColor,
-                              ),
+                              style: Theme.of(context).textTheme.displayMedium,
                             ),
                           ),
                           Transform.rotate(
                             angle: 1.5708, // 90 degrees in radians
                             child: PopupMenuButton<String>(
                               itemBuilder: (context) => [
-                                const PopupMenuItem(
-                                  value: 'option1',
-                                  child: Text('Option 1'),
+                                PopupMenuItem(
+                                  value: 'edit',
+                                  onTap: widget.onEdit,
+                                  child: const Text('Edit'),
                                 ),
-                                const PopupMenuItem(
-                                  value: 'option2',
-                                  child: Text('Option 2'),
+                                PopupMenuItem(
+                                  value: 'delete',
+                                  onTap: widget.onDelete,
+                                  child: const Text('Delete'),
                                 ),
-                                // Add more options as needed
                               ],
                             ),
                           ),
@@ -92,11 +103,7 @@ class _KuppiWidgetState extends State<KuppiWidget> {
                     ),
                     Text(
                       widget.subtitle,
-                      style: const TextStyle(
-                        fontSize: 13,
-                        fontWeight: FontWeight.w400,
-                        color: PaletteLightMode.secondaryTextColor,
-                      ),
+                      style: Theme.of(context).textTheme.bodySmall,
                     ),
                   ],
                 ),
@@ -114,10 +121,15 @@ class _KuppiWidgetState extends State<KuppiWidget> {
                 Padding(
                   padding: const EdgeInsets.only(top: 10),
                   child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       ElevatedButton(
-                        onPressed: () {
-                          // Add your join button logic here
+                        onPressed: () async {
+                          try {
+                            await launchUrl(Uri.parse(widget.link));
+                          } catch (e) {
+                            throw 'could not launch url';
+                          }
                         },
                         style: ElevatedButton.styleFrom(
                           shape: RoundedRectangleBorder(
@@ -138,9 +150,7 @@ class _KuppiWidgetState extends State<KuppiWidget> {
                           });
                         },
                         icon: Icon(
-                          isFavorite
-                              ? PhosphorIcons.fill.heart
-                              : PhosphorIcons.light.heart,
+                          isFavorite ? Icons.favorite : Icons.favorite_border,
                           color: CommonColors.secondaryGreenColor,
                         ),
                       ),

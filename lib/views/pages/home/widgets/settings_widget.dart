@@ -51,11 +51,7 @@ class _SettingsWidgetState extends State<SettingsWidget> {
               const SizedBox(width: 10),
               Text(
                 widget.text,
-                style: const TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w400,
-                  color: PaletteLightMode.textColor,
-                ),
+                style: Theme.of(context).textTheme.bodyMedium,
                 textAlign: TextAlign.left,
               ),
             ],

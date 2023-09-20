@@ -1,4 +1,3 @@
-// ignore_for_file: deprecated_member_use
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:scholarsync/views/pages/my_profile/widgets/project_box.dart';
@@ -8,6 +7,10 @@ import 'package:scholarsync/views/widgets/text_form_field.dart';
 import 'package:scholarsync/constants/icon_constants.dart';
 import 'package:scholarsync/views/widgets/app_bar.dart';
 import 'package:scholarsync/themes/palette.dart';
+
+import '../../../controllers/student_service.dart';
+import '../../../model/project.dart';
+import '../../../utils/format_date.dart';
 
 void main() {
   runApp(const MyProjectsPage());
@@ -21,6 +24,25 @@ class MyProjectsPage extends StatefulWidget {
 }
 
 class _MyProjectsPageState extends State<MyProjectsPage> {
+  final _nameController = TextEditingController();
+  final _dateController = TextEditingController();
+  final _linkController = TextEditingController();
+
+  Future<void> createNewProject() async {
+    try {
+      Project project = Project(
+        name: _nameController.text,
+        date: DateTime.parse(_dateController.text),
+        link: _linkController.text,
+      );
+
+      await StudentService.createNewProject(project);
+      setState(() {});
+    } catch (e) {
+      // print(e);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -48,43 +70,62 @@ class _MyProjectsPageState extends State<MyProjectsPage> {
             ),
             const SizedBox(height: 20),
             Expanded(
-              child: GridView.count(
-                crossAxisCount: 2,
-                mainAxisSpacing: 20.0,
-                crossAxisSpacing: 20.0,
-                children: [
-                  const ProjectBox(
-                    projectNumber: '1',
-                    projectName: 'Project Name 1',
-                    date: '2023-07-23',
-                    githubLink: 'https://github.com/project1',
-                  ),
-                  const ProjectBox(
-                    projectNumber: '2',
-                    projectName: 'Project Name 2',
-                    date: '2023-07-24',
-                    githubLink: 'https://github.com/project2',
-                  ),
-                  const ProjectBox(
-                    projectNumber: '3',
-                    projectName: 'Project Name 3',
-                    date: '2023-07-25',
-                    githubLink: 'https://github.com/project3',
-                  ),
-                  const ProjectBox(
-                    projectNumber: '4',
-                    projectName: 'Project Name 4',
-                    date: '2023-07-26',
-                    githubLink: 'https://github.com/project4',
-                  ),
-                  const ProjectBox(
-                    projectNumber: '5',
-                    projectName: 'Project Name 5',
-                    date: '2023-07-26',
-                    githubLink: 'https://github.com/project4',
-                  ),
-                  _buildAddProjectBox(),
-                ],
+              child: FutureBuilder(
+                future: StudentService.fetchProjectsForStudent(),
+                builder: (context, projectSnapshot) {
+                  if (projectSnapshot.connectionState ==
+                      ConnectionState.waiting) {
+                    return const Center(
+                      child: CircularProgressIndicator(
+                        color: CommonColors.secondaryGreenColor,
+                      ),
+                    );
+                  } else if (projectSnapshot.hasError) {
+                    return Center(child: Text('Error${projectSnapshot.error}'));
+                  } else if (projectSnapshot.data != null &&
+                      projectSnapshot.data!.isNotEmpty) {
+                    final List<Project>? projects = projectSnapshot.data;
+                    return CustomScrollView(
+                      physics: const BouncingScrollPhysics(),
+                      slivers: [
+                        SliverPadding(
+                          padding: const EdgeInsets.all(0),
+                          sliver: SliverGrid(
+                            gridDelegate:
+                                const SliverGridDelegateWithMaxCrossAxisExtent(
+                              maxCrossAxisExtent: 200.0,
+                              mainAxisSpacing: 20.0,
+                              crossAxisSpacing: 20.0,
+                            ),
+                            delegate: SliverChildBuilderDelegate(
+                              (BuildContext context, int index) {
+                                if (index < projects.length) {
+                                  final project = projects[index];
+                                  return ProjectBox(
+                                    projectNumber: (index + 1).toString(),
+                                    projectName: project.name,
+                                    date: FormatDate.projectformatDate(
+                                        project.date),
+                                    githubLink: project.link,
+                                  );
+                                } else if (index == projects.length) {
+                                  return _buildAddProjectBox();
+                                } else {
+                                  return Container();
+                                }
+                              },
+                              childCount: projects!.length < 4
+                                  ? projects.length + 1
+                                  : 4,
+                            ),
+                          ),
+                        ),
+                      ],
+                    );
+                  } else {
+                    return _buildAddProjectBox();
+                  }
+                },
               ),
             ),
           ],
@@ -123,6 +164,7 @@ class _MyProjectsPageState extends State<MyProjectsPage> {
           IconButton(
             icon: SvgPicture.asset(
               IconConstants.addButtonIcon,
+              // ignore: deprecated_member_use
               color: CommonColors.whiteColor,
             ),
             tooltip: 'Increment',
@@ -134,50 +176,74 @@ class _MyProjectsPageState extends State<MyProjectsPage> {
       ),
     );
   }
-}
 
-void _showFormDialog(BuildContext context) {
-  showDialog(
-    context: context,
-    builder: (BuildContext context) {
-      return ReusableFormDialog(
-        title: 'Add New Projects',
-        buttonLabel: 'Add',
-        formFields: [
-          const SizedBox(height: 15),
-          ReusableTextField(
-            labelText: 'Project Name',
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return 'Please enter a name';
-              }
-              return null;
-            },
-            onSaved: (value) {},
-          ),
-          ReusableTextField(
-            labelText: 'Date',
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return 'Please enter a date';
-              }
-              return null;
-            },
-            onSaved: (value) {},
-          ),
-          ReusableTextField(
-            labelText: 'Github Link',
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return 'Please enter the GitHub link';
-              }
-              return null;
-            },
-            onSaved: (value) {},
-          ),
-        ],
-        onSubmit: (formData) {},
-      );
-    },
-  );
+  void _showFormDialog(BuildContext context, {Project? project}) async {
+    bool isEditing = project != null;
+
+    if (isEditing) {
+      _nameController.text = project.name;
+      _dateController.text =
+          FormatDate.projectformatDate(DateTime.parse(project.date.toString()));
+      _linkController.text = project.link;
+    } else {
+      _nameController.clear();
+      _dateController.clear();
+      _linkController.clear();
+    }
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return ReusableFormDialog(
+          title: isEditing ? 'Edit Project' : 'Add New Project',
+          buttonLabel: isEditing ? 'Save' : 'Add',
+          formFields: [
+            const SizedBox(height: 15),
+            ReusableTextField(
+              controller: _nameController,
+              labelText: 'Project Name',
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Please enter a name';
+                }
+                return null;
+              },
+              onSaved: (value) {},
+            ),
+            ReusableTextField(
+              controller: _dateController,
+              labelText: 'Date',
+              isDateField: true,
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Please enter a date';
+                }
+                return null;
+              },
+              onSaved: (value) {},
+            ),
+            ReusableTextField(
+              controller: _linkController,
+              labelText: 'Github Link',
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Please enter the GitHub link';
+                }
+
+                final Uri uri = Uri.parse(value);
+                if (uri.scheme.isEmpty || uri.host.isEmpty) {
+                  return 'Please enter a valid URL';
+                }
+                return null;
+              },
+              onSaved: (value) {},
+            ),
+          ],
+          onSubmit: (formData) async {
+            await createNewProject();
+          },
+        );
+      },
+    );
+  }
 }
