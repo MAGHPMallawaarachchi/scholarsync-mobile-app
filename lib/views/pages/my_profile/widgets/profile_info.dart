@@ -2,11 +2,23 @@ import 'package:flutter/material.dart';
 import 'package:scholarsync/constants/icon_constants.dart';
 import 'package:scholarsync/constants/image_constants.dart';
 import 'package:scholarsync/themes/palette.dart';
-
 import '../../../widgets/circular_icon_button.dart';
 
 class ProfileInfo extends StatelessWidget {
-  const ProfileInfo({super.key});
+  final String firstName;
+  final String lastName;
+  final String degreeProgram;
+  final String batch;
+  final String studentId;
+
+  const ProfileInfo({
+    super.key,
+    required this.firstName,
+    required this.lastName,
+    required this.degreeProgram,
+    required this.batch,
+    required this.studentId,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -45,25 +57,25 @@ class ProfileInfo extends StatelessWidget {
                   ],
                 ),
                 const SizedBox(height: 10),
-                const Text(
-                  'ATD Gamage - 24598',
-                  style: TextStyle(
+                Text(
+                  '$firstName $lastName - $studentId',
+                  style: const TextStyle(
                     fontSize: 20,
                     color: CommonColors.whiteColor,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
                 const SizedBox(height: 5),
-                const Text(
-                  'Bsc.(Hons) in Software Engineering - 24598',
-                  style: TextStyle(
+                Text(
+                  degreeProgram,
+                  style: const TextStyle(
                     color: CommonColors.whiteColor,
                     fontSize: 14,
                   ),
                 ),
-                const Text(
-                  'Batch - 21.1',
-                  style: TextStyle(
+                Text(
+                  'Batch - $batch',
+                  style: const TextStyle(
                     color: CommonColors.whiteColor,
                     fontSize: 14,
                   ),

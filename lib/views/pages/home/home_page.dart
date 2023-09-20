@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
+import 'package:scholarsync/model/student.dart';
 import 'package:scholarsync/views/pages/home/kuppi_page.dart';
 import 'package:scholarsync/views/widgets/search_bar.dart';
 import 'package:scholarsync/constants/image_constants.dart';
+import '../../../controllers/student_controller.dart';
 import '../../../themes/app_theme.dart';
 import '../../widgets/custom_carousel.dart';
 import '../../../themes/palette.dart';
@@ -16,6 +18,11 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  Future<Student?> _fetchUser() async {
+    final userData = await StudentController.fetchUserData();
+    return userData;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -25,8 +32,23 @@ class _HomePageState extends State<HomePage> {
           children: [
             Padding(
               padding: const EdgeInsets.only(top: 15),
-              child: Text('Hi, ATD Gamage',
-                  style: Theme.of(context).textTheme.headlineLarge),
+              child: FutureBuilder(
+                future: _fetchUser(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.done) {
+                    final student = snapshot.data!;
+                    return Text(
+                      'Hello, ${student.firstName}',
+                      style: Theme.of(context).textTheme.headlineLarge,
+                    );
+                  } else {
+                    return Text(
+                      'loading...',
+                      style: Theme.of(context).textTheme.displaySmall,
+                    );
+                  }
+                },
+              ),
             ),
             const SizedBox(height: 2),
             Row(

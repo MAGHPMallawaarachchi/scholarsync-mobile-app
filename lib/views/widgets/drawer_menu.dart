@@ -1,12 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
-import 'package:scholarsync/constants/icon_constants.dart';
 import 'package:scholarsync/views/pages/home/academic_staff_page.dart';
 import 'package:scholarsync/views/pages/home/settings_page.dart';
-import 'package:scholarsync/views/pages/my_profile/my_profile_page.dart';
 import '../../themes/palette.dart';
-import 'button_icon.dart';
 
 class DrawerMenu extends StatefulWidget {
   // final int selectedIndex;
