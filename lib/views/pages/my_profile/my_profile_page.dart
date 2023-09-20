@@ -19,13 +19,16 @@ class _MyProfilePageState extends State<MyProfilePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const PreferredSize(
-        preferredSize: Size.fromHeight(kToolbarHeight),
+      appBar: PreferredSize(
+        preferredSize: const Size.fromHeight(kToolbarHeight),
         child: CustomAppBar(
           title: 'My Profile',
           fontSize: 20.0,
           fontWeight: FontWeight.bold,
           titleCenter: false,
+          onPressedListButton: () {
+            Scaffold.of(context).openDrawer();
+          },
         ),
       ),
       body: Padding(

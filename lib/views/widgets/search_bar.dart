@@ -1,16 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:scholarsync/themes/palette.dart';
 
 class CustomSearchBar extends StatefulWidget {
   final String hint;
-  final Color? textColor;
   final Color? iconColor;
   final ValueChanged<String>? onSearchSubmitted;
 
   const CustomSearchBar({
     Key? key,
     required this.hint,
-    this.textColor = PaletteLightMode.secondaryTextColor,
     this.iconColor = PaletteLightMode.secondaryTextColor,
     this.onSearchSubmitted,
   }) : super(key: key);
@@ -54,7 +53,7 @@ class _CustomSearchBarState extends State<CustomSearchBar> {
       decoration: BoxDecoration(
         boxShadow: const [
           BoxShadow(
-            color: Color.fromRGBO(11, 24, 43, 0.08),
+            color: CommonColors.shadowColor,
             offset: Offset(8, 8),
             blurRadius: 24,
             spreadRadius: 0,
@@ -64,25 +63,26 @@ class _CustomSearchBarState extends State<CustomSearchBar> {
       ),
       child: Theme(
         data: Theme.of(context).copyWith(
-          // Set hoverColor to transparent to remove the transparency effect
           hoverColor: CommonColors.transparentColor,
         ),
         child: TextField(
           onSubmitted: widget.onSearchSubmitted,
-          style: TextStyle(color: widget.textColor),
+          style: Theme.of(context).textTheme.displayMedium,
           cursorColor: CommonColors.secondaryGreenColor,
           focusNode: _focusNode,
           decoration: InputDecoration(
             filled: true,
-            fillColor: Colors.white,
+            fillColor: Theme.of(context).dialogBackgroundColor,
             hintText: widget.hint,
-            hintStyle: TextStyle(color: widget.textColor),
+            hintStyle: Theme.of(context).textTheme.displayMedium,
             prefixIcon: Padding(
               padding: const EdgeInsets.only(left: 20, right: 27),
-              child: Icon(Icons.search, color: _currentIconColor),
+              child: Icon(PhosphorIcons.light.magnifyingGlass,
+                  color: _currentIconColor),
             ),
             enabledBorder: OutlineInputBorder(
-              borderSide: const BorderSide(color: Colors.white, width: 1.0),
+              borderSide: const BorderSide(
+                  color: CommonColors.transparentColor, width: 1.0),
               borderRadius: BorderRadius.circular(12),
             ),
             focusedBorder: OutlineInputBorder(

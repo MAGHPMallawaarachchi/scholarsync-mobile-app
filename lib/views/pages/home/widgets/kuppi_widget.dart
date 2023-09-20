@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:scholarsync/themes/palette.dart';
 
 class KuppiWidget extends StatefulWidget {
@@ -27,7 +28,7 @@ class _KuppiWidgetState extends State<KuppiWidget> {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: CommonColors.whiteColor,
+        color: Theme.of(context).dialogBackgroundColor,
         borderRadius: BorderRadius.circular(10),
         boxShadow: const [
           BoxShadow(
@@ -125,7 +126,8 @@ class _KuppiWidgetState extends State<KuppiWidget> {
                           padding: const EdgeInsets.symmetric(horizontal: 34),
                           backgroundColor: CommonColors.secondaryGreenColor,
                         ),
-                        child: const Text('Join'),
+                        child: const Text('Join',
+                            style: TextStyle(color: CommonColors.whiteColor)),
                       ),
                       const SizedBox(
                           width: 8), // Add some spacing between the buttons
@@ -136,7 +138,9 @@ class _KuppiWidgetState extends State<KuppiWidget> {
                           });
                         },
                         icon: Icon(
-                          isFavorite ? Icons.favorite : Icons.favorite_border,
+                          isFavorite
+                              ? PhosphorIcons.fill.heart
+                              : PhosphorIcons.light.heart,
                           color: CommonColors.secondaryGreenColor,
                         ),
                       ),

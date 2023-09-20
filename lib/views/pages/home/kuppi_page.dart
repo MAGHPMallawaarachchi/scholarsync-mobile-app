@@ -21,46 +21,52 @@ class _KuppiPageState extends State<KuppiPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: const PreferredSize(
-          preferredSize: Size.fromHeight(kToolbarHeight),
+        appBar: PreferredSize(
+          preferredSize: const Size.fromHeight(kToolbarHeight),
           child: CustomAppBar(
             title: 'Kuppi Sessions',
             fontSize: 20.0,
             fontWeight: FontWeight.bold,
             titleCenter: true,
             leftIcon: true,
+            onPressedListButton: () {
+              Scaffold.of(context).openDrawer();
+            },
           ),
         ),
-        body: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            CustomSearchBar(
-              hint: 'Search for kuppi sessions...',
-              onSearchSubmitted: (query) {},
-            ),
-            const SizedBox(height: 18),
-            Expanded(
-              child: ListView(
-                physics: const BouncingScrollPhysics(),
-                padding: const EdgeInsets.only(bottom: 20, left: 20, right: 20),
-                children: const [
-                  KuppiWidget(
-                    title: 'MICROPYTHON',
-                    subtitle: 'by ATD Gamage',
-                    date: '30th July, 2023',
-                    imagePath: ImageConstants.kuppi1,
-                  ),
-                  SizedBox(height: 20),
-                  KuppiWidget(
-                    title: 'Mathematics for Computing',
-                    subtitle: 'by ATD Gamage',
-                    date: '30th July, 2023',
-                    imagePath: ImageConstants.kuppi1,
-                  ),
-                ],
+        body: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              CustomSearchBar(
+                hint: 'Search for kuppi sessions...',
+                onSearchSubmitted: (query) {},
               ),
-            ),
-          ],
+              const SizedBox(height: 18),
+              Expanded(
+                child: ListView(
+                  physics: const BouncingScrollPhysics(),
+                  padding: const EdgeInsets.only(bottom: 20),
+                  children: const [
+                    KuppiWidget(
+                      title: 'MICROPYTHON',
+                      subtitle: 'by ATD Gamage',
+                      date: '30th July, 2023',
+                      imagePath: ImageConstants.kuppi1,
+                    ),
+                    SizedBox(height: 20),
+                    KuppiWidget(
+                      title: 'Mathematics for Computing',
+                      subtitle: 'by ATD Gamage',
+                      date: '30th July, 2023',
+                      imagePath: ImageConstants.kuppi1,
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
         floatingActionButton: FloatingActionButton(
           backgroundColor: CommonColors.secondaryGreenColor,

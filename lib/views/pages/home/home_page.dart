@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:scholarsync/views/pages/home/kuppi_page.dart';
 import 'package:scholarsync/views/widgets/search_bar.dart';
-import 'package:scholarsync/constants/icon_constants.dart';
 import 'package:scholarsync/constants/image_constants.dart';
 import '../../../themes/app_theme.dart';
 import '../../widgets/custom_carousel.dart';
@@ -29,16 +28,13 @@ class _HomePageState extends State<HomePage> {
               child: Text('Hi, ATD Gamage',
                   style: Theme.of(context).textTheme.headlineLarge),
             ),
+            const SizedBox(height: 2),
             Row(
               children: [
-                SvgPicture.asset(
-                  IconConstants.graduationHatIcon,
-                  width: 20,
-                  height: 20,
-                  colorFilter: const ColorFilter.mode(
-                    CommonColors.secondaryGreenColor,
-                    BlendMode.srcIn,
-                  ),
+                Icon(
+                  PhosphorIcons.fill.graduationCap,
+                  color: CommonColors.secondaryGreenColor,
+                  size: 18,
                 ),
                 const SizedBox(
                   width: 5,
@@ -58,18 +54,14 @@ class _HomePageState extends State<HomePage> {
         centerTitle: false,
         actions: <Widget>[
           IconButton(
-            icon: SvgPicture.asset(
-              IconConstants.hamburgerMenuIcon,
-              colorFilter: const ColorFilter.mode(
-                CommonColors.secondaryGreenColor,
-                BlendMode.srcIn,
-              ),
-              width: 40,
-              height: 40,
+            icon: Icon(
+              PhosphorIcons.bold.list,
+              color: CommonColors.secondaryGreenColor,
+              size: 28,
             ),
             tooltip: 'Menu',
             onPressed: () {
-              //Open the Sidebar
+              Scaffold.of(context).openDrawer();
             },
           ),
         ],
@@ -113,7 +105,7 @@ class _HomePageState extends State<HomePage> {
                 children: [
                   Text(
                     'Kuppi Sessions',
-                    style: getTextTheme(context, true).headlineMedium,
+                    style: Theme.of(context).textTheme.headlineMedium,
                   ),
                   TextButton(
                     onPressed: () {
@@ -123,7 +115,7 @@ class _HomePageState extends State<HomePage> {
                     },
                     child: Text(
                       'view all',
-                      style: getTextTheme(context, true).displaySmall,
+                      style: Theme.of(context).textTheme.displaySmall,
                     ),
                   ),
                 ],
@@ -170,16 +162,9 @@ class _HomePageState extends State<HomePage> {
                   ImageConstants.img1,
                   ImageConstants.img1,
                 ],
-                textList: const [
-                  'Hello1',
-                  'NSBM',
-                  'hello',
-                  'reddathama',
-                  'redda',
-                ],
               ),
               const SizedBox(
-                height: 10,
+                height: 20,
               ),
             ],
           ),

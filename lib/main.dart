@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:scholarsync/themes/app_theme.dart';
 import 'package:scholarsync/views/pages/home/home_page.dart';
@@ -112,8 +113,8 @@ class _MainAppState extends State<MainApp> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
-                      _buildNavItem(0, IconConstants.homeIcon),
-                      _buildNavItem(1, IconConstants.calendarIcon),
+                      _buildNavItem(0, PhosphorIcons.fill.house),
+                      _buildNavItem(1, PhosphorIcons.fill.calendarBlank),
                       NavigationAddItem(
                         isSelected: currentIndex == 2,
                         onTap: () {
@@ -122,8 +123,8 @@ class _MainAppState extends State<MainApp> {
                           });
                         },
                       ),
-                      _buildNavItem(3, IconConstants.bellFilledIcon),
-                      _buildNavItem(4, IconConstants.personIcon),
+                      _buildNavItem(3, PhosphorIcons.fill.bell),
+                      _buildNavItem(4, PhosphorIcons.fill.user),
                     ],
                   ),
                 ),
@@ -143,7 +144,7 @@ class _MainAppState extends State<MainApp> {
     );
   }
 
-  Widget _buildNavItem(int index, String iconName) {
+  Widget _buildNavItem(int index, IconData iconName) {
     final isSelected = currentIndex == index;
 
     return NavigationItem(

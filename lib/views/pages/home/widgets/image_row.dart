@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:scholarsync/themes/palette.dart';
 
 class ImageRow extends StatelessWidget {
   final double containerSize;
@@ -40,8 +39,6 @@ class ImageRow extends StatelessWidget {
           margin: const EdgeInsets.only(right: 12),
           decoration: BoxDecoration(
             shape: isCircle ? BoxShape.circle : BoxShape.rectangle,
-            border:
-                Border.all(color: PaletteLightMode.backgroundColor, width: 0),
           ),
           child: ClipRRect(
             borderRadius: isCircle
@@ -53,17 +50,6 @@ class ImageRow extends StatelessWidget {
             ),
           ),
         ),
-        if (textString != null)
-          Padding(
-            padding: const EdgeInsets.only(right: 12, top: 6, bottom: 8),
-            child: Text(
-              textString,
-              style: const TextStyle(
-                fontSize: 10,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-          )
       ],
     );
   }

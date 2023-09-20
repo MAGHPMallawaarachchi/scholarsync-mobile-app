@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:scholarsync/themes/palette.dart';
-import '../../themes/app_theme.dart';
 
 class CustomAppBar extends StatelessWidget {
   final bool? leftIcon;
@@ -10,6 +9,7 @@ class CustomAppBar extends StatelessWidget {
   final double fontSize;
   final FontWeight fontWeight;
   final bool titleCenter;
+  final VoidCallback onPressedListButton;
 
   const CustomAppBar({
     Key? key,
@@ -19,6 +19,7 @@ class CustomAppBar extends StatelessWidget {
     required this.fontSize,
     required this.fontWeight,
     required this.titleCenter,
+    required this.onPressedListButton,
   }) : super(key: key);
 
   @override
@@ -48,7 +49,7 @@ class CustomAppBar extends StatelessWidget {
             color: CommonColors.secondaryGreenColor,
             size: 28.0,
           ),
-          onPressed: () {},
+          onPressed: onPressedListButton,
         )
       ],
     );

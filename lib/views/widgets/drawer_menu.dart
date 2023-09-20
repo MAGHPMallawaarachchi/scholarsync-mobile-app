@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:scholarsync/constants/icon_constants.dart';
+import 'package:scholarsync/views/pages/home/academic_staff_page.dart';
 import 'package:scholarsync/views/pages/home/settings_page.dart';
+import 'package:scholarsync/views/pages/my_profile/my_profile_page.dart';
 import '../../themes/palette.dart';
 import 'button_icon.dart';
 
@@ -51,123 +54,141 @@ class _DrawerMenuState extends State<DrawerMenu> {
     return SizedBox(
       width: drawerWidth,
       child: Drawer(
-        backgroundColor: CommonColors.whiteColor,
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(35.0),
         ),
-        child: ListView(
-          padding: EdgeInsets.zero,
+        child: Column(
+          children: <Widget>[
+            buildHeader(context),
+            const SizedBox(height: 20),
+            buildMenuItems(context),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget buildHeader(BuildContext context) {
+    return Column(
+      children: [
+        const SizedBox(height: 80),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.end,
           children: [
-            DrawerHeader(
-              decoration: const BoxDecoration(
-                color: PaletteLightMode.backgroundColor,
-              ),
-              child: Column(
-                children: [
-                  CircleAvatar(
-                    radius: 40,
-                    backgroundColor: CommonColors.primaryGreenColor,
-                    backgroundImage: NetworkImage(_userImage),
-                  ),
-                  const SizedBox(height: 10),
-                  Text(
-                    _userName,
-                    style: const TextStyle(
-                      color: CommonColors.primaryGreenColor,
-                      fontSize: 16,
-                    ),
-                  ),
-                ],
-              ),
+            const CircleAvatar(
+              radius: 40,
+              backgroundImage: NetworkImage(
+                  'https://cdn.landesa.org/wp-content/uploads/default-user-image.png'),
             ),
-            ListTile(
-              title: const Text(
-                'My Profile',
-                style: TextStyle(color: PaletteLightMode.titleColor),
-              ),
-              leading: ButtonIcon(
-                icon: IconConstants.personIcon,
-                size: 16.0,
-                iconColor: CommonColors.primaryGreenColor,
-                onTap: () {
-                  Navigator.pop(context);
-                },
-              ),
-            ),
-            GestureDetector(
-              child: ListTile(
-                title: const Text(
-                  'Settings',
-                  style: TextStyle(color: PaletteLightMode.titleColor),
-                ),
-                leading: ButtonIcon(
-                  icon: IconConstants.settingOutlinedIcon,
-                  size: 16.0,
-                  backgroundColor: Colors.transparent,
-                  iconColor: Colors.black,
-                  // isSelected: widget.selectedIndex == 1,
-                  onTap: () {},
-                ),
-              ),
-              onTap: () {
-                Route route = MaterialPageRoute(
-                    builder: (context) => const SettingsPage());
-                Navigator.push(context, route);
-              },
-            ),
-            ListTile(
-              title: const Text(
-                'Academic Staff',
-                style: TextStyle(color: PaletteLightMode.titleColor),
-              ),
-              leading: ButtonIcon(
-                icon: IconConstants.teacherIcon,
-                size: 16.0,
-                backgroundColor: Colors.transparent,
-                iconColor: Colors.black,
-                // isSelected: widget.selectedIndex == 2,
-                onTap: () {
-                  // widget.onItemTapped(2);
-                  Navigator.pop(context);
-                },
-              ),
-            ),
-            ListTile(
-              title: const Text(
-                'Give Feedback',
-                style: TextStyle(color: PaletteLightMode.titleColor),
-              ),
-              leading: ButtonIcon(
-                icon: IconConstants.personIcon,
-                size: 16.0,
-                backgroundColor: Colors.transparent,
-                iconColor: Colors.black,
-                // isSelected: widget.selectedIndex == 0, // Highlight if selected
-                onTap: () {
-                  // widget.onItemTapped(0);
-                  Navigator.pop(context);
-                },
-              ),
-            ),
-            ListTile(
-              title: const Text(
-                'Log Out',
-                style: TextStyle(color: PaletteLightMode.titleColor),
-              ),
-              leading: ButtonIcon(
-                icon: IconConstants.personIcon,
-                size: 16.0,
-                backgroundColor: Colors.transparent,
-                iconColor: Colors.black,
-                // isSelected: widget.selectedIndex == 0, // Highlight if selected
-                onTap: () {
-                  // widget.onItemTapped(0);
-                  Navigator.pop(context);
-                },
-              ),
+            const SizedBox(width: 10),
+            Text(
+              'ATD \nGamage',
+              style: Theme.of(context).textTheme.displayLarge,
+              textAlign: TextAlign.left,
             ),
           ],
         ),
+        const SizedBox(height: 10),
+        Text(
+          _userName,
+          style: const TextStyle(
+            color: CommonColors.primaryGreenColor,
+            fontSize: 16,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget buildMenuItems(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(left: 30),
+      child: Column(
+        children: [
+          ListTile(
+            contentPadding:
+                const EdgeInsets.symmetric(vertical: 10, horizontal: 25),
+            title: Text(
+              'Settings',
+              style: Theme.of(context).textTheme.headlineMedium,
+            ),
+            leading: Icon(
+              PhosphorIcons.light.gear,
+              size: 25,
+            ),
+            onTap: () {
+              Navigator.of(context).pop();
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const SettingsPage(),
+                ),
+              );
+            },
+          ),
+          ListTile(
+            contentPadding:
+                const EdgeInsets.symmetric(vertical: 10, horizontal: 25),
+            title: Text(
+              'Academic Staff',
+              style: Theme.of(context).textTheme.headlineMedium,
+            ),
+            leading: Icon(
+              PhosphorIcons.light.chalkboardTeacher,
+              size: 25,
+            ),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const AcademicStaffPage(),
+                ),
+              );
+            },
+          ),
+          ListTile(
+            contentPadding:
+                const EdgeInsets.symmetric(vertical: 10, horizontal: 25),
+            title: Text(
+              'Give Feedback',
+              style: Theme.of(context).textTheme.headlineMedium,
+            ),
+            leading: Icon(
+              PhosphorIcons.light.chatCircleDots,
+              size: 25,
+            ),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const SettingsPage(),
+                ),
+              );
+            },
+          ),
+          ListTile(
+            contentPadding:
+                const EdgeInsets.symmetric(vertical: 10, horizontal: 25),
+            title: Text(
+              'Logout',
+              style: Theme.of(context).textTheme.headlineMedium,
+            ),
+            leading: Icon(
+              PhosphorIcons.light.signOut,
+              size: 25,
+            ),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const SettingsPage(),
+                ),
+              );
+            },
+          ),
+        ],
       ),
     );
   }

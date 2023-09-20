@@ -4,7 +4,7 @@ import '../../themes/palette.dart';
 
 class NavigationItem extends StatefulWidget {
   final bool isSelected;
-  final String iconName;
+  final IconData iconName;
   final VoidCallback onTap;
 
   const NavigationItem({
@@ -34,14 +34,10 @@ class _NavigationItemState extends State<NavigationItem> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            SvgPicture.asset(
+            Icon(
               widget.iconName,
-              colorFilter: ColorFilter.mode(
-                iconColor,
-                BlendMode.srcIn,
-              ),
-              width: 23,
-              height: 23,
+              color: iconColor,
+              size: 28,
             ),
             const SizedBox(height: 4),
             Padding(

@@ -24,14 +24,17 @@ class _MyProjectsPageState extends State<MyProjectsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const PreferredSize(
-        preferredSize: Size.fromHeight(kToolbarHeight),
+      appBar: PreferredSize(
+        preferredSize: const Size.fromHeight(kToolbarHeight),
         child: CustomAppBar(
           title: 'My Projects',
           fontSize: 20.0,
           fontWeight: FontWeight.bold,
           titleCenter: true,
           leftIcon: true,
+          onPressedListButton: () {
+            Scaffold.of(context).openDrawer();
+          },
         ),
       ),
       body: Padding(

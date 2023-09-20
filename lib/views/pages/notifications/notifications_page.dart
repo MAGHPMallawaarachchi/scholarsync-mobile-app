@@ -11,13 +11,16 @@ class NotificationsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const PreferredSize(
-        preferredSize: Size.fromHeight(kToolbarHeight),
+      appBar: PreferredSize(
+        preferredSize: const Size.fromHeight(kToolbarHeight),
         child: CustomAppBar(
           title: 'Notifications',
           fontSize: 20.0,
           fontWeight: FontWeight.bold,
           titleCenter: false,
+          onPressedListButton: () {
+            Scaffold.of(context).openDrawer();
+          },
         ),
       ),
       //body

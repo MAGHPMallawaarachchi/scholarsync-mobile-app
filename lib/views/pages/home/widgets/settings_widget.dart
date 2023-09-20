@@ -7,12 +7,14 @@ class SettingsWidget extends StatefulWidget {
   final bool isSwitched;
   final String text;
   final Function(bool) onToggle;
+  final bool isSwitch;
 
   const SettingsWidget({
     required this.leftIcon,
     required this.isSwitched,
     required this.text,
     required this.onToggle,
+    required this.isSwitch,
     Key? key,
   }) : super(key: key);
 
@@ -24,10 +26,10 @@ class _SettingsWidgetState extends State<SettingsWidget> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: const BoxDecoration(
-        borderRadius: BorderRadius.all(Radius.circular(18)),
-        color: CommonColors.whiteColor,
-        boxShadow: [
+      decoration: BoxDecoration(
+        borderRadius: const BorderRadius.all(Radius.circular(18)),
+        color: Theme.of(context).dialogBackgroundColor,
+        boxShadow: const [
           BoxShadow(
             color: CommonColors.shadowColor,
             offset: Offset(8, 8),
@@ -58,13 +60,13 @@ class _SettingsWidgetState extends State<SettingsWidget> {
               ),
             ],
           ),
-          ChangeThemeButton(),
-          // Switch(
-          //   value: widget.isSwitched,
-          //   onChanged: widget.onToggle,
-          //   activeTrackColor: CommonColors.secondaryGreenColor,
-          //   activeColor: CommonColors.secondaryGreenColor,
-          // ),
+          if (widget.isSwitch)
+            Switch(
+              value: widget.isSwitched,
+              onChanged: widget.onToggle,
+              activeColor: CommonColors.secondaryGreenColor,
+            ),
+          if (!widget.isSwitch) const ChangeThemeButton(),
         ],
       ),
     );

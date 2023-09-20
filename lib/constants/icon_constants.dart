@@ -35,5 +35,4 @@ class IconConstants {
   static const String horizontalDotsIcon = '$_svgPath/horizontal_dots.svg';
   static const String projectManagementIcon =
       '$_svgPath/project_management.svg';
-  static const String sunMoon = '$_svgPath/sun_moon.svg';
 }

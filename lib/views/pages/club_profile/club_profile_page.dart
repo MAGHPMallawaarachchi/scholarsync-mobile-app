@@ -35,6 +35,9 @@ class _ClubProfilePageState extends State<ClubProfilePage> {
           fontSize: 20.0,
           fontWeight: FontWeight.bold,
           titleCenter: false,
+          onPressedListButton: () {
+            Scaffold.of(context).openDrawer();
+          },
         ),
       ),
       body: SingleChildScrollView(

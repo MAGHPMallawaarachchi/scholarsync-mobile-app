@@ -9,7 +9,7 @@ class SettingsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const PreferredSize(
+      appBar: PreferredSize(
         preferredSize:
             Size.fromHeight(kToolbarHeight), // Set the preferred height
         child: CustomAppBar(
@@ -18,6 +18,9 @@ class SettingsPage extends StatelessWidget {
           fontWeight: FontWeight.bold,
           titleCenter: true,
           leftIcon: true,
+          onPressedListButton: () {
+            Scaffold.of(context).openDrawer();
+          },
         ),
       ),
       //body
@@ -36,6 +39,7 @@ class SettingsPage extends StatelessWidget {
           const SizedBox(height: 20),
           //settings widget 01
           SettingsWidget(
+            isSwitch: true,
             leftIcon: PhosphorIcons.light.bell,
             text: 'Receive Notifications',
             onToggle: (value) {},
@@ -53,6 +57,7 @@ class SettingsPage extends StatelessWidget {
           ),
           const SizedBox(height: 20),
           SettingsWidget(
+            isSwitch: false,
             leftIcon: PhosphorIcons.light.moon,
             text: 'Dark Mode',
             onToggle: (value) {},
