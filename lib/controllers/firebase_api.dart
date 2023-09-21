@@ -1,3 +1,4 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:scholarsync/main.dart';
 
@@ -5,6 +6,7 @@ import 'package:scholarsync/main.dart';
 
 class FirebaseApi{
   final _firebaseMessaging = FirebaseMessaging.instance;
+
   
   Future<void> initNotifications() async{
     await _firebaseMessaging.requestPermission();
@@ -24,6 +26,15 @@ class FirebaseApi{
 
   Future initPushNotifications() async{
     FirebaseMessaging.instance.getInitialMessage().then(handleMessage);
-    FirebaseMessaging.onMessageOpenedApp.listen(handleMessage);
+    FirebaseMessaging.onMessage.listen(handleMessage);
+
+    await FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(
+      alert: true,
+      badge: true,
+      sound: true,
+    );
+
+
+    
   }
 }
