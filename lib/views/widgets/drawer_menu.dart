@@ -82,10 +82,23 @@ class _DrawerMenuState extends State<DrawerMenu> {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
-            const CircleAvatar(
-              radius: 40,
-              backgroundImage: NetworkImage(
-                  'https://cdn.landesa.org/wp-content/uploads/default-user-image.png'),
+            FutureBuilder(
+              future: _fetchUser(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.done) {
+                  final student = snapshot.data!;
+                  return CircleAvatar(
+                    radius: 40,
+                    backgroundImage: NetworkImage(student.profileImageUrl!),
+                  );
+                } else {
+                  return const CircleAvatar(
+                    radius: 40,
+                    backgroundImage: NetworkImage(
+                        'https://t3.ftcdn.net/jpg/03/46/83/96/360_F_346839683_6nAPzbhpSkIpb8pmAwufkC7c5eD7wYws.jpg'),
+                  );
+                }
+              },
             ),
             const SizedBox(width: 10),
             FutureBuilder(
