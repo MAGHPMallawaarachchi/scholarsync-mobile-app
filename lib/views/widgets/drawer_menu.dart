@@ -1,20 +1,17 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
+import 'package:scholarsync/controllers/firebase_auth.dart';
 import 'package:scholarsync/views/pages/home/academic_staff_page.dart';
 import 'package:scholarsync/views/pages/home/settings_page.dart';
 import 'package:scholarsync/model/student.dart';
+import '../../controllers/club_service.dart';
 import '../../controllers/student_service.dart';
-import '../../themes/palette.dart';
+import '../../model/club.dart';
 
 class DrawerMenu extends StatefulWidget {
-  // final int selectedIndex;
-  // final Function(int) onItemTapped;
-
   const DrawerMenu({
     Key? key,
-    // required this.selectedIndex,
-    // required this.onItemTapped,
   }) : super(key: key);
 
   @override
@@ -23,33 +20,24 @@ class DrawerMenu extends StatefulWidget {
 }
 
 class _DrawerMenuState extends State<DrawerMenu> {
-  Future<Student?> _fetchUser() async {
-    final userData = await StudentService.fetchUserData();
+  final StudentService studentService = StudentService();
+  final ClubService clubService = ClubService();
+  final AuthService authService = AuthService();
+
+  Future<Student?> _fetchUserAsStudent() async {
+    final userData = await studentService.fetchStudentData();
     return userData;
   }
 
-  String _userName = ''; // User's name
-  String _userImage = ''; // User's image URL
+  Future<Club?> _fetchUserAsClub() async {
+    final clubData = await clubService.fetchClubData();
+    print(clubData?.profileImageURL);
+    return clubData;
+  }
 
   @override
   void initState() {
     super.initState();
-    // Fetch user data here from your database or API
-    _fetchUserData().then((userData) {
-      setState(() {
-        _userName = userData['John Doe']!;
-        _userImage = userData['image']!;
-      });
-    });
-  }
-
-  Future<Map<String, String>> _fetchUserData() async {
-    await Future.delayed(const Duration(seconds: 5));
-    return {
-      'name': 'John Doe', // Replace with the user's name
-      'image':
-          'https://example.com/user-image.jpg', // Replace with the user's image URL
-    };
   }
 
   @override
@@ -83,14 +71,55 @@ class _DrawerMenuState extends State<DrawerMenu> {
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
             FutureBuilder(
-              future: _fetchUser(),
+              future: authService.checkIfUserIsClub(),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.done) {
-                  final student = snapshot.data!;
-                  return CircleAvatar(
-                    radius: 40,
-                    backgroundImage: NetworkImage(student.profileImageUrl!),
-                  );
+                  if (snapshot.data == true) {
+                    // User is a club owner
+                    return FutureBuilder<Club?>(
+                      future: _fetchUserAsClub(), // Fetch club data
+                      builder: (context, clubSnapshot) {
+                        if (clubSnapshot.connectionState ==
+                            ConnectionState.done) {
+                          final club = clubSnapshot.data;
+                          return CircleAvatar(
+                            radius: 40,
+                            backgroundImage:
+                                NetworkImage(club?.profileImageURL ?? ''),
+                          );
+                        } else {
+                          return const CircleAvatar(
+                            radius: 40,
+                            backgroundImage: NetworkImage(
+                                'https://t3.ftcdn.net/jpg/03/46/83/96/360_F_346839683_6nAPzbhpSkIpb8pmAwufkC7c5eD7wYws.jpg'),
+                          );
+                        }
+                      },
+                    );
+                  } else {
+                    // User is a student
+                    return FutureBuilder<Student?>(
+                      future: _fetchUserAsStudent(), // Fetch student data
+                      builder: (context, studentSnapshot) {
+                        if (studentSnapshot.connectionState ==
+                            ConnectionState.done) {
+                          final student = studentSnapshot.data;
+                          return CircleAvatar(
+                            radius: 40,
+                            backgroundImage: NetworkImage(student
+                                    ?.profileImageUrl ??
+                                'https://example.com/default-student-image.jpg'),
+                          );
+                        } else {
+                          return const CircleAvatar(
+                            radius: 40,
+                            backgroundImage: NetworkImage(
+                                'https://t3.ftcdn.net/jpg/03/46/83/96/360_F_346839683_6nAPzbhpSkIpb8pmAwufkC7c5eD7wYws.jpg'),
+                          );
+                        }
+                      },
+                    );
+                  }
                 } else {
                   return const CircleAvatar(
                     radius: 40,
@@ -102,14 +131,50 @@ class _DrawerMenuState extends State<DrawerMenu> {
             ),
             const SizedBox(width: 10),
             FutureBuilder(
-              future: _fetchUser(),
+              future: authService.checkIfUserIsClub(),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.done) {
-                  final student = snapshot.data!;
-                  return Text(
-                    '${student.firstName}\n${student.lastName}',
-                    style: Theme.of(context).textTheme.displayLarge,
-                  );
+                  if (snapshot.data == true) {
+                    // User is a club owner
+                    return FutureBuilder<Club?>(
+                      future: _fetchUserAsClub(), // Fetch club data
+                      builder: (context, clubSnapshot) {
+                        if (clubSnapshot.connectionState ==
+                            ConnectionState.done) {
+                          final club = clubSnapshot.data;
+                          return Text(
+                            club?.name ?? 'Club Owner',
+                            style: Theme.of(context).textTheme.displayLarge,
+                          );
+                        } else {
+                          return Text(
+                            'loading...',
+                            style: Theme.of(context).textTheme.displaySmall,
+                          );
+                        }
+                      },
+                    );
+                  } else {
+                    // User is a student
+                    return FutureBuilder<Student?>(
+                      future: _fetchUserAsStudent(), // Fetch student data
+                      builder: (context, studentSnapshot) {
+                        if (studentSnapshot.connectionState ==
+                            ConnectionState.done) {
+                          final student = studentSnapshot.data;
+                          return Text(
+                            student?.firstName ?? 'Student',
+                            style: Theme.of(context).textTheme.displayLarge,
+                          );
+                        } else {
+                          return Text(
+                            'loading...',
+                            style: Theme.of(context).textTheme.displaySmall,
+                          );
+                        }
+                      },
+                    );
+                  }
                 } else {
                   return Text(
                     'loading...',
@@ -121,13 +186,6 @@ class _DrawerMenuState extends State<DrawerMenu> {
           ],
         ),
         const SizedBox(height: 10),
-        Text(
-          _userName,
-          style: const TextStyle(
-            color: CommonColors.primaryGreenColor,
-            fontSize: 16,
-          ),
-        ),
       ],
     );
   }

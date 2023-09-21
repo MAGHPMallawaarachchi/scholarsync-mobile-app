@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:scholarsync/controllers/club_service.dart';
+import 'package:scholarsync/controllers/firebase_auth.dart';
 import 'package:scholarsync/controllers/kuppi_service.dart';
 import 'package:scholarsync/controllers/student_service.dart';
 import 'package:scholarsync/model/student.dart';
 import 'package:scholarsync/views/pages/home/kuppi_page.dart';
 import 'package:scholarsync/views/widgets/search_bar.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
+import '../../../model/club.dart';
 import '../../../themes/palette.dart';
 import 'widgets/image_row.dart';
 import '../../widgets/custom_carousel.dart';
@@ -19,10 +21,18 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final ClubService clubService = ClubService();
+  final StudentService studentService = StudentService();
   final KuppisService kuppisService = KuppisService();
-  Future<Student?> _fetchUser() async {
-    final userData = await StudentService.fetchUserData();
-    return userData;
+  final AuthService authService = AuthService();
+
+  Future<Student?> _fetchStudent() async {
+    final studentData = await studentService.fetchStudentData();
+    return studentData;
+  }
+
+  Future<Club?> _fetchClub() async {
+    final clubData = await clubService.fetchClubData();
+    return clubData;
   }
 
   @override
@@ -42,17 +52,53 @@ class _HomePageState extends State<HomePage> {
             Padding(
               padding: const EdgeInsets.only(top: 15),
               child: FutureBuilder(
-                future: _fetchUser(),
+                future: authService.checkIfUserIsClub(),
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.done) {
-                    final student = snapshot.data!;
-                    return Text(
-                      'Hello, ${student.firstName}',
-                      style: Theme.of(context).textTheme.headlineLarge,
-                    );
+                    if (snapshot.data == true) {
+                      // User is a club owner
+                      return FutureBuilder<Club?>(
+                        future: _fetchClub(), // Fetch club data
+                        builder: (context, clubSnapshot) {
+                          if (clubSnapshot.connectionState ==
+                              ConnectionState.done) {
+                            final club = clubSnapshot.data;
+                            return Text(
+                              'Hello, ${club?.name ?? 'Club Owner'}',
+                              style: Theme.of(context).textTheme.headlineLarge,
+                            );
+                          } else {
+                            return Text(
+                              'Loading...',
+                              style: Theme.of(context).textTheme.displaySmall,
+                            );
+                          }
+                        },
+                      );
+                    } else {
+                      // User is a student
+                      return FutureBuilder<Student?>(
+                        future: _fetchStudent(), // Fetch student data
+                        builder: (context, studentSnapshot) {
+                          if (studentSnapshot.connectionState ==
+                              ConnectionState.done) {
+                            final student = studentSnapshot.data;
+                            return Text(
+                              'Hello, ${student?.firstName ?? 'Student'}',
+                              style: Theme.of(context).textTheme.headlineLarge,
+                            );
+                          } else {
+                            return Text(
+                              'Loading...',
+                              style: Theme.of(context).textTheme.displaySmall,
+                            );
+                          }
+                        },
+                      );
+                    }
                   } else {
                     return Text(
-                      'loading...',
+                      'Loading...',
                       style: Theme.of(context).textTheme.displaySmall,
                     );
                   }

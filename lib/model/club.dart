@@ -1,26 +1,24 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Club {
-  final String? id;
-  final String? uid;
-  final String? email;
-  final String? name;
+  final String id;
+  final String email;
+  final String name;
+  String profileImageURL;
   String? about;
   String? inCharge;
   String? president;
-  String? profileImageURL;
   String? bannerImageURL;
   List<Map<String, dynamic>>? events;
 
   Club({
-    this.id,
-    this.uid,
-    this.email,
-    this.name,
+    required this.id,
+    required this.email,
+    required this.name,
+    required this.profileImageURL,
     this.about,
     this.inCharge,
     this.president,
-    this.profileImageURL,
     this.bannerImageURL,
     this.events,
   });
@@ -30,7 +28,6 @@ class Club {
 
     return Club(
       id: snapshot.id,
-      uid: snapshotData['uid'],
       email: snapshotData['email'],
       name: snapshotData['name'],
       about: snapshotData['about'],
@@ -44,7 +41,6 @@ class Club {
 
   Map<String, dynamic> toJson() => {
         'id': id,
-        'uid': uid,
         'email': email,
         'name': name,
         'about': about,

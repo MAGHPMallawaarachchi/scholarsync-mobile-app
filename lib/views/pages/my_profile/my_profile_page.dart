@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:scholarsync/controllers/student_service.dart';
 import 'package:scholarsync/themes/palette.dart';
 import 'package:scholarsync/utils/format_date.dart';
 import 'package:scholarsync/views/pages/my_profile/my_projects_page.dart';
 import 'package:scholarsync/views/pages/my_profile/widgets/project_box.dart';
 import 'package:scholarsync/views/widgets/app_bar.dart';
 import 'package:scholarsync/views/pages/my_profile/widgets/profile_info.dart';
-
-import '../../../controllers/student_service.dart';
 import '../../../model/project.dart';
 import '../../../model/student.dart';
 import '../../../themes/app_theme.dart';
@@ -19,8 +18,10 @@ class MyProfilePage extends StatefulWidget {
 }
 
 class _MyProfilePageState extends State<MyProfilePage> {
+  final StudentService studentService = StudentService();
+
   Future<Student?> _fetchUser() async {
-    final userData = await StudentService.fetchUserData();
+    final userData = await studentService.fetchStudentData();
     return userData;
   }
 
@@ -98,7 +99,7 @@ class _MyProfilePageState extends State<MyProfilePage> {
                       const SizedBox(height: 15),
                       Expanded(
                         child: FutureBuilder(
-                          future: StudentService.fetchProjectsForStudent(),
+                          future: studentService.fetchProjectsForStudent(),
                           builder: (context, projectSnapshot) {
                             if (projectSnapshot.connectionState ==
                                 ConnectionState.waiting) {

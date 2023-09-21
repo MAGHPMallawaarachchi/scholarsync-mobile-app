@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:image_picker/image_picker.dart';
 import '../model/club.dart';
@@ -9,6 +10,8 @@ class ClubService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final StreamController<List<String>> _eventImageUrlsController =
       StreamController<List<String>>.broadcast();
+
+  final User user = FirebaseAuth.instance.currentUser!;
 
   Stream<List<String>> get eventImageUrlsStream =>
       _eventImageUrlsController.stream;
@@ -23,20 +26,6 @@ class ClubService {
     });
   }
 
-  Future<bool> checkIfUserIsClub(String uid) async {
-    try {
-      final QuerySnapshot querySnapshot = await FirebaseFirestore.instance
-          .collection('clubs')
-          .where('uid', isEqualTo: uid)
-          .get();
-
-      return querySnapshot.docs.isNotEmpty;
-    } catch (error) {
-      // print("Error searching for club: $error");
-      return false;
-    }
-  }
-
   Future<List<Club>> getAllClubs() async {
     try {
       final QuerySnapshot querySnapshot =
@@ -47,6 +36,39 @@ class ClubService {
       // print("Error fetching clubs: $error");
       return [];
     }
+  }
+
+  Future<Club?> fetchClubData() async {
+    try {
+      final user = FirebaseAuth.instance.currentUser;
+      if (user != null) {
+        final querySnapshot = await FirebaseFirestore.instance
+            .collection('clubs')
+            .where('email', isEqualTo: user.email)
+            .get();
+
+        if (querySnapshot.docs.isNotEmpty) {
+          final userData = querySnapshot.docs[0].data();
+
+          // Map the Firestore data to a Student object
+          return Club(
+            id: querySnapshot.docs[0].id,
+            email: userData['email'],
+            profileImageURL: userData['profileImageURL'],
+            name: userData['name'] ?? 'Club Name',
+            about: userData['about'] ?? 'About',
+            inCharge: userData['inCharge'] ?? 'In Charge',
+            president: userData['president'] ?? 'President',
+            bannerImageURL: userData['bannerImageURL'] ??
+                'https://w7.pngwing.com/pngs/869/370/png-transparent-low-polygon-background-green-banner-low-poly-materialized-flat-thumbnail.png',
+            events: List<Map<String, dynamic>>.from(userData['events'] ?? []),
+          );
+        }
+      }
+    } catch (e) {
+      // print('Error fetching user data: $e');
+    }
+    return null;
   }
 
   Future<Club> getClubById(String uid) async {

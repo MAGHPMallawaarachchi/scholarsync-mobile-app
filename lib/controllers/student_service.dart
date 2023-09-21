@@ -16,12 +16,11 @@ class StudentService {
           querySnapshot.docs.map((doc) => Student.fromSnapshot(doc)).toList();
       return students;
     } catch (e) {
-      // print('cant get students: ' + e.toString());
       return [];
     }
   }
 
-  static Future<Student?> fetchUserData() async {
+  Future<Student?> fetchStudentData() async {
     try {
       final user = FirebaseAuth.instance.currentUser;
       if (user != null) {
@@ -53,9 +52,9 @@ class StudentService {
     return null;
   }
 
-  static Future<List<Project>> fetchProjectsForStudent() async {
+  Future<List<Project>> fetchProjectsForStudent() async {
     try {
-      Future<Student?> student = fetchUserData();
+      Future<Student?> student = fetchStudentData();
       String studentId = (await student)!.id;
 
       final projectCollection = FirebaseFirestore.instance
@@ -126,7 +125,7 @@ class StudentService {
 
       // Get the existing student document data
       final studentSnapshot = await studentDocRef.get();
-      final studentData = studentSnapshot.data() as Map<String, dynamic>?;
+      final studentData = studentSnapshot.data();
 
       // Determine whether to create or update the profileImageUrl field
       if (studentData != null && studentData.containsKey('profileImageUrl')) {

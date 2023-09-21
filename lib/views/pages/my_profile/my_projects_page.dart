@@ -24,6 +24,7 @@ class MyProjectsPage extends StatefulWidget {
 }
 
 class _MyProjectsPageState extends State<MyProjectsPage> {
+  final StudentService studentService = StudentService();
   final _nameController = TextEditingController();
   final _dateController = TextEditingController();
   final _linkController = TextEditingController();
@@ -71,7 +72,7 @@ class _MyProjectsPageState extends State<MyProjectsPage> {
             const SizedBox(height: 20),
             Expanded(
               child: FutureBuilder(
-                future: StudentService.fetchProjectsForStudent(),
+                future: studentService.fetchProjectsForStudent(),
                 builder: (context, projectSnapshot) {
                   if (projectSnapshot.connectionState ==
                       ConnectionState.waiting) {
