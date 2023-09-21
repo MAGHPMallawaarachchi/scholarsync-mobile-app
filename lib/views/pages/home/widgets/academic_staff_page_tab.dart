@@ -14,9 +14,9 @@ class AcademicStaffPageTabs extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 16.0),
       child: TabBar(
         controller: tabController,
-        labelColor: PaletteLightMode.titleColor,
+        labelColor: Theme.of(context).dialogBackgroundColor,
         // Set the color of the selected tab's text
-        unselectedLabelColor: PaletteLightMode.titleColor,
+        unselectedLabelColor: Theme.of(context).secondaryHeaderColor,
         // Set the color of unselected tabs' text
         indicator: BoxDecoration(
           borderRadius: BorderRadius.circular(30.0),

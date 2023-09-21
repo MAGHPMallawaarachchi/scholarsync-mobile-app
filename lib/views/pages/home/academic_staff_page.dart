@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:scholarsync/constants/icon_constants.dart';
 import 'package:scholarsync/views/widgets/app_bar.dart';
-import 'package:scholarsync/views/pages/home/home_page.dart';
 import 'package:scholarsync/views/pages/home/widgets/academic_staff_page_tab.dart';
 import 'package:scholarsync/views/pages/home/widgets/lecturer_info.dart';
 

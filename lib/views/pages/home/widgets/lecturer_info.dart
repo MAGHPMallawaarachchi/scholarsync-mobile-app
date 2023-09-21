@@ -19,7 +19,7 @@ class LecturerInformation extends StatelessWidget {
       padding: const EdgeInsets.all(16.0),
       margin: const EdgeInsets.symmetric(vertical: 15.0, horizontal: 20),
       decoration: BoxDecoration(
-        color: PaletteLightMode.backgroundColor,
+        color:  Theme.of(context).dialogBackgroundColor,
         borderRadius: BorderRadius.circular(8.0),
         boxShadow: const [
           BoxShadow(
@@ -54,13 +54,12 @@ class LecturerInformation extends StatelessWidget {
               Text(
                 name,
                 style:
-                    const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                   Theme.of(context).textTheme.headlineMedium,
               ),
               const SizedBox(height: 6.0),
               Text(
                 email,
-                style: const TextStyle(
-                    fontSize: 14, color: PaletteLightMode.secondaryTextColor),
+                style: Theme.of(context).textTheme.bodySmall,
               ),
             ],
           ),
