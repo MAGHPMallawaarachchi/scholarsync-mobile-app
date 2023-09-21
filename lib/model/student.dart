@@ -8,6 +8,7 @@ class Student {
   final String lastName;
   final String degreeProgram;
   final String batch;
+  String? profileImageUrl;
 
   Student({
     required this.id,
@@ -17,6 +18,8 @@ class Student {
     required this.lastName,
     required this.degreeProgram,
     required this.batch,
+    this.profileImageUrl =
+        "https://t3.ftcdn.net/jpg/03/46/83/96/360_F_346839683_6nAPzbhpSkIpb8pmAwufkC7c5eD7wYws.jpg",
   });
 
   Map<String, dynamic> toMap() {
@@ -28,6 +31,7 @@ class Student {
       'lastName': lastName,
       'degreeProgram': degreeProgram,
       'batch': batch,
+      'profileImageUrl': profileImageUrl ?? '',
     };
   }
 
@@ -41,6 +45,7 @@ class Student {
       lastName: snapshotData['lastName'],
       degreeProgram: snapshotData['degreeProgram'],
       batch: snapshotData['batch'],
+      profileImageUrl: snapshotData['profileImageUrl'] ?? '',
     );
   }
 }

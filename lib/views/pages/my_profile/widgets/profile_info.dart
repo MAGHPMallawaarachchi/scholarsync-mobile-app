@@ -1,15 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:scholarsync/constants/icon_constants.dart';
-import 'package:scholarsync/constants/image_constants.dart';
+import 'package:scholarsync/controllers/student_service.dart';
 import 'package:scholarsync/themes/palette.dart';
 import '../../../widgets/circular_icon_button.dart';
 
-class ProfileInfo extends StatelessWidget {
+class ProfileInfo extends StatefulWidget {
   final String firstName;
   final String lastName;
   final String degreeProgram;
   final String batch;
   final String studentId;
+  final String profileImageUrl;
+  final String id;
 
   const ProfileInfo({
     super.key,
@@ -18,8 +20,15 @@ class ProfileInfo extends StatelessWidget {
     required this.degreeProgram,
     required this.batch,
     required this.studentId,
+    required this.profileImageUrl,
+    required this.id,
   });
 
+  @override
+  State<ProfileInfo> createState() => _ProfileInfoState();
+}
+
+class _ProfileInfoState extends State<ProfileInfo> {
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -33,54 +42,63 @@ class ProfileInfo extends StatelessWidget {
         ),
         borderRadius: BorderRadius.circular(8.0),
       ),
-      child: Stack(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Positioned.fill(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Stack(
-                  alignment: Alignment.bottomRight,
-                  children: [
-                    const CircleAvatar(
-                      radius: 50,
-                      backgroundImage: AssetImage(
-                          ImageConstants.kuppiImg1), // Add your image path here
-                    ),
-                    CircularIconButton(
-                      buttonSize: 25,
-                      iconAsset: IconConstants.cameraIcon,
-                      iconColor: CommonColors.whiteColor,
-                      buttonColor: CommonColors.secondaryGreenColor,
-                      onPressed: () {},
-                    ),
-                  ],
+          Stack(
+            children: [
+              Container(
+                width: 90,
+                height: 90,
+                decoration: const BoxDecoration(
+                  shape: BoxShape.circle,
                 ),
-                const SizedBox(height: 10),
-                Text(
-                  '$firstName $lastName - $studentId',
-                  style: const TextStyle(
-                    fontSize: 20,
-                    color: CommonColors.whiteColor,
-                    fontWeight: FontWeight.bold,
+                child: Center(
+                  child: CircleAvatar(
+                    backgroundImage: NetworkImage(widget.profileImageUrl),
+                    radius: 90 / 2,
                   ),
                 ),
-                const SizedBox(height: 5),
-                Text(
-                  degreeProgram,
-                  style: const TextStyle(
-                    color: CommonColors.whiteColor,
-                    fontSize: 14,
-                  ),
+              ),
+              Positioned(
+                bottom: -(20 / 1000),
+                right: -(20 / 1000),
+                child: CircularIconButton(
+                  buttonSize: 20,
+                  iconAsset: IconConstants.cameraIcon,
+                  iconColor: CommonColors.whiteColor,
+                  buttonColor: CommonColors.secondaryGreenColor,
+                  onPressed: () {
+                    StudentService.updateProfileImageURL(
+                        widget.id, widget.studentId);
+                    setState(() {});
+                  },
                 ),
-                Text(
-                  'Batch - $batch',
-                  style: const TextStyle(
-                    color: CommonColors.whiteColor,
-                    fontSize: 14,
-                  ),
-                ),
-              ],
+              ),
+            ],
+          ),
+          const SizedBox(height: 10),
+          Text(
+            '${widget.firstName} ${widget.lastName} - ${widget.studentId}',
+            style: const TextStyle(
+              fontSize: 20,
+              color: CommonColors.whiteColor,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          const SizedBox(height: 5),
+          Text(
+            widget.degreeProgram,
+            style: const TextStyle(
+              color: CommonColors.whiteColor,
+              fontSize: 14,
+            ),
+          ),
+          Text(
+            'Batch - ${widget.batch}',
+            style: const TextStyle(
+              color: CommonColors.whiteColor,
+              fontSize: 14,
             ),
           ),
         ],

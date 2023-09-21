@@ -1,7 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:scholarsync/controllers/firebase_service.dart';
 import 'package:scholarsync/model/student.dart';
 import '../model/project.dart';
+import '../utils/utils.dart';
 
 class StudentService {
   CollectionReference studentCollection =
@@ -40,6 +42,8 @@ class StudentService {
             lastName: userData['lastName'],
             degreeProgram: userData['degreeProgram'],
             batch: userData['batch'],
+            profileImageUrl: userData['profileImageUrl'] ??
+                'https://t3.ftcdn.net/jpg/03/46/83/96/360_F_346839683_6nAPzbhpSkIpb8pmAwufkC7c5eD7wYws.jpg',
           );
         }
       }
@@ -101,6 +105,43 @@ class StudentService {
       }
     } catch (e) {
       // Handle errors here
+    }
+  }
+
+  static Future<String> uploadImage(String studentId) async {
+    try {
+      final imageFile = await Utils.pickImage();
+      return FirebaseService.uploadImage(
+          imageFile!, 'students/$studentId/profileImage');
+    } catch (e) {
+      print('Error uploading image: $e');
+      return "";
+    }
+  }
+
+  static Future<void> updateProfileImageURL(String id, String studentId) async {
+    try {
+      final studentDocRef =
+          FirebaseFirestore.instance.collection('students').doc(id);
+
+      // Get the existing student document data
+      final studentSnapshot = await studentDocRef.get();
+      final studentData = studentSnapshot.data() as Map<String, dynamic>?;
+
+      // Determine whether to create or update the profileImageUrl field
+      if (studentData != null && studentData.containsKey('profileImageUrl')) {
+        // Update the existing profileImageUrl field
+        final profileImageUrl = await uploadImage(studentId);
+        await studentDocRef.update({'profileImageUrl': profileImageUrl});
+      } else {
+        // Create the profileImageUrl field
+        final profileImageUrl = await uploadImage(studentId);
+        await studentDocRef
+            .set({'profileImageUrl': profileImageUrl}, SetOptions(merge: true));
+      }
+    } catch (e) {
+      // Handle errors here
+      print('Error updating profile image URL: $e');
     }
   }
 }

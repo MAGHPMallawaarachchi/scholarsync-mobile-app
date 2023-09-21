@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:scholarsync/views/pages/home/academic_staff_page.dart';
 import 'package:scholarsync/views/pages/home/settings_page.dart';
+import 'package:scholarsync/model/student.dart';
+import '../../controllers/student_service.dart';
 import '../../themes/palette.dart';
 
 class DrawerMenu extends StatefulWidget {
@@ -21,6 +23,11 @@ class DrawerMenu extends StatefulWidget {
 }
 
 class _DrawerMenuState extends State<DrawerMenu> {
+  Future<Student?> _fetchUser() async {
+    final userData = await StudentService.fetchUserData();
+    return userData;
+  }
+
   String _userName = ''; // User's name
   String _userImage = ''; // User's image URL
 
@@ -81,10 +88,22 @@ class _DrawerMenuState extends State<DrawerMenu> {
                   'https://cdn.landesa.org/wp-content/uploads/default-user-image.png'),
             ),
             const SizedBox(width: 10),
-            Text(
-              'ATD \nGamage',
-              style: Theme.of(context).textTheme.displayLarge,
-              textAlign: TextAlign.left,
+            FutureBuilder(
+              future: _fetchUser(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.done) {
+                  final student = snapshot.data!;
+                  return Text(
+                    '${student.firstName}\n${student.lastName}',
+                    style: Theme.of(context).textTheme.displayLarge,
+                  );
+                } else {
+                  return Text(
+                    'loading...',
+                    style: Theme.of(context).textTheme.displaySmall,
+                  );
+                }
+              },
             ),
           ],
         ),

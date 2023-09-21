@@ -58,6 +58,8 @@ class _MyProfilePageState extends State<MyProfilePage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       ProfileInfo(
+                        id: student.id,
+                        profileImageUrl: student.profileImageUrl!,
                         firstName: student.firstName,
                         lastName: student.lastName,
                         degreeProgram: student.degreeProgram,
