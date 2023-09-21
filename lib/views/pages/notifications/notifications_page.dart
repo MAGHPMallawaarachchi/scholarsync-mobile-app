@@ -1,3 +1,4 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:scholarsync/themes/palette.dart';
@@ -10,6 +11,7 @@ class NotificationsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final message = ModalRoute.of(context)!.settings.arguments as RemoteMessage;
     return Scaffold(
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(kToolbarHeight),
@@ -51,7 +53,7 @@ class NotificationsPage extends StatelessWidget {
                     child: Center(
                       child: NotificationWidget(
                         leftIcon: PhosphorIcons.regular.bell,
-                        text: 'There are upcoming lectures',
+                        text: message.notification!.title.toString(),
                         subtitle: '30 minutes ago',
                       ),
                     )),
