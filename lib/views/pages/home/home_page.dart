@@ -5,7 +5,6 @@ import 'package:scholarsync/views/pages/home/kuppi_page.dart';
 import 'package:scholarsync/views/widgets/search_bar.dart';
 import 'package:scholarsync/constants/image_constants.dart';
 import '../../../controllers/student_service.dart';
-import '../../../themes/app_theme.dart';
 import '../../widgets/custom_carousel.dart';
 import '../../../themes/palette.dart';
 import 'widgets/image_row.dart';
@@ -165,7 +164,7 @@ class _HomePageState extends State<HomePage> {
                 children: [
                   Text(
                     'Clubs & Societies',
-                    style: getTextTheme(context, true).headlineMedium,
+                    style: Theme.of(context).textTheme.headlineMedium,
                     textAlign: TextAlign.left,
                   ),
                 ],

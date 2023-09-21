@@ -51,14 +51,10 @@ class _ReusableTextFieldState extends State<ReusableTextField> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            widget.labelText,
-            style: const TextStyle(
-              color: PaletteLightMode.textColor,
-              fontWeight: FontWeight.w500,
-              fontSize: 14.0,
-            ),
-          ),
+            Text(
+                    widget.labelText,
+                    style: Theme.of(context).textTheme.bodySmall,
+                  ),
           const SizedBox(
             height: 4,
           ),
@@ -84,17 +80,18 @@ class _ReusableTextFieldState extends State<ReusableTextField> {
                 onSaved: widget.onSaved,
                 obscureText: widget.obscureText,
                 cursorColor: CommonColors.secondaryGreenColor,
-                style: const TextStyle(
-                  fontSize: 14,
-                ),
+                style:  
+                  Theme.of(context).textTheme.bodySmall,
+          
                 decoration: InputDecoration(
                   contentPadding:
                       const EdgeInsets.symmetric(vertical: 0, horizontal: 8),
+                      
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10),
-                    borderSide: const BorderSide(
+                    borderSide:  BorderSide(
                       width: 1.5,
-                      color: PaletteLightMode.secondaryTextColor,
+                      color:  Theme.of(context).dividerColor,
                     ),
                   ),
                   focusedBorder: OutlineInputBorder(
@@ -111,7 +108,7 @@ class _ReusableTextFieldState extends State<ReusableTextField> {
                       ? CircularIconButton(
                           buttonSize: 40,
                           iconAsset: IconConstants.calendarIcon,
-                          iconColor: PaletteLightMode.secondaryTextColor,
+                          iconColor: Theme.of(context).secondaryHeaderColor,
                           buttonColor: CommonColors.transparentColor,
                           onPressed: () {},
                         )
