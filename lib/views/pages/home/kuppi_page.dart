@@ -1,19 +1,15 @@
 import 'dart:io';
-
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:intl/intl.dart';
-import 'package:scholarsync/views/widgets/button_icon.dart';
 import 'package:scholarsync/views/widgets/search_bar.dart';
 import 'package:scholarsync/constants/icon_constants.dart';
 import 'package:scholarsync/views/widgets/text_form_field.dart';
 import 'package:scholarsync/views/widgets/app_bar.dart';
 import 'package:scholarsync/views/pages/home/widgets/kuppi_widget.dart';
-import 'package:scholarsync/constants/image_constants.dart';
 import 'package:scholarsync/views/widgets/reusable_form_dialog.dart';
 import 'package:scholarsync/themes/palette.dart';
-
 import '../../../controllers/kuppi_service.dart';
 import '../../../model/kuppi.dart';
 import 'widgets/image_form_field.dart';
@@ -31,7 +27,7 @@ class _KuppiPageState extends State<KuppiPage> {
   String? downloadURL;
   String _searchQuery = '';
 
-  final KuppiRepository _kuppiRepository = KuppiRepository();
+  final KuppisService kuppisService = KuppisService();
 
   final _nameController = TextEditingController();
   final _dateController = TextEditingController();
@@ -51,15 +47,14 @@ class _KuppiPageState extends State<KuppiPage> {
         imageUrl: downloadURL!,
       );
 
-      await _kuppiRepository.createKuppiSession(kuppiSession);
-      setState(() {});
+      await kuppisService.createKuppiSession(kuppiSession);
     } catch (e) {
       // print(e);
     }
   }
 
   void _handleDelete(KuppiSession session) async {
-    await _kuppiRepository.deleteKuppiSession(session.id);
+    await kuppisService.deleteKuppiSession(session.id);
     _deleteImage(session);
   }
 
@@ -159,8 +154,8 @@ class _KuppiPageState extends State<KuppiPage> {
                 ),
                 const SizedBox(height: 18),
                 Expanded(
-                  child: FutureBuilder<List<KuppiSession>>(
-                    future: _kuppiRepository.getKuppiSessions(),
+                  child: StreamBuilder<List<KuppiSession>>(
+                    stream: kuppisService.listenToKuppiSessions(),
                     builder: (context, snapshot) {
                       if (snapshot.connectionState == ConnectionState.waiting) {
                         return const Center(
@@ -346,7 +341,7 @@ class _KuppiPageState extends State<KuppiPage> {
                 session.imageUrl = downloadURL!;
 
                 // Update the session in the repository
-                await _kuppiRepository.updateKuppiSession(session);
+                await kuppisService.updateKuppiSession(session);
 
                 setState(() {});
               } else {

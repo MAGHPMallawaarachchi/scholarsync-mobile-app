@@ -78,7 +78,7 @@ class _KuppiWidgetState extends State<KuppiWidget> {
                           Flexible(
                             child: Text(
                               widget.title,
-                              style: Theme.of(context).textTheme.displayMedium,
+                              style: Theme.of(context).textTheme.labelLarge,
                             ),
                           ),
                           Transform.rotate(
@@ -132,6 +132,8 @@ class _KuppiWidgetState extends State<KuppiWidget> {
                           }
                         },
                         style: ElevatedButton.styleFrom(
+                          fixedSize: const Size(100, 20),
+                          textStyle: const TextStyle(fontSize: 16),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(18),
                           ),

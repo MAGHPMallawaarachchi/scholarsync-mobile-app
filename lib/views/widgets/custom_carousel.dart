@@ -10,6 +10,8 @@ class CustomCarousel extends StatefulWidget {
   final double containerPadding;
   final bool showIconButton;
   final bool enableAutoScroll;
+  final Function(int eventIndex, String imageUrl)? onPressedDeleteButton;
+  final int autoScrollDuration; // Added for customizing auto-scroll duration
 
   const CustomCarousel({
     Key? key,
@@ -17,6 +19,8 @@ class CustomCarousel extends StatefulWidget {
     this.containerPadding = 20.0,
     this.showIconButton = false,
     this.enableAutoScroll = true,
+    this.onPressedDeleteButton,
+    this.autoScrollDuration = 3, // Default auto-scroll duration
   }) : super(key: key);
 
   @override
@@ -25,17 +29,16 @@ class CustomCarousel extends StatefulWidget {
 
 class _CustomCarouselState extends State<CustomCarousel> {
   late PageController _pageController;
-  int _currentPage = 0;
   Timer? _autoScrollTimer;
-  final int _autoScrollDuration = 3; // Auto scroll duration in seconds
+  int pageNo = 0;
 
   @override
   void initState() {
-    _pageController = PageController(initialPage: _currentPage);
+    super.initState();
+    _pageController = PageController(initialPage: pageNo);
     if (widget.enableAutoScroll) {
       _startAutoScroll();
     }
-    super.initState();
   }
 
   @override
@@ -46,19 +49,21 @@ class _CustomCarouselState extends State<CustomCarousel> {
   }
 
   void _startAutoScroll() {
-    _autoScrollTimer =
-        Timer.periodic(Duration(seconds: _autoScrollDuration), (timer) {
-      if (_currentPage == widget.imageList.length - 1) {
-        _currentPage = 0;
-      } else {
-        _currentPage++;
-      }
-      _pageController.animateToPage(
-        _currentPage,
-        duration: const Duration(seconds: 2),
-        curve: Curves.easeInOut,
-      );
-    });
+    _autoScrollTimer = Timer.periodic(
+      Duration(seconds: widget.autoScrollDuration),
+      (timer) {
+        if (pageNo == widget.imageList.length - 1) {
+          pageNo = 0;
+        } else {
+          pageNo++;
+        }
+        _pageController.animateToPage(
+          pageNo,
+          duration: const Duration(seconds: 2),
+          curve: Curves.easeInOut,
+        );
+      },
+    );
   }
 
   @override
@@ -72,14 +77,13 @@ class _CustomCarouselState extends State<CustomCarousel> {
             height: MediaQuery.of(context).size.width -
                 2 * widget.containerPadding, // Square container
             child: PageView.builder(
+              key: const Key('customCarouselPageView'), // Added a key
               controller: _pageController,
               physics: const BouncingScrollPhysics(),
               onPageChanged: (index) {
-                setState(() {
-                  _currentPage = index;
-                });
+                pageNo = index;
               },
-              itemBuilder: (context, index) {
+              itemBuilder: (_, index) {
                 return Stack(
                   children: [
                     Center(
@@ -87,16 +91,14 @@ class _CustomCarouselState extends State<CustomCarousel> {
                         padding: const EdgeInsets.all(5),
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(10),
-                          child: Image.asset(
-                            widget.imageList[
-                                index], // Use Image.asset for local assets
+                          child: Image.network(
+                            widget.imageList[index],
                             fit: BoxFit.cover,
                           ),
                         ),
                       ),
                     ),
-                    if (widget
-                        .showIconButton) // Check if showIconButton is true, then show the IconButton
+                    if (widget.showIconButton)
                       Positioned(
                         top: 8,
                         right: 8,
@@ -107,7 +109,12 @@ class _CustomCarouselState extends State<CustomCarousel> {
                             iconAsset: IconConstants.deleteIcon,
                             iconColor: CommonColors.whiteColor,
                             buttonColor: CommonColors.primaryRedColor,
-                            onPressed: () {},
+                            onPressed: () {
+                              widget.onPressedDeleteButton!(
+                                pageNo,
+                                widget.imageList[pageNo],
+                              );
+                            },
                           ),
                         ),
                       ),
@@ -128,7 +135,7 @@ class _CustomCarouselState extends State<CustomCarousel> {
                 height: 8,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: _currentPage == index
+                  color: pageNo == index
                       ? CommonColors.secondaryGreenColor
                       : PaletteLightMode.secondaryTextColor,
                 ),

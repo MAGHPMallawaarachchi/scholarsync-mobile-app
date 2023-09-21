@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:phosphor_flutter/phosphor_flutter.dart';
+import 'package:scholarsync/controllers/club_service.dart';
+import 'package:scholarsync/controllers/kuppi_service.dart';
+import 'package:scholarsync/controllers/student_service.dart';
 import 'package:scholarsync/model/student.dart';
 import 'package:scholarsync/views/pages/home/kuppi_page.dart';
 import 'package:scholarsync/views/widgets/search_bar.dart';
-import 'package:scholarsync/constants/image_constants.dart';
-import '../../../controllers/student_service.dart';
-import '../../widgets/custom_carousel.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 import '../../../themes/palette.dart';
 import 'widgets/image_row.dart';
+import '../../widgets/custom_carousel.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -17,9 +18,18 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  final ClubService clubService = ClubService();
+  final KuppisService kuppisService = KuppisService();
   Future<Student?> _fetchUser() async {
     final userData = await StudentService.fetchUserData();
     return userData;
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    // Start listening for live updates
+    clubService.listenForClubUpdates();
   }
 
   @override
@@ -94,13 +104,13 @@ class _HomePageState extends State<HomePage> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              //searchbar
+              // Search bar
               Padding(
                 padding: const EdgeInsets.only(bottom: 10),
                 child: CustomSearchBar(
                   hint: 'Search for students and clubs...',
                   onSearchSubmitted: (value) {
-                    //Search funtion
+                    // Search function
                   },
                 ),
               ),
@@ -108,17 +118,22 @@ class _HomePageState extends State<HomePage> {
                 height: 5,
               ),
 
-              //carousel
-              const Center(
-                child: CustomCarousel(
-                  imageList: [
-                    ImageConstants.eventImg1,
-                    ImageConstants.eventImg2,
-                    ImageConstants.eventImg3,
-                    ImageConstants.eventImg4,
-                    ImageConstants.eventImg5,
-                  ],
-                ),
+              // Carousel
+              StreamBuilder<List<String>>(
+                stream:
+                    clubService.eventImageUrlsStream, // Listen to live updates
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.active) {
+                    // Use the updated eventImageUrls
+                    final eventImageUrls = snapshot.data ?? [];
+                    return CustomCarousel(imageList: eventImageUrls);
+                  } else {
+                    // Show a loading indicator or placeholder while waiting for updates
+                    return const CircularProgressIndicator(
+                      color: CommonColors.secondaryGreenColor,
+                    );
+                  }
+                },
               ),
 
               Row(
@@ -147,14 +162,9 @@ class _HomePageState extends State<HomePage> {
               ),
 
               ImageRow(
-                containerSize: MediaQuery.of(context).size.width * 0.4,
+                containerSize: MediaQuery.of(context).size.width * 0.42,
                 isCircle: false,
-                imagePathList: const [
-                  ImageConstants.img1,
-                  ImageConstants.img1,
-                  ImageConstants.img1,
-                  ImageConstants.img1,
-                ],
+                imageStream: kuppisService.streamKuppiSessionImageURLs(),
               ),
 
               const SizedBox(height: 30),
@@ -174,15 +184,9 @@ class _HomePageState extends State<HomePage> {
                 height: 20,
               ),
               ImageRow(
-                containerSize: MediaQuery.of(context).size.width * 0.2,
+                containerSize: MediaQuery.of(context).size.width * 0.25,
                 isCircle: true,
-                imagePathList: const [
-                  ImageConstants.img1,
-                  ImageConstants.img1,
-                  ImageConstants.img1,
-                  ImageConstants.img1,
-                  ImageConstants.img1,
-                ],
+                imageStream: clubService.streamProfileImageURLs(),
               ),
               const SizedBox(
                 height: 20,

@@ -17,12 +17,9 @@ import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 import 'views/pages/auth/login_page.dart';
 
-final navigatorKey = GlobalKey<NavigatorState>();
-
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-  await FirebaseApi().initNotifications();
 
   runApp(const MyApp());
 }
@@ -71,7 +68,6 @@ class MainApp extends StatefulWidget {
 }
 
 class _MainAppState extends State<MainApp> {
-  
   int currentIndex = 0;
   String currentPage = 'home';
 
@@ -90,8 +86,6 @@ class _MainAppState extends State<MainApp> {
     'notifications': GlobalKey<NavigatorState>(),
     'my_profile': GlobalKey<NavigatorState>(),
   };
-
-
 
   void _selectTab(String tabItem, int index) {
     if (tabItem == currentPage) {
@@ -183,10 +177,6 @@ class _MainAppState extends State<MainApp> {
                 ),
               ),
             ),
-            navigatorKey: navigatorKey,
-            routes: {
-              '/notification':(context) => const NotificationsPage()
-            },
           );
         },
       );

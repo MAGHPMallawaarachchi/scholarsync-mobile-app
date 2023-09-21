@@ -36,6 +36,13 @@ TextTheme getTextTheme(BuildContext context, bool isDarkTheme) {
               ? PaletteDarkMode.textColor
               : PaletteLightMode.textColor,
         ),
+        labelLarge: TextStyle(
+          fontSize: 18,
+          fontWeight: FontWeight.w600,
+          color: isDarkTheme
+              ? PaletteDarkMode.titleColor
+              : PaletteLightMode.titleColor,
+        ),
         //view all
         displaySmall: const TextStyle(
           fontSize: 14,
