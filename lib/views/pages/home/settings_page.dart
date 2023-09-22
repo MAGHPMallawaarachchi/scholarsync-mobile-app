@@ -11,7 +11,7 @@ class SettingsPage extends StatelessWidget {
     return Scaffold(
       appBar: PreferredSize(
         preferredSize:
-            Size.fromHeight(kToolbarHeight), // Set the preferred height
+            const Size.fromHeight(kToolbarHeight), // Set the preferred height
         child: CustomAppBar(
           title: 'Settings',
           fontSize: 20.0,

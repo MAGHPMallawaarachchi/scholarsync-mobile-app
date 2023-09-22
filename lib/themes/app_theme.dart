@@ -71,6 +71,13 @@ TextTheme getTextTheme(BuildContext context, bool isDarkTheme) {
               ? PaletteDarkMode.textColor
               : PaletteLightMode.textColor,
         ),
+        labelSmall: TextStyle(
+            fontSize: 13,
+            fontWeight: FontWeight.w400,
+            color: isDarkTheme
+                ? PaletteDarkMode.textColor
+                : PaletteLightMode.textColor,
+            height: 1.5),
       );
 }
 

@@ -31,7 +31,6 @@ class _DrawerMenuState extends State<DrawerMenu> {
 
   Future<Club?> _fetchUserAsClub() async {
     final clubData = await clubService.fetchClubData();
-    print(clubData?.profileImageURL);
     return clubData;
   }
 

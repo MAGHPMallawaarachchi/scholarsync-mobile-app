@@ -2,7 +2,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:provider/provider.dart';
-import 'package:scholarsync/controllers/firebase_api.dart';
 import 'package:scholarsync/themes/app_theme.dart';
 import 'package:scholarsync/views/pages/home/home_page.dart';
 import 'themes/palette.dart';

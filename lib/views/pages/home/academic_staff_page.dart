@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:scholarsync/views/widgets/app_bar.dart';
-import 'package:scholarsync/views/pages/home/widgets/academic_staff_page_tab.dart';
-import 'package:scholarsync/views/pages/home/widgets/lecturer_info.dart';
+import 'package:scholarsync/themes/palette.dart';
+import '../../../controllers/lecturer_service.dart';
+import '../../../model/lecturer.dart';
+import '../../widgets/app_bar.dart';
+import 'widgets/academic_staff_page_tab.dart';
+import 'widgets/lecturer_info.dart';
 
 class AcademicStaffPage extends StatefulWidget {
   const AcademicStaffPage({super.key});
@@ -13,6 +16,7 @@ class AcademicStaffPage extends StatefulWidget {
 class _AcademicStaffPageState extends State<AcademicStaffPage>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
+  final LecturerService _lecturerService = LecturerService();
 
   @override
   void initState() {
@@ -24,12 +28,13 @@ class _AcademicStaffPageState extends State<AcademicStaffPage>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(kToolbarHeight),
+        preferredSize:
+            const Size.fromHeight(kToolbarHeight), // Set the preferred height
         child: CustomAppBar(
           title: 'Academic Staff',
           fontSize: 20.0,
           fontWeight: FontWeight.bold,
-          titleCenter: false,
+          titleCenter: true,
           leftIcon: true,
           onPressedListButton: () {
             Scaffold.of(context).openDrawer();
@@ -44,97 +49,33 @@ class _AcademicStaffPageState extends State<AcademicStaffPage>
             child: TabBarView(
               controller: _tabController,
               children: [
-                ListView(
-                  children: const [
-                    LecturerInformation(
-                      name: 'Mrs. Sophia Williams',
-                      email: 'sophiawilliams@gmail.com',
-                      //have to add the images
-                      photoAsset: 'assets/lecturer1.jpg',
-                    ),
-                    LecturerInformation(
-                      name: 'Mrs. Olivia Johnson',
-                      email: 'oliviajohnson@gmail.com',
-                      //have to add the images
-                      photoAsset: 'assets/lecturer2.jpg',
-                    ),
-                    LecturerInformation(
-                      name: 'Mr. Liam Smith',
-                      email: 'liamsmith@gmail.com',
-                      //have to add the images
-                      photoAsset: 'assets/lecturer1.jpg',
-                    ),
-                    // Add more lecturer information boxes for department 1
-                  ],
+                // Add FutureBuilder for the first tab (DS).
+                FutureBuilder<List<Lecturer>>(
+                  future: _lecturerService.getLecturers('DS'),
+                  builder: (context, snapshot) {
+                    return buildTabContent(snapshot);
+                  },
                 ),
-                ListView(
-                  children: const [
-                    LecturerInformation(
-                      name: 'Mr. Roland Stern',
-                      email: 'rolandstern@gmail.com',
-                      //have to add the images
-                      photoAsset: 'assets/lecturer3.jpg',
-                    ),
-                    LecturerInformation(
-                      name: 'Mr. Jackson Wang',
-                      email: 'jacksonwang@gmail.com',
-                      //have to add the images
-                      photoAsset: 'assets/lecturer4.jpg',
-                    ),
-                    LecturerInformation(
-                      name: 'Mrs. Stephanie Hartley',
-                      email: 'stephaniehartley@gmail.com',
-                      //have to add the images
-                      photoAsset: 'assets/lecturer1.jpg',
-                    ),
-                    // Add more lecturer information boxes for department 2
-                  ],
+                // Add FutureBuilder for the second tab (NS).
+                FutureBuilder<List<Lecturer>>(
+                  future: _lecturerService.getLecturers('NS'),
+                  builder: (context, snapshot) {
+                    return buildTabContent(snapshot);
+                  },
                 ),
-                ListView(
-                  children: const [
-                    LecturerInformation(
-                      name: 'Mrs. Nancy Wheeler',
-                      email: 'nancywheeler@gmail.com',
-                      //have to add the images
-                      photoAsset: 'assets/lecturer5.jpg',
-                    ),
-                    LecturerInformation(
-                      name: 'Mrs. Joyce Byers',
-                      email: 'joycebyers@gmail.com',
-                      //have to add the images
-                      photoAsset: 'assets/lecturer6.jpg',
-                    ),
-                    LecturerInformation(
-                      name: 'Mr. Dustin Henderson',
-                      email: 'dustinhenderson@gmail.com',
-                      //have to add the images
-                      photoAsset: 'assets/lecturer1.jpg',
-                    ),
-                    // Add more lecturer information boxes for department 3
-                  ],
+                // Add FutureBuilder for the third tab (IS).
+                FutureBuilder<List<Lecturer>>(
+                  future: _lecturerService.getLecturers('IS'),
+                  builder: (context, snapshot) {
+                    return buildTabContent(snapshot);
+                  },
                 ),
-                ListView(
-                  children: const [
-                    LecturerInformation(
-                      name: 'Mrs. Monet Addams',
-                      email: 'monetaddams@gmail.com',
-                      //have to add the images
-                      photoAsset: 'assets/lecturer7.jpg',
-                    ),
-                    LecturerInformation(
-                      name: 'Mr. Lucas Sinclair',
-                      email: 'lucassinclair@gmail.com',
-                      //have to add the images
-                      photoAsset: 'assets/lecturer8.jpg',
-                    ),
-                    LecturerInformation(
-                      name: 'Mrs. Naomi Watson',
-                      email: 'naomiwatson@gmail.com',
-                      //have to add the images
-                      photoAsset: 'assets/lecturer1.jpg',
-                    ),
-                    // Add more lecturer information boxes for department 4
-                  ],
+                // Add FutureBuilder for the fourth tab (CSSE).
+                FutureBuilder<List<Lecturer>>(
+                  future: _lecturerService.getLecturers('CSSE'),
+                  builder: (context, snapshot) {
+                    return buildTabContent(snapshot);
+                  },
                 ),
               ],
             ),
@@ -142,5 +83,32 @@ class _AcademicStaffPageState extends State<AcademicStaffPage>
         ],
       ),
     );
+  }
+
+  // Helper method to build tab content.
+  Widget buildTabContent(AsyncSnapshot<List<Lecturer>> snapshot) {
+    if (snapshot.connectionState == ConnectionState.waiting) {
+      return const CircularProgressIndicator(
+        color: CommonColors.secondaryGreenColor,
+      );
+    } else if (snapshot.hasError) {
+      return Text('Error: ${snapshot.error}');
+    } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+      return const Text('No lecturers found.');
+    } else {
+      final lecturers = snapshot.data!;
+      return ListView.builder(
+        itemCount: lecturers.length,
+        itemBuilder: (context, index) {
+          final lecturer = lecturers[index];
+          return LecturerInformation(
+            id: lecturer.id,
+            name: lecturer.name,
+            email: lecturer.email,
+            imageUrl: lecturer.profileImageURL,
+          );
+        },
+      );
+    }
   }
 }

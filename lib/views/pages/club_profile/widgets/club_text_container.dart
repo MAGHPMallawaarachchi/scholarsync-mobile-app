@@ -56,7 +56,7 @@ class _CustomTextContainerState extends State<CustomTextContainer> {
             style: TextStyle(
               fontSize: widget.headingSize,
               fontWeight: FontWeight.w700,
-              color: PaletteLightMode.textColor,
+              color: Theme.of(context).secondaryHeaderColor,
             ),
           ),
           const SizedBox(height: 10),
@@ -69,12 +69,7 @@ class _CustomTextContainerState extends State<CustomTextContainer> {
             linkColor: PaletteLightMode.secondaryTextColor,
             linkStyle: const TextStyle(
                 fontStyle: FontStyle.italic, fontWeight: FontWeight.w300),
-            style: const TextStyle(
-              fontSize: 13,
-              fontWeight: FontWeight.w400,
-              color: PaletteLightMode.textColor,
-              height: 1.5,
-            ),
+            style: Theme.of(context).textTheme.labelSmall,
             expanded: isExpanded,
           ),
         ],

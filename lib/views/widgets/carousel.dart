@@ -9,7 +9,7 @@ class Carousel extends StatefulWidget {
   final List<String> imageList;
   final bool autoScrolling;
   final bool showIconButton;
-  final VoidCallback onPressedDeleteButton;
+  final Function(int eventIndex, String imageUrl)? onPressedDeleteButton;
 
   const Carousel({
     super.key,
@@ -151,7 +151,8 @@ class _CarouselState extends State<Carousel> {
                                 iconAsset: IconConstants.deleteIcon,
                                 iconColor: CommonColors.whiteColor,
                                 buttonColor: CommonColors.primaryRedColor,
-                                onPressed: widget.onPressedDeleteButton,
+                                onPressed: widget.onPressedDeleteButton!(
+                                    pageNo, imagesList[pageNo]),
                               ),
                             ),
                           ),

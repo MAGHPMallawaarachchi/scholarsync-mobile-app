@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:scholarsync/controllers/firebase_auth.dart';
 
 import '../views/pages/calendar/calendar_page.dart';
+import '../views/pages/club_profile/club_profile_page.dart';
 import '../views/pages/home/home_page.dart';
 import '../views/pages/my_profile/my_profile_page.dart';
 import '../views/pages/notifications/notifications_page.dart';
@@ -9,7 +11,9 @@ class TabNavigator extends StatelessWidget {
   final GlobalKey<NavigatorState>? navigatorKey;
   final String? tabItem;
 
-  const TabNavigator({super.key, this.navigatorKey, this.tabItem});
+  final AuthService _authService = AuthService();
+
+  TabNavigator({super.key, this.navigatorKey, this.tabItem});
 
   @override
   Widget build(BuildContext context) {
@@ -24,12 +28,14 @@ class TabNavigator extends StatelessWidget {
     } else if (tabItem == 'notifications') {
       child = const NotificationsPage();
     } else if (tabItem == 'my_profile') {
-      child = const MyProfilePage();
+      _authService.checkIfUserIsClub().then((isClub) {
+        if (isClub) {
+          child = const ClubProfilePage();
+        } else {
+          child = const MyProfilePage();
+        }
+      });
     }
-
-    // return Container(
-    //   child: child,
-    // );
 
     return Navigator(
       key: navigatorKey,

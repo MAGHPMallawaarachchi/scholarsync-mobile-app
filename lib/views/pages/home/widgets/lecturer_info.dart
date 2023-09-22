@@ -2,15 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:scholarsync/themes/palette.dart';
 
 class LecturerInformation extends StatelessWidget {
+  final String id;
   final String name;
   final String email;
-  final String photoAsset;
+  final String imageUrl;
 
   const LecturerInformation({
     super.key,
+    required this.id,
     required this.name,
     required this.email,
-    required this.photoAsset,
+    required this.imageUrl,
   });
 
   @override
@@ -19,13 +21,14 @@ class LecturerInformation extends StatelessWidget {
       padding: const EdgeInsets.all(16.0),
       margin: const EdgeInsets.symmetric(vertical: 15.0, horizontal: 20),
       decoration: BoxDecoration(
-        color:  Theme.of(context).dialogBackgroundColor,
+        color: Theme.of(context).dialogBackgroundColor,
         borderRadius: BorderRadius.circular(8.0),
         boxShadow: const [
           BoxShadow(
             color: CommonColors.shadowColor,
-            offset: Offset(2, 4),
-            blurRadius: 10.0,
+            offset: Offset(8, 8),
+            blurRadius: 24,
+            spreadRadius: 0,
           ),
         ],
       ),
@@ -38,8 +41,7 @@ class LecturerInformation extends StatelessWidget {
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(8.0),
               image: DecorationImage(
-                //have to add the image
-                image: AssetImage(photoAsset),
+                image: NetworkImage(imageUrl),
                 fit: BoxFit.cover,
               ),
             ),
@@ -54,12 +56,13 @@ class LecturerInformation extends StatelessWidget {
               Text(
                 name,
                 style:
-                   Theme.of(context).textTheme.headlineMedium,
+                    const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 6.0),
               Text(
                 email,
-                style: Theme.of(context).textTheme.bodySmall,
+                style: const TextStyle(
+                    fontSize: 14, color: PaletteLightMode.secondaryTextColor),
               ),
             ],
           ),

@@ -8,13 +8,20 @@ import '../model/club.dart';
 
 class ClubService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
   final StreamController<List<String>> _eventImageUrlsController =
+      StreamController<List<String>>.broadcast();
+
+  final StreamController<List<String>> _fetchEventImageURLsByUser =
       StreamController<List<String>>.broadcast();
 
   final User user = FirebaseAuth.instance.currentUser!;
 
   Stream<List<String>> get eventImageUrlsStream =>
       _eventImageUrlsController.stream;
+
+  Stream<List<String>> get eventImageUrlsByUserStream =>
+      _fetchEventImageURLsByUser.stream;
 
   void listenForClubUpdates() {
     FirebaseFirestore.instance
@@ -23,6 +30,17 @@ class ClubService {
         .listen((QuerySnapshot snapshot) {
       final updatedImageUrls = fetchEventImageURLs(snapshot);
       _eventImageUrlsController.add(updatedImageUrls);
+    });
+  }
+
+  void listenForClubUpdatesByEmail() {
+    FirebaseFirestore.instance
+        .collection('clubs')
+        .where('email', isEqualTo: user.email)
+        .snapshots()
+        .listen((QuerySnapshot snapshot) {
+      final updatedImageUrls = fetchEventImageURLsByClub(snapshot);
+      _fetchEventImageURLsByUser.add(updatedImageUrls);
     });
   }
 
@@ -168,6 +186,30 @@ class ClubService {
     }
   }
 
+  Stream<List<String>> streamProfileImageURLs() {
+    return _firestore.collection('clubs').snapshots().map((snapshot) {
+      final List<String> imageUrls = [];
+
+      for (QueryDocumentSnapshot doc in snapshot.docs) {
+        final Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+
+        if (data.containsKey('profileImageURL') &&
+            data['profileImageURL'] is String) {
+          final String imageUrl = data['profileImageURL'];
+
+          if (imageUrl.isNotEmpty) {
+            imageUrls.add(imageUrl);
+          }
+        }
+      }
+      print('Image uRLs: $imageUrls');
+      return imageUrls;
+    }).handleError((error) {
+      print('Error fetching image URLs: $error');
+      return [];
+    });
+  }
+
   List<String> fetchEventImageURLs(QuerySnapshot snapshot) {
     final List<String> eventImageURLs = [];
 
@@ -197,27 +239,34 @@ class ClubService {
     return eventImageURLs;
   }
 
-  Stream<List<String>> streamProfileImageURLs() {
-    return _firestore.collection('clubs').snapshots().map((snapshot) {
-      final List<String> imageUrls = [];
+  List<String> fetchEventImageURLsByClub(QuerySnapshot snapshot) {
+    final List<String> eventImageURLs = [];
 
-      for (QueryDocumentSnapshot doc in snapshot.docs) {
-        final Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+    try {
+      final dynamic data = snapshot.docs.first.data();
+      if (data != null) {
+        final String? email = data['email'];
 
-        if (data.containsKey('profileImageURL') &&
-            data['profileImageURL'] is String) {
-          final String imageUrl = data['profileImageURL'];
+        // Check if the email matches the user's email
+        if (email == user.email) {
+          final List<dynamic>? events = data['events'];
 
-          if (imageUrl.isNotEmpty) {
-            imageUrls.add(imageUrl);
+          if (events != null) {
+            for (dynamic event in events) {
+              if (event is Map<String, dynamic>) {
+                final String? imageURL = event['imageUrl'];
+                if (imageURL != null) {
+                  eventImageURLs.add(imageURL);
+                }
+              }
+            }
           }
         }
       }
-      print('Image uRLs: $imageUrls');
-      return imageUrls;
-    }).handleError((error) {
-      print('Error fetching image URLs: $error');
-      return [];
-    });
+    } catch (error) {
+      print('Error fetching event image URLs: $error');
+    }
+
+    return eventImageURLs;
   }
 }
