@@ -1,4 +1,4 @@
-# ScholarSync UI Build
+# ScholarSync
 
 Hello! Welcome to the ScholarSync Mobile App UI showcase repository. This repository is dedicated to   
 presenting the ScholarSync Android application's user interface (UI) build, 
