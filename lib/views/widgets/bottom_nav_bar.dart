@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:scholarsync/themes/palette.dart';
-import 'package:scholarsync/constants/icon_constants.dart';
 import 'package:scholarsync/views/widgets/nav_item.dart';
 
 import 'nav_add.dart';

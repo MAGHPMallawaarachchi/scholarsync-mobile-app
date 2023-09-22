@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:scholarsync/controllers/firebase_auth.dart';
 import 'package:scholarsync/views/pages/home/academic_staff_page.dart';
+import 'package:scholarsync/views/pages/home/feedback_page.dart';
 import 'package:scholarsync/views/pages/home/settings_page.dart';
 import 'package:scholarsync/model/student.dart';
 import '../../controllers/club_service.dart';
@@ -250,7 +251,7 @@ class _DrawerMenuState extends State<DrawerMenu> {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => const SettingsPage(),
+                  builder: (context) => const FeedbackForm(),
                 ),
               );
             },

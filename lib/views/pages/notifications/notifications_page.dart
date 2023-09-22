@@ -52,7 +52,7 @@ class NotificationsPage extends StatelessWidget {
                     child: Center(
                       child: NotificationWidget(
                         leftIcon: PhosphorIcons.regular.bell,
-                        text: 'hello',
+                        text: 'You have upcoming lectures ',
                         // text: message.notification!.title.toString(),
                         subtitle: '30 minutes ago',
                       ),
