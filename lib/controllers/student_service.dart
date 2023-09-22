@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:scholarsync/controllers/firebase_service.dart';
@@ -8,6 +10,9 @@ import '../utils/utils.dart';
 class StudentService {
   CollectionReference studentCollection =
       FirebaseFirestore.instance.collection('students');
+  final User user = FirebaseAuth.instance.currentUser!;
+  final FirebaseService _firebaseService = FirebaseService();
+  final Utils _utils = Utils();
 
   Future<List<Student>> getStudents() async {
     try {
@@ -78,69 +83,61 @@ class StudentService {
     }
   }
 
-  static Future<void> createNewProject(Project project) async {
+  Future<void> createNewProject(Project project) async {
     try {
-      final user = FirebaseAuth.instance.currentUser;
-      if (user != null) {
-        final querySnapshot = await FirebaseFirestore.instance
+      final querySnapshot = await FirebaseFirestore.instance
+          .collection('students')
+          .where('email', isEqualTo: user.email)
+          .get();
+
+      if (querySnapshot.docs.isNotEmpty) {
+        final studentId = querySnapshot.docs[0].id;
+
+        final projectCollection = FirebaseFirestore.instance
             .collection('students')
-            .where('email', isEqualTo: user.email)
-            .get();
+            .doc(studentId)
+            .collection('projects');
 
-        if (querySnapshot.docs.isNotEmpty) {
-          final studentId = querySnapshot.docs[0].id;
-
-          final projectCollection = FirebaseFirestore.instance
-              .collection('students')
-              .doc(studentId)
-              .collection('projects');
-
-          await projectCollection.add({
-            'name': project.name,
-            'date': project.date,
-            'link': project.link,
-          });
-        }
+        await projectCollection.add({
+          'name': project.name,
+          'date': project.date,
+          'link': project.link,
+        });
       }
     } catch (e) {
-      // Handle errors here
+      log('Error creating new project: $e');
     }
   }
 
-  static Future<String> uploadImage(String studentId) async {
+  Future<Object> uploadImage(String studentId) async {
     try {
-      final imageFile = await Utils.pickImage();
-      return FirebaseService.uploadImage(
+      final imageFile = await _utils.pickImage();
+      return _firebaseService.uploadImage(
           imageFile!, 'students/$studentId/profileImage');
     } catch (e) {
-      print('Error uploading image: $e');
+      log('Error uploading image: $e');
       return "";
     }
   }
 
-  static Future<void> updateProfileImageURL(String id, String studentId) async {
+  Future<void> updateProfileImageURL(String id, String studentId) async {
     try {
       final studentDocRef =
           FirebaseFirestore.instance.collection('students').doc(id);
 
-      // Get the existing student document data
       final studentSnapshot = await studentDocRef.get();
       final studentData = studentSnapshot.data();
 
-      // Determine whether to create or update the profileImageUrl field
       if (studentData != null && studentData.containsKey('profileImageUrl')) {
-        // Update the existing profileImageUrl field
         final profileImageUrl = await uploadImage(studentId);
         await studentDocRef.update({'profileImageUrl': profileImageUrl});
       } else {
-        // Create the profileImageUrl field
         final profileImageUrl = await uploadImage(studentId);
         await studentDocRef
             .set({'profileImageUrl': profileImageUrl}, SetOptions(merge: true));
       }
     } catch (e) {
-      // Handle errors here
-      print('Error updating profile image URL: $e');
+      log('Error updating profile image URL: $e');
     }
   }
 }

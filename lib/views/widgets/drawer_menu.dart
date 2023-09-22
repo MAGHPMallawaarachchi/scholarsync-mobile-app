@@ -30,8 +30,8 @@ class _DrawerMenuState extends State<DrawerMenu> {
     return userData;
   }
 
-  Future<Club?> _fetchUserAsClub() async {
-    final clubData = await clubService.fetchClubData();
+  Future<Club?> _fetchUserAsClub() {
+    final clubData = clubService.getClubByEmail();
     return clubData;
   }
 
@@ -137,7 +137,7 @@ class _DrawerMenuState extends State<DrawerMenu> {
                   if (snapshot.data == true) {
                     // User is a club owner
                     return FutureBuilder<Club?>(
-                      future: _fetchUserAsClub(), // Fetch club data
+                      future: _fetchUserAsClub(),
                       builder: (context, clubSnapshot) {
                         if (clubSnapshot.connectionState ==
                             ConnectionState.done) {

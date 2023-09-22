@@ -37,7 +37,7 @@ class _MyProjectsPageState extends State<MyProjectsPage> {
         link: _linkController.text,
       );
 
-      await StudentService.createNewProject(project);
+      await studentService.createNewProject(project);
       setState(() {});
     } catch (e) {
       // print(e);

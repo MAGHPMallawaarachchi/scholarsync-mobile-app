@@ -29,6 +29,8 @@ class ProfileInfo extends StatefulWidget {
 }
 
 class _ProfileInfoState extends State<ProfileInfo> {
+  final StudentService studentService = StudentService();
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -69,7 +71,7 @@ class _ProfileInfoState extends State<ProfileInfo> {
                   iconColor: CommonColors.whiteColor,
                   buttonColor: CommonColors.secondaryGreenColor,
                   onPressed: () {
-                    StudentService.updateProfileImageURL(
+                    studentService.updateProfileImageURL(
                         widget.id, widget.studentId);
                     setState(() {});
                   },

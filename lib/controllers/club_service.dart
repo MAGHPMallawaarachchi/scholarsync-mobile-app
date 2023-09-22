@@ -1,37 +1,40 @@
 import 'dart:async';
+import 'dart:developer';
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:image_picker/image_picker.dart';
+import 'package:scholarsync/controllers/firebase_service.dart';
 import '../model/club.dart';
+import '../utils/utils.dart';
 
 class ClubService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final User user = FirebaseAuth.instance.currentUser!;
+  final FirebaseService _firebaseService = FirebaseService();
+  final Utils _utils = Utils();
 
   final StreamController<List<String>> _eventImageUrlsController =
       StreamController<List<String>>.broadcast();
 
-  final StreamController<List<String>> _fetchEventImageURLsByUser =
-      StreamController<List<String>>.broadcast();
-
-  final User user = FirebaseAuth.instance.currentUser!;
-
   Stream<List<String>> get eventImageUrlsStream =>
       _eventImageUrlsController.stream;
-
-  Stream<List<String>> get eventImageUrlsByUserStream =>
-      _fetchEventImageURLsByUser.stream;
 
   void listenForClubUpdates() {
     FirebaseFirestore.instance
         .collection('clubs')
         .snapshots()
         .listen((QuerySnapshot snapshot) {
-      final updatedImageUrls = fetchEventImageURLs(snapshot);
+      final updatedImageUrls = getEventImageURLs(snapshot);
       _eventImageUrlsController.add(updatedImageUrls);
     });
   }
+
+  final StreamController<List<String>> _eventImageUrlsByEmailController =
+      StreamController<List<String>>.broadcast();
+
+  Stream<List<String>> get eventImageUrlsByEmailStream =>
+      _eventImageUrlsController.stream;
 
   void listenForClubUpdatesByEmail() {
     FirebaseFirestore.instance
@@ -39,150 +42,60 @@ class ClubService {
         .where('email', isEqualTo: user.email)
         .snapshots()
         .listen((QuerySnapshot snapshot) {
-      final updatedImageUrls = fetchEventImageURLsByClub(snapshot);
-      _fetchEventImageURLsByUser.add(updatedImageUrls);
+      final updatedImageUrls = getEventImageURLsByEmail(snapshot);
+      _eventImageUrlsByEmailController.add(updatedImageUrls);
     });
   }
 
-  Future<List<Club>> getAllClubs() async {
+  Stream<List<Club>> getAllClubs() {
     try {
-      final QuerySnapshot querySnapshot =
-          await _firestore.collection('clubs').get();
-
-      return querySnapshot.docs.map((doc) => Club.fromSnapshot(doc)).toList();
+      final Stream<QuerySnapshot<Map<String, dynamic>>> querySnapshot =
+          _firestore.collection('clubs').snapshots();
+      return querySnapshot.map((snapshot) =>
+          snapshot.docs.map((doc) => Club.fromSnapshot(doc)).toList());
     } catch (error) {
-      // print("Error fetching clubs: $error");
-      return [];
+      log(error.toString());
+      return Stream.value([]);
     }
   }
 
-  Future<Club?> fetchClubData() async {
+  Future<Club?> getClubByEmail() async {
     try {
-      final user = FirebaseAuth.instance.currentUser;
-      if (user != null) {
-        final querySnapshot = await FirebaseFirestore.instance
-            .collection('clubs')
-            .where('email', isEqualTo: user.email)
-            .get();
-
-        if (querySnapshot.docs.isNotEmpty) {
-          final userData = querySnapshot.docs[0].data();
-
-          // Map the Firestore data to a Student object
-          return Club(
-            id: querySnapshot.docs[0].id,
-            email: userData['email'],
-            profileImageURL: userData['profileImageURL'],
-            name: userData['name'] ?? 'Club Name',
-            about: userData['about'] ?? 'About',
-            inCharge: userData['inCharge'] ?? 'In Charge',
-            president: userData['president'] ?? 'President',
-            bannerImageURL: userData['bannerImageURL'] ??
-                'https://w7.pngwing.com/pngs/869/370/png-transparent-low-polygon-background-green-banner-low-poly-materialized-flat-thumbnail.png',
-            events: List<Map<String, dynamic>>.from(userData['events'] ?? []),
-          );
-        }
-      }
-    } catch (e) {
-      // print('Error fetching user data: $e');
-    }
-    return null;
-  }
-
-  Future<Club> getClubById(String uid) async {
-    try {
-      final QuerySnapshot querySnapshot = await _firestore
+      final querySnapshot = await FirebaseFirestore.instance
           .collection('clubs')
-          .where('uid', isEqualTo: uid)
+          .where('email', isEqualTo: user.email)
           .get();
 
       if (querySnapshot.docs.isNotEmpty) {
-        return Club.fromSnapshot(querySnapshot.docs.first);
-      } else {
-        return "" as Club;
+        final userData = querySnapshot.docs[0].data();
+
+        return Club(
+          id: querySnapshot.docs[0].id,
+          email: userData['email'],
+          profileImageURL: userData['profileImageURL'],
+          name: userData['name'] ?? 'Club Name',
+          about: userData['about'] ?? 'About',
+          inCharge: userData['inCharge'] ?? 'In Charge',
+          president: userData['president'] ?? 'President',
+          bannerImageURL: userData['bannerImageURL'] ??
+              'https://w7.pngwing.com/pngs/869/370/png-transparent-low-polygon-background-green-banner-low-poly-materialized-flat-thumbnail.png',
+          events: List<Map<String, dynamic>>.from(userData['events'] ?? []),
+        );
       }
-    } catch (error) {
-      // print("Error fetching club: $error");
-      return "" as Club;
-    }
-  }
-
-  Future<void> updateClub(Club club) async {
-    try {
-      await _firestore.collection('clubs').doc(club.id).update(club.toJson());
-    } catch (error) {
-      // print("Error updating club: $error");
-    }
-  }
-
-  Future<String> uploadImage(File imageFile, String storagePath) async {
-    final storageRef = FirebaseStorage.instance.ref().child(storagePath);
-    final uploadTask = storageRef.putFile(imageFile);
-    await uploadTask.whenComplete(() {});
-    return await storageRef.getDownloadURL();
-  }
-
-  Future<File?> pickImage() async {
-    final picker = ImagePicker();
-    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
-    if (pickedFile != null) {
-      return File(pickedFile.path);
+    } catch (e) {
+      log('Error fetching user data: $e');
     }
     return null;
   }
 
-  Future<void> uploadEventImage(String uid) async {
-    Club club = await getClubById(uid);
+  Stream<Map<String, List<dynamic>>> getClubEvents() {
     try {
-      final eventImage = await pickImage();
-      String imageName = eventImage!.path.split('/').last;
-      final storagePath = 'clubs/${club.name}/events/$imageName';
-      String eventImageURL = await uploadImage(eventImage, storagePath);
-
-      // Create a new map for the event data with initial approval status
-      Map<String, dynamic> eventData = {
-        'imageUrl': eventImageURL,
-        'approved': false, // Set the initial approval status to false
-      };
-
-      // Check if club.events is null, and initialize it if needed
-      if (club.events == null) {
-        club.events = [eventData];
-      } else {
-        club.events!.add(eventData);
-      }
-
-      await updateClub(club);
+      final Stream<DocumentSnapshot<Map<String, dynamic>>> documentSnapshot =
+          _firestore.collection('clubs').doc(user.email).snapshots();
+      return documentSnapshot.map((snapshot) => snapshot.data()!['events']);
     } catch (error) {
-      // Handle errors
-    }
-  }
-
-  Future<void> deleteEventImage(String uid, int eventIndex) async {
-    try {
-      // Get the club document by UID
-      Club club = await getClubById(uid);
-
-      // Check if club.events is not null and contains the event to delete
-      if (club.events != null &&
-          eventIndex >= 0 &&
-          eventIndex < club.events!.length) {
-        // Get the event data at the specified index
-        Map<String, dynamic> eventData = club.events![eventIndex];
-
-        // Delete the image from Firebase Storage
-        final imageUrl = eventData['imageUrl'];
-        final storageRef = FirebaseStorage.instance.refFromURL(imageUrl);
-        await storageRef.delete();
-
-        // Remove the event data from the club's events list
-        club.events!.removeAt(eventIndex);
-
-        // Update the club document in Firestore to reflect the changes
-        await updateClub(club);
-      }
-    } catch (error) {
-      // Handle errors
+      log(error.toString());
+      return Stream.value({});
     }
   }
 
@@ -202,15 +115,137 @@ class ClubService {
           }
         }
       }
-      print('Image uRLs: $imageUrls');
+      log('Image uRLs: $imageUrls');
       return imageUrls;
     }).handleError((error) {
-      print('Error fetching image URLs: $error');
+      log('Error fetching image URLs: $error');
       return [];
     });
   }
 
-  List<String> fetchEventImageURLs(QuerySnapshot snapshot) {
+  Future<void> addClub(Club club) async {
+    try {
+      await _firestore.collection('clubs').doc(club.email).set(club.toJson());
+    } catch (error) {
+      log(error.toString());
+    }
+  }
+
+  Future<void> updateClub(Club club) async {
+    try {
+      await _firestore
+          .collection('clubs')
+          .doc(club.email)
+          .update(club.toJson());
+    } catch (error) {
+      log(error.toString());
+    }
+  }
+
+  Future<void> deleteClub(Club club) async {
+    try {
+      await _firestore.collection('clubs').doc(club.email).delete();
+    } catch (error) {
+      log(error.toString());
+    }
+  }
+
+  Future<void> uploadProfileImage() async {
+    try {
+      final Club? club = await getClubByEmail();
+
+      if (club != null) {
+        final File? profileImage = await _utils.pickImage();
+
+        if (profileImage != null) {
+          final String imagePath = 'clubs/${club.name}/profileImage';
+          final String? downloadURL =
+              await _firebaseService.uploadImage(profileImage, imagePath);
+
+          if (downloadURL != null) {
+            club.bannerImageURL = downloadURL;
+
+            await updateClub(club);
+          }
+        }
+      }
+    } catch (error) {
+      log(error.toString());
+    }
+  }
+
+  Future<void> uploadBannerImage() async {
+    try {
+      final Club? club = await getClubByEmail();
+
+      if (club != null) {
+        final File? bannerImage = await _utils.pickImage();
+
+        if (bannerImage != null) {
+          final String imagePath = 'clubs/${club.name}/bannerImage';
+          final String? downloadURL =
+              await _firebaseService.uploadImage(bannerImage, imagePath);
+
+          if (downloadURL != null) {
+            club.bannerImageURL = downloadURL;
+
+            await updateClub(club);
+          }
+        }
+      }
+    } catch (error) {
+      log(error.toString());
+    }
+  }
+
+  Future<void> uploadEventImage() async {
+    final Club club = getClubByEmail() as Club;
+    try {
+      final eventImage = await _utils.pickImage();
+      String imageName = eventImage!.path.split('/').last;
+      final storagePath = 'clubs/${club.name}/events/$imageName';
+      Future<String?> eventImageURL =
+          _firebaseService.uploadImage(eventImage, storagePath);
+
+      Map<String, dynamic> eventData = {
+        'imageUrl': eventImageURL,
+        'approved': false,
+      };
+
+      if (club.events == null) {
+        club.events = [eventData];
+      } else {
+        club.events!.add(eventData);
+      }
+
+      await updateClub(club);
+    } catch (error) {
+      log(error.toString());
+    }
+  }
+
+  Future<void> deleteEventImage(String uid, int eventIndex) async {
+    final Club club = getClubByEmail() as Club;
+    try {
+      if (club.events != null &&
+          eventIndex >= 0 &&
+          eventIndex < club.events!.length) {
+        Map<String, dynamic> eventData = club.events![eventIndex];
+
+        final imageUrl = eventData['imageUrl'];
+        final storageRef = FirebaseStorage.instance.refFromURL(imageUrl);
+        await storageRef.delete();
+
+        club.events!.removeAt(eventIndex);
+
+        await updateClub(club);
+      }
+    } catch (error) {
+      log(error.toString());
+    }
+  }
+
+  List<String> getEventImageURLs(QuerySnapshot snapshot) {
     final List<String> eventImageURLs = [];
 
     try {
@@ -233,38 +268,41 @@ class ClubService {
         }
       }
     } catch (error) {
-      print('Error fetching event image URLs: $error');
+      log('Error fetching event image URLs: $error');
     }
 
     return eventImageURLs;
   }
 
-  List<String> fetchEventImageURLsByClub(QuerySnapshot snapshot) {
+  List<String> getEventImageURLsByEmail(QuerySnapshot snapshot) {
     final List<String> eventImageURLs = [];
 
     try {
-      final dynamic data = snapshot.docs.first.data();
-      if (data != null) {
-        final String? email = data['email'];
+      for (QueryDocumentSnapshot clubDocument in snapshot.docs) {
+        final Map<String, dynamic>? data =
+            clubDocument.data() as Map<String, dynamic>?;
+        if (data != null) {
+          final String? email = data['email'];
 
-        // Check if the email matches the user's email
-        if (email == user.email) {
-          final List<dynamic>? events = data['events'];
+          if (email == user.email) {
+            final List<dynamic>? events = data['events'];
 
-          if (events != null) {
-            for (dynamic event in events) {
-              if (event is Map<String, dynamic>) {
-                final String? imageURL = event['imageUrl'];
-                if (imageURL != null) {
-                  eventImageURLs.add(imageURL);
+            if (events != null) {
+              for (dynamic event in events) {
+                if (event is Map<String, dynamic>) {
+                  final String? imageURL = event['imageUrl'];
+                  if (imageURL != null) {
+                    eventImageURLs.add(imageURL);
+                  }
                 }
               }
             }
+            break;
           }
         }
       }
     } catch (error) {
-      print('Error fetching event image URLs: $error');
+      log('Error fetching event image URLs: $error');
     }
 
     return eventImageURLs;

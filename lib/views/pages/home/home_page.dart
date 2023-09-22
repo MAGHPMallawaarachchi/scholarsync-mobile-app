@@ -30,15 +30,14 @@ class _HomePageState extends State<HomePage> {
     return studentData;
   }
 
-  Future<Club?> _fetchClub() async {
-    final clubData = await clubService.fetchClubData();
+  Future<Club?> _fetchClub() {
+    final clubData = clubService.getClubByEmail();
     return clubData;
   }
 
   @override
   void initState() {
     super.initState();
-    // Start listening for live updates
     clubService.listenForClubUpdates();
   }
 
@@ -58,7 +57,7 @@ class _HomePageState extends State<HomePage> {
                     if (snapshot.data == true) {
                       // User is a club owner
                       return FutureBuilder<Club?>(
-                        future: _fetchClub(), // Fetch club data
+                        future: _fetchClub(),
                         builder: (context, clubSnapshot) {
                           if (clubSnapshot.connectionState ==
                               ConnectionState.done) {
@@ -164,7 +163,6 @@ class _HomePageState extends State<HomePage> {
                 height: 5,
               ),
 
-              // Carousel
               StreamBuilder<List<String>>(
                 stream:
                     clubService.eventImageUrlsStream, // Listen to live updates

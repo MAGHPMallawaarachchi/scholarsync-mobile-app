@@ -1,3 +1,4 @@
+import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:scholarsync/constants/icon_constants.dart';
 import 'package:scholarsync/controllers/club_service.dart';
@@ -24,32 +25,25 @@ class _ClubProfilePageState extends State<ClubProfilePage> {
   final ClubService clubService = ClubService();
 
   bool isOwner = false;
-  Club? clubData; // Hold club information
 
   Future<bool> checkUserIsClub() async {
     final bool isUserClub = await authService.checkIfUserIsClub();
+    setState(() {
+      isOwner = isUserClub;
+    });
     return isUserClub;
   }
 
   Future<Club?> _fetchClub() async {
-    final clubData = await clubService.fetchClubData();
+    final clubData = await clubService.getClubByEmail();
     return clubData;
   }
 
   @override
   void initState() {
     super.initState();
-    _initializeIsOwner();
-    clubService.listenForClubUpdates();
-  }
-
-  Future<void> _initializeIsOwner() async {
-    final userIsClub = await checkUserIsClub();
-    if (userIsClub) {
-      setState(() {
-        isOwner = true;
-      });
-    }
+    checkUserIsClub();
+    clubService.listenForClubUpdatesByEmail();
   }
 
   @override
@@ -58,7 +52,7 @@ class _ClubProfilePageState extends State<ClubProfilePage> {
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(kToolbarHeight),
         child: CustomAppBar(
-          title: clubData?.name ?? 'Club Profile',
+          title: 'Club Profile',
           fontSize: 20.0,
           fontWeight: FontWeight.bold,
           titleCenter: false,
@@ -69,119 +63,99 @@ class _ClubProfilePageState extends State<ClubProfilePage> {
       ),
       body: SingleChildScrollView(
         physics: const BouncingScrollPhysics(),
-        child: Column(
-          children: [
-            FutureBuilder<Club?>(
-              future: _fetchClub(),
-              builder: (context, clubSnapshot) {
-                if (clubSnapshot.connectionState == ConnectionState.done) {
-                  final clubData = clubSnapshot.data;
+        child: FutureBuilder<Club?>(
+          future: _fetchClub(),
+          builder: (context, clubSnapshot) {
+            if (clubSnapshot.connectionState == ConnectionState.done) {
+              final club = clubSnapshot.data;
 
-                  return SingleChildScrollView(
-                    physics: const BouncingScrollPhysics(),
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 20),
-                      child: Column(
+              return SingleChildScrollView(
+                physics: const BouncingScrollPhysics(),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: Column(
+                    children: [
+                      _buildImageBannerWithCircularImage(),
+                      Text(
+                        club?.name ?? 'Club Name',
+                        style: Theme.of(context).textTheme.displayLarge,
+                      ),
+                      const SizedBox(height: 11),
+                      if (isOwner)
+                        CustomElevatedButton(
+                          label: 'Edit Profile',
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 0, vertical: 0),
+                          textSize: 10,
+                          onPressed: () {
+                            _showFormDialog(context, club!);
+                          },
+                          height: 20,
+                          backgroundColor: CommonColors.secondaryGreenColor,
+                        ),
+                      const SizedBox(height: 20),
+                      CustomTextContainer(
+                        heading: 'About',
+                        text: club?.about ?? 'About Club',
+                        headingSize: 16.0,
+                        backgroundColor:
+                            Theme.of(context).dialogBackgroundColor,
+                      ),
+                      const SizedBox(height: 15),
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          _buildImageBannerWithCircularImage(),
-                          Text(
-                            clubData?.name ?? 'Club Name',
-                            style: Theme.of(context).textTheme.displayLarge,
-                          ),
-                          const SizedBox(height: 11),
-                          if (isOwner)
-                            CustomElevatedButton(
-                              label: 'Edit Profile',
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 0, vertical: 0),
-                              textSize: 10,
-                              onPressed: () {
-                                _showFormDialog(context, clubData!);
-                              },
-                              height: 20,
-                              backgroundColor: CommonColors.secondaryGreenColor,
-                            ),
-                          const SizedBox(height: 20),
-                          CustomTextContainer(
-                            heading: 'About',
-                            text: clubData?.about ?? 'About Club',
-                            headingSize: 16.0,
-                            backgroundColor:
-                                Theme.of(context).dialogBackgroundColor,
-                          ),
-                          const SizedBox(height: 15),
-                          Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Expanded(
-                                child: CustomTextContainer(
-                                  heading: 'In Charge',
-                                  headingSize: 12.0,
-                                  text: clubData?.inCharge ??
-                                      'Master/Mistress Name',
-                                  backgroundColor:
-                                      Theme.of(context).dialogBackgroundColor,
-                                ),
-                              ),
-                              const SizedBox(width: 15),
-                              Expanded(
-                                child: CustomTextContainer(
-                                  heading: 'President',
-                                  headingSize: 12.0,
-                                  text: clubData?.president ?? 'President Name',
-                                  backgroundColor:
-                                      Theme.of(context).dialogBackgroundColor,
-                                ),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(height: 40),
-                          Align(
-                            alignment: Alignment.centerLeft,
-                            child: Text(
-                              'Upcoming Events by ${clubData?.name ?? 'Club Name'}',
-                              style: Theme.of(context).textTheme.labelLarge,
+                          Expanded(
+                            child: CustomTextContainer(
+                              heading: 'In Charge',
+                              headingSize: 12.0,
+                              text: club?.inCharge ?? 'Master/Mistress Name',
+                              backgroundColor:
+                                  Theme.of(context).dialogBackgroundColor,
                             ),
                           ),
-                          const SizedBox(height: 15),
-
-                          //carousel
+                          const SizedBox(width: 15),
+                          Expanded(
+                            child: CustomTextContainer(
+                              heading: 'President',
+                              headingSize: 12.0,
+                              text: club?.president ?? 'President Name',
+                              backgroundColor:
+                                  Theme.of(context).dialogBackgroundColor,
+                            ),
+                          ),
                         ],
                       ),
-                    ),
-                  );
-                } else if (clubSnapshot.connectionState ==
-                    ConnectionState.waiting) {
-                  return const Center(child: CircularProgressIndicator());
-                } else {
-                  // Handle the case when the club data is not available
-                  return const Center(
-                    child: Text('Club data not available.'),
-                  );
-                }
-              },
-            ),
-            const SizedBox(height: 15),
-            StreamBuilder<List<String>>(
-              stream:
-                  clubService.eventImageUrlsStream, // Listen to live updates
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.active) {
-                  // Use the updated eventImageUrls
-                  final eventImageUrls = snapshot.data ?? [];
-                  return CustomCarousel(
-                    imageList: eventImageUrls,
-                    showIconButton: isOwner,
-                  );
-                } else {
-                  // Show a loading indicator or placeholder while waiting for updates
-                  return const CircularProgressIndicator(
-                    color: CommonColors.secondaryGreenColor,
-                  );
-                }
-              },
-            ),
-          ],
+                      const SizedBox(height: 40),
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          'Upcoming Events by ${club?.name ?? 'Club Name'}',
+                          style: Theme.of(context).textTheme.labelLarge,
+                        ),
+                      ),
+                      const SizedBox(height: 15),
+
+                      //carousel
+                      CustomCarousel(
+                          imageList: club?.events
+                                  ?.map<String>(
+                                      (event) => event['imageUrl'] as String)
+                                  .toList() ??
+                              []),
+                    ],
+                  ),
+                ),
+              );
+            } else if (clubSnapshot.connectionState ==
+                ConnectionState.waiting) {
+              return const Center(child: CircularProgressIndicator());
+            } else {
+              return const Center(
+                child: Text('Club data not available.'),
+              );
+            }
+          },
         ),
       ),
     );
@@ -219,7 +193,10 @@ class _ClubProfilePageState extends State<ClubProfilePage> {
               iconAsset: IconConstants.cameraIcon,
               iconColor: CommonColors.whiteColor,
               buttonColor: CommonColors.secondaryGreenColor,
-              onPressed: () {},
+              onPressed: () {
+                clubService.uploadBannerImage();
+                setState(() {});
+              },
             ),
           ),
       ],
@@ -279,7 +256,6 @@ class _ClubProfilePageState extends State<ClubProfilePage> {
                   radius: imageSize / 2,
                 );
               } else {
-                // Show a loading indicator or a placeholder image while loading
                 return const Center(
                   child: CircularProgressIndicator(
                     color: CommonColors.secondaryGreenColor,
@@ -298,7 +274,10 @@ class _ClubProfilePageState extends State<ClubProfilePage> {
               iconAsset: IconConstants.cameraIcon,
               iconColor: CommonColors.whiteColor,
               buttonColor: CommonColors.secondaryGreenColor,
-              onPressed: () {},
+              onPressed: () {
+                clubService.uploadProfileImage();
+                setState(() {});
+              },
             ),
           ),
       ],
@@ -367,7 +346,7 @@ class _ClubProfilePageState extends State<ClubProfilePage> {
             try {
               await clubService.updateClub(club);
             } catch (e) {
-              // print(club.id);
+              log(e.toString() as num);
             }
 
             aboutController.dispose();
