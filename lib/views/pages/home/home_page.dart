@@ -8,11 +8,12 @@ import 'package:scholarsync/views/pages/home/kuppi_page.dart';
 import 'package:scholarsync/views/widgets/search_bar.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import '../../../model/club.dart';
+import '../../../sidebar/bloc.navigation_bloc/navigation_bloc.dart';
 import '../../../themes/palette.dart';
 import 'widgets/image_row.dart';
 import '../../widgets/custom_carousel.dart';
 
-class HomePage extends StatefulWidget {
+class HomePage extends StatefulWidget implements NavigationStates {
   const HomePage({super.key});
 
   @override

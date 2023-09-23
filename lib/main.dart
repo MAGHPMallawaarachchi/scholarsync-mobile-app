@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:provider/provider.dart';
+import 'package:scholarsync/sidebar/sidebar_layout.dart';
 import 'package:scholarsync/themes/app_theme.dart';
 import 'package:scholarsync/views/pages/home/home_page.dart';
 import 'themes/palette.dart';
@@ -9,7 +10,7 @@ import 'utils/tab_navigator.dart';
 import 'views/pages/calendar/calendar_page.dart';
 import 'views/pages/my_profile/my_profile_page.dart';
 import 'views/pages/notifications/notifications_page.dart';
-import 'views/widgets/drawer_menu.dart';
+// import 'views/widgets/drawer_menu.dart';
 import 'views/widgets/nav_add.dart';
 import 'views/widgets/nav_item.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -131,7 +132,7 @@ class _MainAppState extends State<MainApp> {
                 return isFirstRouteInCurrentTab;
               },
               child: Scaffold(
-                drawer: const DrawerMenu(),
+                drawer: const SidebarLayout(),//side bar added here, when we need add a bottom nav bar all side bar items we need bottom nav bar code put into this parameters(sidebaLayout(--bottom navBar code--)).
                 body: Stack(children: <Widget>[
                   _buildOffstageNavigator('home'),
                   _buildOffstageNavigator('calendar'),
