@@ -190,27 +190,23 @@ class ClubService {
     }
   }
 
-  Future<void> uploadEventImage() async {
+  Future<void> uploadEvent() async {
     final Club? club = await getClubByEmail();
     try {
       if (club != null) {
         final eventImage = await _utils.pickImage();
         String imageName = eventImage!.path.split('/').last;
         final storagePath = 'clubs/${club.name}/events/$imageName';
-        Future<String?> eventImageURL =
-            _firebaseService.uploadImage(eventImage, storagePath);
+        String? eventImageURL =
+            await _firebaseService.uploadImage(eventImage, storagePath);
 
+        // Create a new event map
         Map<String, dynamic> eventData = {
           'imageUrl': eventImageURL,
           'approved': false,
         };
-
-        if (club.events == null) {
-          club.events = [eventData];
-        } else {
-          club.events!.add(eventData);
-        }
-
+        club.events ??= [];
+        club.events!.add(eventData);
         await updateClub(club);
       }
     } catch (error) {
