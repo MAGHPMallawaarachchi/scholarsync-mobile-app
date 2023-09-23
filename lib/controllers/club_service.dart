@@ -218,7 +218,7 @@ class ClubService {
     }
   }
 
-  Future<void> deleteEventImage(String uid, int eventIndex) async {
+  Future<void> deleteEvent(int eventIndex) async {
     final Club? club = await getClubByEmail();
     try {
       if (club != null) {

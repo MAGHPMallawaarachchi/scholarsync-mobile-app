@@ -1,4 +1,3 @@
-import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:scholarsync/constants/icon_constants.dart';
 import 'package:scholarsync/controllers/club_service.dart';
@@ -38,6 +37,12 @@ class _ClubProfilePageState extends State<ClubProfilePage> {
     return isUserClub;
   }
 
+  Future<void> _refreshClubData() async {
+    await Future.delayed(const Duration(seconds: 1));
+    await clubService.getClubByEmail();
+    setState(() {});
+  }
+
   @override
   void initState() {
     super.initState();
@@ -61,101 +66,111 @@ class _ClubProfilePageState extends State<ClubProfilePage> {
           },
         ),
       ),
-      body: SingleChildScrollView(
-        physics: const BouncingScrollPhysics(),
-        child: FutureBuilder<Club?>(
-          future: clubService.getClubByEmail(),
-          builder: (context, clubSnapshot) {
-            if (clubSnapshot.connectionState == ConnectionState.done) {
-              final club = clubSnapshot.data;
-              return SingleChildScrollView(
-                physics: const BouncingScrollPhysics(),
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
-                  child: Column(
-                    children: [
-                      _buildBannerImageWithCircularImage(club!),
-                      Text(
-                        club.name,
-                        style: Theme.of(context).textTheme.displayLarge,
-                      ),
-                      const SizedBox(height: 11),
-                      if (isOwner)
-                        CustomElevatedButton(
-                          label: 'Edit Profile',
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 0, vertical: 0),
-                          textSize: 10,
-                          onPressed: () {
-                            _showFormDialog(context, club);
-                          },
-                          height: 20,
-                          backgroundColor: CommonColors.secondaryGreenColor,
+      body: RefreshIndicator(
+        color: CommonColors.secondaryGreenColor,
+        onRefresh: _refreshClubData,
+        child: SingleChildScrollView(
+          physics: const BouncingScrollPhysics(),
+          child: FutureBuilder<Club?>(
+            future: clubService.getClubByEmail(),
+            builder: (context, clubSnapshot) {
+              if (clubSnapshot.connectionState == ConnectionState.done) {
+                final club = clubSnapshot.data;
+                return SingleChildScrollView(
+                  physics: const BouncingScrollPhysics(),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: Column(
+                      children: [
+                        _buildBannerImageWithCircularImage(club!),
+                        Text(
+                          club.name,
+                          style: Theme.of(context).textTheme.displayLarge,
                         ),
-                      const SizedBox(height: 20),
-                      CustomTextContainer(
-                        heading: 'About',
-                        text: club.about ?? 'About Club',
-                        headingSize: 16.0,
-                        backgroundColor:
-                            Theme.of(context).dialogBackgroundColor,
-                      ),
-                      const SizedBox(height: 15),
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Expanded(
-                            child: CustomTextContainer(
-                              heading: 'In Charge',
-                              headingSize: 12.0,
-                              text: club.inCharge ?? 'Master/Mistress Name',
-                              backgroundColor:
-                                  Theme.of(context).dialogBackgroundColor,
-                            ),
+                        const SizedBox(height: 11),
+                        if (isOwner)
+                          CustomElevatedButton(
+                            label: 'Edit Profile',
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 0, vertical: 0),
+                            textSize: 10,
+                            onPressed: () {
+                              _showFormDialog(context, club);
+                            },
+                            height: 20,
+                            backgroundColor: CommonColors.secondaryGreenColor,
                           ),
-                          const SizedBox(width: 15),
-                          Expanded(
-                            child: CustomTextContainer(
-                              heading: 'President',
-                              headingSize: 12.0,
-                              text: club.president ?? 'President Name',
-                              backgroundColor:
-                                  Theme.of(context).dialogBackgroundColor,
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 40),
-                      Align(
-                        alignment: Alignment.centerLeft,
-                        child: Text(
-                          'Upcoming Events by ${club.name}',
-                          style: Theme.of(context).textTheme.labelLarge,
+                        const SizedBox(height: 20),
+                        CustomTextContainer(
+                          heading: 'About',
+                          text: club.about ?? 'About Club',
+                          headingSize: 16.0,
+                          backgroundColor:
+                              Theme.of(context).dialogBackgroundColor,
                         ),
-                      ),
-                      const SizedBox(height: 15),
+                        const SizedBox(height: 15),
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Expanded(
+                              child: CustomTextContainer(
+                                heading: 'In Charge',
+                                headingSize: 12.0,
+                                text: club.inCharge ?? 'Master/Mistress Name',
+                                backgroundColor:
+                                    Theme.of(context).dialogBackgroundColor,
+                              ),
+                            ),
+                            const SizedBox(width: 15),
+                            Expanded(
+                              child: CustomTextContainer(
+                                heading: 'President',
+                                headingSize: 12.0,
+                                text: club.president ?? 'President Name',
+                                backgroundColor:
+                                    Theme.of(context).dialogBackgroundColor,
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 40),
+                        Align(
+                          alignment: Alignment.centerLeft,
+                          child: Text(
+                            'Upcoming Events by ${club.name}',
+                            style: Theme.of(context).textTheme.labelLarge,
+                          ),
+                        ),
+                        const SizedBox(height: 15),
 
-                      //carousel
-                      CustomCarousel(
+                        //carousel
+                        CustomCarousel(
                           imageList: club.events
                                   ?.map<String>(
                                       (event) => event['imageUrl'] as String)
                                   .toList() ??
                               [],
-                          showIconButton: isOwner),
-                    ],
+                          showIconButton: isOwner,
+                          enableAutoScroll: !isOwner,
+                          onPressedDeleteButton: (eventIndex, imageUrl) {
+                            clubService.deleteEvent(eventIndex);
+                            setState(() {});
+                          },
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-              );
-            } else if (clubSnapshot.connectionState ==
-                ConnectionState.waiting) {
-              return const Center(child: CircularProgressIndicator());
-            } else {
-              return const Center(
-                child: Text('Club data not available.'),
-              );
-            }
-          },
+                );
+              } else if (clubSnapshot.connectionState ==
+                  ConnectionState.waiting) {
+                return const Center(child: CircularProgressIndicator());
+              } else {
+                return const Center(
+                  child: Text('Club data not available.'),
+                );
+              }
+            },
+          ),
         ),
       ),
     );

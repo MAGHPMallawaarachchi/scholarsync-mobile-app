@@ -11,7 +11,7 @@ class CustomCarousel extends StatefulWidget {
   final bool showIconButton;
   final bool enableAutoScroll;
   final Function(int eventIndex, String imageUrl)? onPressedDeleteButton;
-  final int autoScrollDuration; // Added for customizing auto-scroll duration
+  final int autoScrollDuration;
 
   const CustomCarousel({
     Key? key,
@@ -20,7 +20,7 @@ class CustomCarousel extends StatefulWidget {
     this.showIconButton = false,
     this.enableAutoScroll = true,
     this.onPressedDeleteButton,
-    this.autoScrollDuration = 3, // Default auto-scroll duration
+    this.autoScrollDuration = 3,
   }) : super(key: key);
 
   @override
@@ -30,12 +30,12 @@ class CustomCarousel extends StatefulWidget {
 class _CustomCarouselState extends State<CustomCarousel> {
   late PageController _pageController;
   Timer? _autoScrollTimer;
-  int pageNo = 0;
+  int currentPage = 0;
 
   @override
   void initState() {
     super.initState();
-    _pageController = PageController(initialPage: pageNo);
+    _pageController = PageController(initialPage: 0);
     if (widget.enableAutoScroll) {
       _startAutoScroll();
     }
@@ -52,16 +52,20 @@ class _CustomCarouselState extends State<CustomCarousel> {
     _autoScrollTimer = Timer.periodic(
       Duration(seconds: widget.autoScrollDuration),
       (timer) {
-        if (pageNo == widget.imageList.length - 1) {
-          pageNo = 0;
+        if (currentPage == widget.imageList.length - 1) {
+          currentPage = 0;
+          _pageController.animateToPage(
+            0,
+            duration: const Duration(seconds: 2),
+            curve: Curves.easeInOut,
+          );
         } else {
-          pageNo++;
+          currentPage++;
+          _pageController.nextPage(
+            duration: const Duration(seconds: 2),
+            curve: Curves.easeInOut,
+          );
         }
-        _pageController.animateToPage(
-          pageNo,
-          duration: const Duration(seconds: 2),
-          curve: Curves.easeInOut,
-        );
       },
     );
   }
@@ -77,11 +81,13 @@ class _CustomCarouselState extends State<CustomCarousel> {
             height: MediaQuery.of(context).size.width -
                 2 * widget.containerPadding, // Square container
             child: PageView.builder(
-              key: const Key('customCarouselPageView'), // Added a key
               controller: _pageController,
               physics: const BouncingScrollPhysics(),
               onPageChanged: (index) {
-                pageNo = index;
+                setState(() {
+                  currentPage =
+                      index; // Update currentPage when the page changes
+                });
               },
               itemBuilder: (_, index) {
                 return Stack(
@@ -110,10 +116,13 @@ class _CustomCarouselState extends State<CustomCarousel> {
                             iconColor: CommonColors.whiteColor,
                             buttonColor: CommonColors.primaryRedColor,
                             onPressed: () {
-                              widget.onPressedDeleteButton!(
-                                pageNo,
-                                widget.imageList[pageNo],
-                              );
+                              if (widget.onPressedDeleteButton != null) {
+                                widget.onPressedDeleteButton!(
+                                  currentPage, // Use currentPage
+                                  widget.imageList[
+                                      currentPage], // Use currentPage
+                                );
+                              }
                             },
                           ),
                         ),
@@ -135,7 +144,7 @@ class _CustomCarouselState extends State<CustomCarousel> {
                 height: 8,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: pageNo == index
+                  color: currentPage == index // Use currentPage
                       ? CommonColors.secondaryGreenColor
                       : PaletteLightMode.secondaryTextColor,
                 ),
