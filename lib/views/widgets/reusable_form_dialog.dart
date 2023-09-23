@@ -32,6 +32,7 @@ class _ReusableFormDialogState extends State<ReusableFormDialog> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(10),
       ),
@@ -53,7 +54,7 @@ class _ReusableFormDialogState extends State<ReusableFormDialog> {
                   buttonSize: 30,
                   iconAsset: IconConstants.closeIcon,
                   iconColor: CommonColors.secondaryGreenColor,
-                  buttonColor: CommonColors.whiteColor,
+                  buttonColor: Theme.of(context).scaffoldBackgroundColor,
                   onPressed: () {
                     Navigator.of(context).pop();
                   },

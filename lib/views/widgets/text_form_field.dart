@@ -51,10 +51,10 @@ class _ReusableTextFieldState extends State<ReusableTextField> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-            Text(
-                    widget.labelText,
-                    style: Theme.of(context).textTheme.bodySmall,
-                  ),
+          Text(
+            widget.labelText,
+            style: Theme.of(context).textTheme.displayMedium,
+          ),
           const SizedBox(
             height: 4,
           ),
@@ -80,18 +80,15 @@ class _ReusableTextFieldState extends State<ReusableTextField> {
                 onSaved: widget.onSaved,
                 obscureText: widget.obscureText,
                 cursorColor: CommonColors.secondaryGreenColor,
-                style:  
-                  Theme.of(context).textTheme.bodySmall,
-          
+                style: Theme.of(context).textTheme.bodySmall,
                 decoration: InputDecoration(
                   contentPadding:
                       const EdgeInsets.symmetric(vertical: 0, horizontal: 8),
-                      
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10),
-                    borderSide:  BorderSide(
+                    borderSide: BorderSide(
                       width: 1.5,
-                      color:  Theme.of(context).dividerColor,
+                      color: Theme.of(context).dividerColor,
                     ),
                   ),
                   focusedBorder: OutlineInputBorder(

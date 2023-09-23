@@ -11,6 +11,7 @@ import 'package:scholarsync/themes/palette.dart';
 import '../../../controllers/student_service.dart';
 import '../../../model/project.dart';
 import '../../../utils/format_date.dart';
+import 'widgets/project_form.dart';
 
 void main() {
   runApp(const MyProjectsPage());
@@ -42,6 +43,43 @@ class _MyProjectsPageState extends State<MyProjectsPage> {
     } catch (e) {
       // print(e);
     }
+  }
+
+  void _showFormDialog(BuildContext context, {Project? project}) async {
+    bool isEditing = project != null;
+
+    if (isEditing) {
+      _nameController.text = project.name;
+      _dateController.text =
+          FormatDate.projectformatDate(DateTime.parse(project.date.toString()));
+      _linkController.text = project.link;
+    } else {
+      _nameController.clear();
+      _dateController.clear();
+      _linkController.clear();
+    }
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return ReusableFormDialog(
+          title: isEditing ? 'Edit Project' : 'Add New Project',
+          buttonLabel: isEditing ? 'Save' : 'Add',
+          formFields: [
+            const SizedBox(height: 15),
+            ProjectForm(
+              nameController: _nameController,
+              dateController: _dateController,
+              linkController: _linkController,
+              isEditing: isEditing,
+            ),
+          ],
+          onSubmit: (formData) async {
+            await createNewProject();
+          },
+        );
+      },
+    );
   }
 
   @override
@@ -178,73 +216,73 @@ class _MyProjectsPageState extends State<MyProjectsPage> {
     );
   }
 
-  void _showFormDialog(BuildContext context, {Project? project}) async {
-    bool isEditing = project != null;
+  // void _showFormDialog(BuildContext context, {Project? project}) async {
+  //   bool isEditing = project != null;
 
-    if (isEditing) {
-      _nameController.text = project.name;
-      _dateController.text =
-          FormatDate.projectformatDate(DateTime.parse(project.date.toString()));
-      _linkController.text = project.link;
-    } else {
-      _nameController.clear();
-      _dateController.clear();
-      _linkController.clear();
-    }
+  //   if (isEditing) {
+  //     _nameController.text = project.name;
+  //     _dateController.text =
+  //         FormatDate.projectformatDate(DateTime.parse(project.date.toString()));
+  //     _linkController.text = project.link;
+  //   } else {
+  //     _nameController.clear();
+  //     _dateController.clear();
+  //     _linkController.clear();
+  //   }
 
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return ReusableFormDialog(
-          title: isEditing ? 'Edit Project' : 'Add New Project',
-          buttonLabel: isEditing ? 'Save' : 'Add',
-          formFields: [
-            const SizedBox(height: 15),
-            ReusableTextField(
-              controller: _nameController,
-              labelText: 'Project Name',
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Please enter a name';
-                }
-                return null;
-              },
-              onSaved: (value) {},
-            ),
-            ReusableTextField(
-              controller: _dateController,
-              labelText: 'Date',
-              isDateField: true,
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Please enter a date';
-                }
-                return null;
-              },
-              onSaved: (value) {},
-            ),
-            ReusableTextField(
-              controller: _linkController,
-              labelText: 'Github Link',
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Please enter the GitHub link';
-                }
+  //   showDialog(
+  //     context: context,
+  //     builder: (BuildContext context) {
+  //       return ReusableFormDialog(
+  //         title: isEditing ? 'Edit Project' : 'Add New Project',
+  //         buttonLabel: isEditing ? 'Save' : 'Add',
+  //         formFields: [
+  //           const SizedBox(height: 15),
+  //           ReusableTextField(
+  //             controller: _nameController,
+  //             labelText: 'Project Name',
+  //             validator: (value) {
+  //               if (value == null || value.isEmpty) {
+  //                 return 'Please enter a name';
+  //               }
+  //               return null;
+  //             },
+  //             onSaved: (value) {},
+  //           ),
+  //           ReusableTextField(
+  //             controller: _dateController,
+  //             labelText: 'Date',
+  //             isDateField: true,
+  //             validator: (value) {
+  //               if (value == null || value.isEmpty) {
+  //                 return 'Please enter a date';
+  //               }
+  //               return null;
+  //             },
+  //             onSaved: (value) {},
+  //           ),
+  //           ReusableTextField(
+  //             controller: _linkController,
+  //             labelText: 'Github Link',
+  //             validator: (value) {
+  //               if (value == null || value.isEmpty) {
+  //                 return 'Please enter the GitHub link';
+  //               }
 
-                final Uri uri = Uri.parse(value);
-                if (uri.scheme.isEmpty || uri.host.isEmpty) {
-                  return 'Please enter a valid URL';
-                }
-                return null;
-              },
-              onSaved: (value) {},
-            ),
-          ],
-          onSubmit: (formData) async {
-            await createNewProject();
-          },
-        );
-      },
-    );
-  }
+  //               final Uri uri = Uri.parse(value);
+  //               if (uri.scheme.isEmpty || uri.host.isEmpty) {
+  //                 return 'Please enter a valid URL';
+  //               }
+  //               return null;
+  //             },
+  //             onSaved: (value) {},
+  //           ),
+  //         ],
+  //         onSubmit: (formData) async {
+  //           await createNewProject();
+  //         },
+  //       );
+  //     },
+  //   );
+  // }
 }
