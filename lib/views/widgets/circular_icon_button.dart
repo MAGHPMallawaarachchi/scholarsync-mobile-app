@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 
 class CircularIconButton extends StatelessWidget {
   final double buttonSize;
-  final String iconAsset;
+  final IconData iconAsset;
   final Color iconColor;
   final Color buttonColor;
   final VoidCallback onPressed;
@@ -30,13 +29,9 @@ class CircularIconButton extends StatelessWidget {
           shape: BoxShape.circle,
         ),
         child: Center(
-          child: SvgPicture.asset(
+          child: Icon(
             iconAsset,
-            colorFilter: ColorFilter.mode(
-              iconColor,
-              BlendMode.srcIn,
-            ),
-            height: buttonSize * 0.5,
+            size: buttonSize * 0.5,
           ),
         ),
       ),

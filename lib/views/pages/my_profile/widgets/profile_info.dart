@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:scholarsync/constants/icon_constants.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:scholarsync/controllers/student_service.dart';
 import 'package:scholarsync/model/student.dart';
 import 'package:scholarsync/themes/palette.dart';
@@ -74,7 +74,7 @@ class _ProfileInfoState extends State<ProfileInfo> {
                         right: -(20 / 1000),
                         child: CircularIconButton(
                           buttonSize: 20,
-                          iconAsset: IconConstants.cameraIcon,
+                          iconAsset: PhosphorIcons.light.camera,
                           iconColor: CommonColors.whiteColor,
                           buttonColor: CommonColors.secondaryGreenColor,
                           onPressed: () async {

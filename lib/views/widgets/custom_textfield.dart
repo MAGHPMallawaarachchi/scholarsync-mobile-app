@@ -15,8 +15,8 @@ class CustomTextField extends StatelessWidget {
   final VoidCallback? ontapBox;
   final VoidCallback? ontapleftIcon;
   final VoidCallback? ontaprightIcon;
-  final String? leftIcon;
-  final String? rightIcon;
+  final IconData? leftIcon;
+  final IconData? rightIcon;
   final double? leftIconScale;
   final double? rightIconScale;
   final Color? leftIconColor;

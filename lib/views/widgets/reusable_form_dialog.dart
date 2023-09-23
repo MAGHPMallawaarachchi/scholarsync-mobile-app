@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:scholarsync/constants/icon_constants.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:scholarsync/views/widgets/custom_elevated_button.dart';
 import 'package:scholarsync/themes/palette.dart';
-
 import 'circular_icon_button.dart';
 
 class ReusableFormDialog extends StatefulWidget {
@@ -52,7 +51,7 @@ class _ReusableFormDialogState extends State<ReusableFormDialog> {
                 },
                 child: CircularIconButton(
                   buttonSize: 30,
-                  iconAsset: IconConstants.closeIcon,
+                  iconAsset: PhosphorIcons.light.x,
                   iconColor: CommonColors.secondaryGreenColor,
                   buttonColor: Theme.of(context).scaffoldBackgroundColor,
                   onPressed: () {

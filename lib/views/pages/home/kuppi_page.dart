@@ -1,10 +1,8 @@
 import 'dart:io';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:intl/intl.dart';
 import 'package:scholarsync/views/widgets/search_bar.dart';
-import 'package:scholarsync/constants/icon_constants.dart';
 import 'package:scholarsync/views/widgets/text_form_field.dart';
 import 'package:scholarsync/views/widgets/app_bar.dart';
 import 'package:scholarsync/views/pages/home/widgets/kuppi_widget.dart';
@@ -125,111 +123,111 @@ class _KuppiPageState extends State<KuppiPage> {
         FocusScope.of(context).unfocus();
       },
       child: Scaffold(
-          appBar: PreferredSize(
-            preferredSize: const Size.fromHeight(kToolbarHeight),
-            child: CustomAppBar(
-              title: 'Kuppi Sessions',
-              fontSize: 20.0,
-              fontWeight: FontWeight.bold,
-              titleCenter: true,
-              leftIcon: true,
-              onPressedListButton: () {
-                Scaffold.of(context).openDrawer();
-              },
-            ),
+        appBar: PreferredSize(
+          preferredSize: const Size.fromHeight(kToolbarHeight),
+          child: CustomAppBar(
+            title: 'Kuppi Sessions',
+            fontSize: 20.0,
+            fontWeight: FontWeight.bold,
+            titleCenter: true,
+            leftIcon: true,
+            onPressedListButton: () {
+              Scaffold.of(context).openDrawer();
+            },
           ),
-          body: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                CustomSearchBar(
-                  hint: 'Search for kuppi sessions...',
-                  onSearchSubmitted: (query) {
-                    setState(() {
-                      _searchQuery = query.trim();
-                    });
-                    FocusScope.of(context).unfocus();
+        ),
+        body: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              CustomSearchBar(
+                hint: 'Search for kuppi sessions...',
+                onSearchSubmitted: (query) {
+                  setState(() {
+                    _searchQuery = query.trim();
+                  });
+                  FocusScope.of(context).unfocus();
+                },
+              ),
+              const SizedBox(height: 18),
+              Expanded(
+                child: StreamBuilder<List<KuppiSession>>(
+                  stream: kuppisService.listenToKuppiSessions(),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const Center(
+                        child: CircularProgressIndicator(
+                          color: CommonColors.secondaryGreenColor,
+                        ),
+                      );
+                    } else if (snapshot.hasError) {
+                      return const Center(
+                        child: Text('Error fetching Kuppi sessions'),
+                      );
+                    } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                      return const Center(
+                        child: Text('No Kuppi sessions available'),
+                      );
+                    } else {
+                      final filteredSessions = _filterSessions(snapshot.data!);
+
+                      return ListView.builder(
+                        physics: const BouncingScrollPhysics(),
+                        padding: const EdgeInsets.only(bottom: 20),
+                        // itemCount: snapshot.data!.length,
+                        itemCount: filteredSessions.length,
+                        itemBuilder: (context, index) {
+                          KuppiSession session = filteredSessions[index];
+                          return Padding(
+                            padding: const EdgeInsets.only(bottom: 15),
+                            child: KuppiWidget(
+                              id: session.id,
+                              title: session.name,
+                              subtitle: 'by ${session.conductor}',
+                              date: formatDate(session.date),
+                              imageUrl: session.imageUrl,
+                              link: session.link,
+                              onDelete: () {
+                                Future.delayed(Duration.zero).then((value) {
+                                  _handleDelete(session);
+                                });
+                                setState(() {});
+                              },
+                              onEdit: () {
+                                Future.delayed(Duration.zero).then((value) {
+                                  _showFormDialog(context, session: session);
+                                });
+                                setState(() {});
+                              },
+                            ),
+                          );
+                        },
+                      );
+                    }
                   },
                 ),
-                const SizedBox(height: 18),
-                Expanded(
-                  child: StreamBuilder<List<KuppiSession>>(
-                    stream: kuppisService.listenToKuppiSessions(),
-                    builder: (context, snapshot) {
-                      if (snapshot.connectionState == ConnectionState.waiting) {
-                        return const Center(
-                          child: CircularProgressIndicator(
-                            color: CommonColors.secondaryGreenColor,
-                          ),
-                        );
-                      } else if (snapshot.hasError) {
-                        return const Center(
-                          child: Text('Error fetching Kuppi sessions'),
-                        );
-                      } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                        return const Center(
-                          child: Text('No Kuppi sessions available'),
-                        );
-                      } else {
-                        final filteredSessions =
-                            _filterSessions(snapshot.data!);
-
-                        return ListView.builder(
-                          physics: const BouncingScrollPhysics(),
-                          padding: const EdgeInsets.only(bottom: 20),
-                          // itemCount: snapshot.data!.length,
-                          itemCount: filteredSessions.length,
-                          itemBuilder: (context, index) {
-                            KuppiSession session = filteredSessions[index];
-                            return Padding(
-                              padding: const EdgeInsets.only(bottom: 15),
-                              child: KuppiWidget(
-                                id: session.id,
-                                title: session.name,
-                                subtitle: 'by ${session.conductor}',
-                                date: formatDate(session.date),
-                                imageUrl: session.imageUrl,
-                                link: session.link,
-                                onDelete: () {
-                                  Future.delayed(Duration.zero).then((value) {
-                                    _handleDelete(session);
-                                  });
-                                  setState(() {});
-                                },
-                                onEdit: () {
-                                  Future.delayed(Duration.zero).then((value) {
-                                    _showFormDialog(context, session: session);
-                                  });
-                                  setState(() {});
-                                },
-                              ),
-                            );
-                          },
-                        );
-                      }
-                    },
-                  ),
-                ),
-              ],
+              ),
+            ],
+          ),
+        ),
+        floatingActionButton: GestureDetector(
+          child: Container(
+            decoration: const BoxDecoration(
+              shape: BoxShape.circle,
+              color: CommonColors.secondaryGreenColor,
+            ),
+            child: const Icon(
+              Icons.add,
+              color: CommonColors.whiteColor,
+              size: 50,
             ),
           ),
-          floatingActionButton: FloatingActionButton(
-            backgroundColor: CommonColors.secondaryGreenColor,
-            tooltip: 'Increment',
-            onPressed: () {
-              _showFormDialog(context);
-            },
-            child: SvgPicture.asset(
-              IconConstants.addButtonIcon,
-              colorFilter: const ColorFilter.mode(
-                CommonColors.whiteColor,
-                BlendMode.srcIn,
-              ),
-              width: 25,
-              height: 25,
-            ),
-          )),
+          onTap: () {
+            _showFormDialog(context);
+          },
+        ),
+      ),
     );
   }
 

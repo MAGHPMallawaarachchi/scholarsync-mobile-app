@@ -67,7 +67,6 @@ class _CustomSearchBarState extends State<CustomSearchBar> {
   void _onTextChanged() {
     setState(() {
       _showClearIcon = _textEditingController.text.isNotEmpty;
-      List<String> newSuggestions = getSuggestions(_textEditingController.text);
     });
   }
 

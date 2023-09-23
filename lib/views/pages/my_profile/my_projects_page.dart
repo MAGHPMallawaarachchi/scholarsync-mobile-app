@@ -1,13 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:scholarsync/views/pages/my_profile/widgets/project_box.dart';
 import 'package:scholarsync/views/widgets/reusable_form_dialog.dart';
 import 'package:scholarsync/views/widgets/search_bar.dart';
-import 'package:scholarsync/views/widgets/text_form_field.dart';
-import 'package:scholarsync/constants/icon_constants.dart';
 import 'package:scholarsync/views/widgets/app_bar.dart';
 import 'package:scholarsync/themes/palette.dart';
-
 import '../../../controllers/student_service.dart';
 import '../../../model/project.dart';
 import '../../../utils/format_date.dart';
@@ -187,102 +183,25 @@ class _MyProjectsPageState extends State<MyProjectsPage> {
           ),
         ],
       ),
-      child: Stack(
-        alignment: Alignment.center, // Center the add icon in the circle
-        children: [
-          // The small circle with green background
-          Container(
-            width: 48,
-            height: 48,
+      child: Padding(
+        padding: const EdgeInsets.all(50),
+        child: GestureDetector(
+          child: Container(
             decoration: const BoxDecoration(
-              color: CommonColors.secondaryGreenColor,
               shape: BoxShape.circle,
+              color: CommonColors.secondaryGreenColor,
             ),
-          ),
-          // The add icon in the center of the circle
-          IconButton(
-            icon: SvgPicture.asset(
-              IconConstants.addButtonIcon,
-              // ignore: deprecated_member_use
+            child: const Icon(
+              Icons.add,
               color: CommonColors.whiteColor,
+              size: 55,
             ),
-            tooltip: 'Increment',
-            onPressed: () {
-              _showFormDialog(context);
-            },
           ),
-        ],
+          onTap: () {
+            _showFormDialog(context);
+          },
+        ),
       ),
     );
   }
-
-  // void _showFormDialog(BuildContext context, {Project? project}) async {
-  //   bool isEditing = project != null;
-
-  //   if (isEditing) {
-  //     _nameController.text = project.name;
-  //     _dateController.text =
-  //         FormatDate.projectformatDate(DateTime.parse(project.date.toString()));
-  //     _linkController.text = project.link;
-  //   } else {
-  //     _nameController.clear();
-  //     _dateController.clear();
-  //     _linkController.clear();
-  //   }
-
-  //   showDialog(
-  //     context: context,
-  //     builder: (BuildContext context) {
-  //       return ReusableFormDialog(
-  //         title: isEditing ? 'Edit Project' : 'Add New Project',
-  //         buttonLabel: isEditing ? 'Save' : 'Add',
-  //         formFields: [
-  //           const SizedBox(height: 15),
-  //           ReusableTextField(
-  //             controller: _nameController,
-  //             labelText: 'Project Name',
-  //             validator: (value) {
-  //               if (value == null || value.isEmpty) {
-  //                 return 'Please enter a name';
-  //               }
-  //               return null;
-  //             },
-  //             onSaved: (value) {},
-  //           ),
-  //           ReusableTextField(
-  //             controller: _dateController,
-  //             labelText: 'Date',
-  //             isDateField: true,
-  //             validator: (value) {
-  //               if (value == null || value.isEmpty) {
-  //                 return 'Please enter a date';
-  //               }
-  //               return null;
-  //             },
-  //             onSaved: (value) {},
-  //           ),
-  //           ReusableTextField(
-  //             controller: _linkController,
-  //             labelText: 'Github Link',
-  //             validator: (value) {
-  //               if (value == null || value.isEmpty) {
-  //                 return 'Please enter the GitHub link';
-  //               }
-
-  //               final Uri uri = Uri.parse(value);
-  //               if (uri.scheme.isEmpty || uri.host.isEmpty) {
-  //                 return 'Please enter a valid URL';
-  //               }
-  //               return null;
-  //             },
-  //             onSaved: (value) {},
-  //           ),
-  //         ],
-  //         onSubmit: (formData) async {
-  //           await createNewProject();
-  //         },
-  //       );
-  //     },
-  //   );
-  // }
 }

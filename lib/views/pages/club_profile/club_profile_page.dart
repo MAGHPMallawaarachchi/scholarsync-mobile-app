@@ -1,6 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:scholarsync/constants/icon_constants.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:scholarsync/controllers/club_service.dart';
 import 'package:scholarsync/controllers/firebase_auth.dart';
 import 'package:scholarsync/model/club.dart';
@@ -213,7 +213,7 @@ class _ClubProfilePageState extends State<ClubProfilePage> {
             right: 10,
             child: CircularIconButton(
               buttonSize: 20,
-              iconAsset: IconConstants.cameraIcon,
+              iconAsset: PhosphorIcons.light.camera,
               iconColor: CommonColors.whiteColor,
               buttonColor: CommonColors.secondaryGreenColor,
               onPressed: () {
@@ -269,7 +269,7 @@ class _ClubProfilePageState extends State<ClubProfilePage> {
             right: -(buttonSize / 1000),
             child: CircularIconButton(
               buttonSize: buttonSize,
-              iconAsset: IconConstants.cameraIcon,
+              iconAsset: PhosphorIcons.light.camera,
               iconColor: CommonColors.whiteColor,
               buttonColor: CommonColors.secondaryGreenColor,
               onPressed: () async {

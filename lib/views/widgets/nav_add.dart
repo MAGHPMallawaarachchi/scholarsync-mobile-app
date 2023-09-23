@@ -1,9 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:scholarsync/controllers/club_service.dart';
 import 'package:scholarsync/controllers/student_service.dart';
-import '../../constants/icon_constants.dart';
 import '../../controllers/firebase_auth.dart';
 import '../../model/project.dart';
 import '../../themes/palette.dart';
@@ -33,7 +31,7 @@ class _NavigationAddItemState extends State<NavigationAddItem> {
   final _dateController = TextEditingController();
   final _linkController = TextEditingController();
 
-  Future<void> _uploadEvent() async {
+  Future<void> _upload() async {
     bool isClub = await _authService.checkIfUserIsClub();
     if (isClub) {
       await _clubService.uploadEvent(user.email!);
@@ -82,56 +80,24 @@ class _NavigationAddItemState extends State<NavigationAddItem> {
 
   @override
   Widget build(BuildContext context) {
-    final circleColor = widget.isSelected
-        ? CommonColors.secondaryGreenColor
-        : CommonColors.whiteColor;
-    final iconColor = widget.isSelected
-        ? CommonColors.whiteColor
-        : CommonColors.primaryGreenColor;
-    final lineColor = widget.isSelected
-        ? CommonColors.transparentColor
-        : CommonColors.transparentColor;
-
-    return Expanded(
-      child: InkWell(
-        onTap: () {
-          _uploadEvent();
-        },
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Container(
-              width: 56,
-              height: 56,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: circleColor,
-              ),
-              child: Padding(
-                padding: const EdgeInsets.all(15),
-                child: SvgPicture.asset(
-                  IconConstants.addButtonIcon,
-                  colorFilter: ColorFilter.mode(
-                    iconColor,
-                    BlendMode.srcIn,
-                  ),
-                  width: 10,
-                  height: 10,
-                ),
-              ),
-            ),
-            const SizedBox(height: 4),
-            Container(
-              width: 32,
-              height: 4,
-              decoration: BoxDecoration(
-                color: lineColor,
-                borderRadius: BorderRadius.circular(2),
-              ),
-            ),
-          ],
+    return GestureDetector(
+      child: Padding(
+        padding: const EdgeInsets.only(bottom: 10),
+        child: Container(
+          decoration: const BoxDecoration(
+            shape: BoxShape.circle,
+            color: CommonColors.whiteColor,
+          ),
+          child: const Icon(
+            Icons.add,
+            color: CommonColors.primaryGreenColor,
+            size: 55,
+          ),
         ),
       ),
+      onTap: () {
+        _upload();
+      },
     );
   }
 }

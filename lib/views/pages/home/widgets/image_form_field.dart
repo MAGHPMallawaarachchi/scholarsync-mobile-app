@@ -1,9 +1,7 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-
-import '../../../../constants/icon_constants.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 import '../../../../themes/palette.dart';
 import '../../../widgets/button_icon.dart';
 
@@ -60,7 +58,7 @@ class _ImageFormFieldState extends State<ImageFormField> {
                 width: 150,
                 height: 150,
                 decoration: BoxDecoration(
-                  color: CommonColors.whiteColor,
+                  color: Theme.of(context).dialogBackgroundColor,
                   borderRadius: BorderRadius.circular(10),
                   boxShadow: const [
                     BoxShadow(
@@ -101,10 +99,10 @@ class _ImageFormFieldState extends State<ImageFormField> {
                                 color: PaletteLightMode.secondaryTextColor,
                                 shape: BoxShape.circle,
                               ),
-                              child: const ButtonIcon(
-                                icon: IconConstants.cameraIcon,
+                              child: ButtonIcon(
+                                icon: PhosphorIcons.regular.camera,
                                 iconColor: CommonColors.whiteColor,
-                                size: 20,
+                                size: 35,
                               ),
                             ),
                           ),

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import '../../constants/icon_constants.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 import '../../themes/palette.dart';
 import 'circular_icon_button.dart';
 
@@ -104,7 +104,7 @@ class _ReusableTextFieldState extends State<ReusableTextField> {
                   suffixIcon: widget.isDateField
                       ? CircularIconButton(
                           buttonSize: 40,
-                          iconAsset: IconConstants.calendarIcon,
+                          iconAsset: PhosphorIcons.light.calendarBlank,
                           iconColor: Theme.of(context).secondaryHeaderColor,
                           buttonColor: CommonColors.transparentColor,
                           onPressed: () {},
