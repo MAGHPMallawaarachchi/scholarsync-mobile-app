@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:scholarsync/controllers/firebase_auth.dart';
 
@@ -12,6 +13,7 @@ class TabNavigator extends StatelessWidget {
   final String? tabItem;
 
   final AuthService _authService = AuthService();
+  final User user = FirebaseAuth.instance.currentUser!;
 
   TabNavigator({super.key, this.navigatorKey, this.tabItem});
 
@@ -30,7 +32,7 @@ class TabNavigator extends StatelessWidget {
     } else if (tabItem == 'my_profile') {
       _authService.checkIfUserIsClub().then((isClub) {
         if (isClub) {
-          child = const ClubProfilePage();
+          child = ClubProfilePage(email: user.email!);
         } else {
           child = const MyProfilePage();
         }

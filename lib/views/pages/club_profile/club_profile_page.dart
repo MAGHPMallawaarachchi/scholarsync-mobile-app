@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:scholarsync/constants/icon_constants.dart';
 import 'package:scholarsync/controllers/club_service.dart';
@@ -13,7 +14,11 @@ import '../../widgets/text_form_field.dart';
 import 'widgets/club_text_container.dart';
 
 class ClubProfilePage extends StatefulWidget {
-  const ClubProfilePage({Key? key}) : super(key: key);
+  final String email;
+  final bool isTitleCenter;
+  const ClubProfilePage(
+      {Key? key, required this.email, this.isTitleCenter = false})
+      : super(key: key);
 
   @override
   State<ClubProfilePage> createState() => _ClubProfilePageState();
@@ -27,19 +32,22 @@ class _ClubProfilePageState extends State<ClubProfilePage> {
   final inChargeController = TextEditingController();
   final presidentController = TextEditingController();
 
+  final User user = FirebaseAuth.instance.currentUser!;
+
   bool isOwner = false;
 
-  Future<bool> checkUserIsClub() async {
+  Future<void> checkUserIsClub() async {
     final bool isUserClub = await authService.checkIfUserIsClub();
-    setState(() {
-      isOwner = isUserClub;
-    });
-    return isUserClub;
+    if (isUserClub && widget.email == user.email) {
+      setState(() {
+        isOwner = true;
+      });
+    }
   }
 
   Future<void> _refreshClubData() async {
     await Future.delayed(const Duration(seconds: 1));
-    await clubService.getClubByEmail();
+    await clubService.getClubByEmail(widget.email);
     setState(() {});
   }
 
@@ -47,8 +55,7 @@ class _ClubProfilePageState extends State<ClubProfilePage> {
   void initState() {
     super.initState();
     checkUserIsClub();
-    clubService.getClubByEmail();
-    clubService.listenForClubUpdatesByEmail();
+    clubService.getClubByEmail(widget.email);
   }
 
   @override
@@ -60,7 +67,8 @@ class _ClubProfilePageState extends State<ClubProfilePage> {
           title: 'Club Profile',
           fontSize: 20.0,
           fontWeight: FontWeight.bold,
-          titleCenter: false,
+          titleCenter: widget.isTitleCenter,
+          leftIcon: widget.isTitleCenter,
           onPressedListButton: () {
             Scaffold.of(context).openDrawer();
           },
@@ -72,7 +80,7 @@ class _ClubProfilePageState extends State<ClubProfilePage> {
         child: SingleChildScrollView(
           physics: const BouncingScrollPhysics(),
           child: FutureBuilder<Club?>(
-            future: clubService.getClubByEmail(),
+            future: clubService.getClubByEmail(widget.email),
             builder: (context, clubSnapshot) {
               if (clubSnapshot.connectionState == ConnectionState.done) {
                 final club = clubSnapshot.data;
@@ -153,7 +161,7 @@ class _ClubProfilePageState extends State<ClubProfilePage> {
                           showIconButton: isOwner,
                           enableAutoScroll: !isOwner,
                           onPressedDeleteButton: (eventIndex, imageUrl) {
-                            clubService.deleteEvent(eventIndex);
+                            clubService.deleteEvent(eventIndex, widget.email);
                             setState(() {});
                           },
                         ),

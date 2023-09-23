@@ -30,7 +30,7 @@ class CustomAppBar extends StatelessWidget {
         style: Theme.of(context).textTheme.headlineLarge,
       ),
       centerTitle: titleCenter,
-      leading: leftIcon != null
+      leading: leftIcon == true
           ? IconButton(
               icon: Icon(
                 PhosphorIcons.bold.arrowLeft,

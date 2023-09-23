@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:scholarsync/controllers/club_service.dart';
@@ -22,11 +23,12 @@ class NavigationAddItem extends StatefulWidget {
 class _NavigationAddItemState extends State<NavigationAddItem> {
   final ClubService _clubService = ClubService();
   final AuthService _authService = AuthService();
+  final User user = FirebaseAuth.instance.currentUser!;
 
   Future<void> _uploadEvent() async {
     bool isClub = await _authService.checkIfUserIsClub();
     if (isClub) {
-      await _clubService.uploadEvent();
+      await _clubService.uploadEvent(user.email!);
     }
   }
 

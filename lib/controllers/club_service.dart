@@ -30,23 +30,6 @@ class ClubService {
     });
   }
 
-  final StreamController<List<String>> _eventImageUrlsByEmailController =
-      StreamController<List<String>>.broadcast();
-
-  Stream<List<String>> get eventImageUrlsByEmailStream =>
-      _eventImageUrlsController.stream;
-
-  void listenForClubUpdatesByEmail() {
-    FirebaseFirestore.instance
-        .collection('clubs')
-        .where('email', isEqualTo: user.email)
-        .snapshots()
-        .listen((QuerySnapshot snapshot) {
-      final updatedImageUrls = getEventImageURLsByEmail(snapshot);
-      _eventImageUrlsByEmailController.add(updatedImageUrls);
-    });
-  }
-
   Stream<List<Club>> getAllClubs() {
     try {
       final Stream<QuerySnapshot<Map<String, dynamic>>> querySnapshot =
@@ -59,11 +42,11 @@ class ClubService {
     }
   }
 
-  Future<Club?> getClubByEmail() async {
+  Future<Club?> getClubByEmail(String email) async {
     try {
       final querySnapshot = await FirebaseFirestore.instance
           .collection('clubs')
-          .where('email', isEqualTo: user.email)
+          .where('email', isEqualTo: email)
           .get();
 
       if (querySnapshot.docs.isNotEmpty) {
@@ -88,10 +71,10 @@ class ClubService {
     return null;
   }
 
-  Stream<Map<String, List<dynamic>>> getClubEvents() {
+  Stream<Map<String, List<dynamic>>> getClubEvents(String email) {
     try {
       final Stream<DocumentSnapshot<Map<String, dynamic>>> documentSnapshot =
-          _firestore.collection('clubs').doc(user.email).snapshots();
+          _firestore.collection('clubs').doc(email).snapshots();
       return documentSnapshot.map((snapshot) => snapshot.data()!['events']);
     } catch (error) {
       log(error.toString());
@@ -99,9 +82,9 @@ class ClubService {
     }
   }
 
-  Stream<List<String>> streamProfileImageURLs() {
+  Stream<List<Map<String, String>>> streamProfileImageURLs() {
     return _firestore.collection('clubs').snapshots().map((snapshot) {
-      final List<String> imageUrls = [];
+      final List<Map<String, String>> imageUrlsWithEmail = [];
 
       for (QueryDocumentSnapshot doc in snapshot.docs) {
         final Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
@@ -111,12 +94,21 @@ class ClubService {
           final String imageUrl = data['profileImageURL'];
 
           if (imageUrl.isNotEmpty) {
-            imageUrls.add(imageUrl);
+            final String email = data['email'] ??
+                ''; // Replace 'email' with the actual field name
+
+            final Map<String, String> imageInfo = {
+              'email': email,
+              'imageUrl': imageUrl,
+            };
+
+            imageUrlsWithEmail.add(imageInfo);
           }
         }
       }
-      log('Image uRLs: $imageUrls');
-      return imageUrls;
+
+      log('Image URLs with email: $imageUrlsWithEmail');
+      return imageUrlsWithEmail;
     }).handleError((error) {
       log('Error fetching image URLs: $error');
       return [];
@@ -190,8 +182,8 @@ class ClubService {
     }
   }
 
-  Future<void> uploadEvent() async {
-    final Club? club = await getClubByEmail();
+  Future<void> uploadEvent(String email) async {
+    final Club? club = await getClubByEmail(email);
     try {
       if (club != null) {
         final eventImage = await _utils.pickImage();
@@ -214,8 +206,8 @@ class ClubService {
     }
   }
 
-  Future<void> deleteEvent(int eventIndex) async {
-    final Club? club = await getClubByEmail();
+  Future<void> deleteEvent(int eventIndex, String email) async {
+    final Club? club = await getClubByEmail(email);
     try {
       if (club != null) {
         if (club.events != null &&
@@ -256,40 +248,6 @@ class ClubService {
                 }
               }
             }
-          }
-        }
-      }
-    } catch (error) {
-      log('Error fetching event image URLs: $error');
-    }
-
-    return eventImageURLs;
-  }
-
-  List<String> getEventImageURLsByEmail(QuerySnapshot snapshot) {
-    final List<String> eventImageURLs = [];
-
-    try {
-      for (QueryDocumentSnapshot clubDocument in snapshot.docs) {
-        final Map<String, dynamic>? data =
-            clubDocument.data() as Map<String, dynamic>?;
-        if (data != null) {
-          final String? email = data['email'];
-
-          if (email == user.email) {
-            final List<dynamic>? events = data['events'];
-
-            if (events != null) {
-              for (dynamic event in events) {
-                if (event is Map<String, dynamic>) {
-                  final String? imageURL = event['imageUrl'];
-                  if (imageURL != null) {
-                    eventImageURLs.add(imageURL);
-                  }
-                }
-              }
-            }
-            break;
           }
         }
       }

@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:scholarsync/controllers/club_service.dart';
 import 'package:scholarsync/controllers/firebase_auth.dart';
@@ -9,6 +10,7 @@ import 'package:scholarsync/views/widgets/search_bar.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import '../../../model/club.dart';
 import '../../../themes/palette.dart';
+import 'widgets/clubs_row.dart';
 import 'widgets/image_row.dart';
 import '../../widgets/custom_carousel.dart';
 
@@ -24,6 +26,7 @@ class _HomePageState extends State<HomePage> {
   final StudentService studentService = StudentService();
   final KuppisService kuppisService = KuppisService();
   final AuthService authService = AuthService();
+  final User user = FirebaseAuth.instance.currentUser!;
 
   Future<Student?> _fetchStudent() async {
     final studentData = await studentService.fetchStudentData();
@@ -52,7 +55,7 @@ class _HomePageState extends State<HomePage> {
                     if (snapshot.data == true) {
                       // User is a club owner
                       return FutureBuilder<Club?>(
-                        future: clubService.getClubByEmail(),
+                        future: clubService.getClubByEmail(user.email!),
                         builder: (context, clubSnapshot) {
                           if (clubSnapshot.connectionState ==
                               ConnectionState.done) {
@@ -222,9 +225,8 @@ class _HomePageState extends State<HomePage> {
               const SizedBox(
                 height: 20,
               ),
-              ImageRow(
+              ClubsRow(
                 containerSize: MediaQuery.of(context).size.width * 0.25,
-                isCircle: true,
                 imageStream: clubService.streamProfileImageURLs(),
               ),
               const SizedBox(

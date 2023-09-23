@@ -24,6 +24,7 @@ class _DrawerMenuState extends State<DrawerMenu> {
   final StudentService studentService = StudentService();
   final ClubService clubService = ClubService();
   final AuthService authService = AuthService();
+  final User user = FirebaseAuth.instance.currentUser!;
 
   Future<Student?> _fetchUserAsStudent() async {
     final userData = await studentService.fetchStudentData();
@@ -72,7 +73,8 @@ class _DrawerMenuState extends State<DrawerMenu> {
                   if (snapshot.data == true) {
                     // User is a club owner
                     return FutureBuilder<Club?>(
-                      future: clubService.getClubByEmail(), // Fetch club data
+                      future: clubService
+                          .getClubByEmail(user.email!), // Fetch club data
                       builder: (context, clubSnapshot) {
                         if (clubSnapshot.connectionState ==
                             ConnectionState.done) {
@@ -132,7 +134,7 @@ class _DrawerMenuState extends State<DrawerMenu> {
                   if (snapshot.data == true) {
                     // User is a club owner
                     return FutureBuilder<Club?>(
-                      future: clubService.getClubByEmail(),
+                      future: clubService.getClubByEmail(user.email!),
                       builder: (context, clubSnapshot) {
                         if (clubSnapshot.connectionState ==
                             ConnectionState.done) {
