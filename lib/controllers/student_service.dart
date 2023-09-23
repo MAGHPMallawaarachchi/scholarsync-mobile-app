@@ -1,5 +1,5 @@
 import 'dart:developer';
-
+import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:scholarsync/controllers/firebase_service.dart';
@@ -109,35 +109,39 @@ class StudentService {
     }
   }
 
-  Future<Object> uploadImage(String studentId) async {
+  Future<void> updateStudent(Student student) async {
     try {
-      final imageFile = await _utils.pickImage();
-      return _firebaseService.uploadImage(
-          imageFile!, 'students/$studentId/profileImage');
-    } catch (e) {
-      log('Error uploading image: $e');
-      return "";
+      final docRef = await studentCollection
+          .where('email', isEqualTo: student.email)
+          .get()
+          .then((querySnapshot) => querySnapshot.docs.first.reference);
+      await docRef.update(student.toJson());
+    } catch (error) {
+      log(error.toString());
     }
   }
 
-  Future<void> updateProfileImageURL(String id, String studentId) async {
+  Future<void> uploadProfileImage(
+    Student student,
+  ) async {
     try {
-      final studentDocRef =
-          FirebaseFirestore.instance.collection('students').doc(id);
+      final File? image = await _utils.pickImage();
+      if (image != null) {
+        final String imagePath = 'students/${student.studentId}/profileImage';
+        final String? downloadURL =
+            await _firebaseService.uploadImage(image, imagePath);
 
-      final studentSnapshot = await studentDocRef.get();
-      final studentData = studentSnapshot.data();
-
-      if (studentData != null && studentData.containsKey('profileImageUrl')) {
-        final profileImageUrl = await uploadImage(studentId);
-        await studentDocRef.update({'profileImageUrl': profileImageUrl});
+        if (downloadURL != null) {
+          student.profileImageUrl = downloadURL;
+          await updateStudent(student);
+        } else {
+          log('No image selected');
+        }
       } else {
-        final profileImageUrl = await uploadImage(studentId);
-        await studentDocRef
-            .set({'profileImageUrl': profileImageUrl}, SetOptions(merge: true));
+        log('No image selected');
       }
     } catch (e) {
-      log('Error updating profile image URL: $e');
+      log(e.toString());
     }
   }
 }
