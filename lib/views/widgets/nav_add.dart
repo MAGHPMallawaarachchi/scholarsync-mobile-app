@@ -82,7 +82,7 @@ class _NavigationAddItemState extends State<NavigationAddItem> {
   Widget build(BuildContext context) {
     return GestureDetector(
       child: Padding(
-        padding: const EdgeInsets.only(bottom: 10),
+        padding: const EdgeInsets.only(bottom: 10, left: 10, right: 10),
         child: Container(
           decoration: const BoxDecoration(
             shape: BoxShape.circle,
