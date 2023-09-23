@@ -9,7 +9,7 @@ import 'utils/tab_navigator.dart';
 import 'views/pages/calendar/calendar_page.dart';
 import 'views/pages/my_profile/my_profile_page.dart';
 import 'views/pages/notifications/notifications_page.dart';
-import 'views/widgets/drawer_menu.dart';
+import 'views/pages/drawer_menu/drawer_menu.dart';
 import 'views/widgets/nav_add.dart';
 import 'views/widgets/nav_item.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -45,6 +45,7 @@ class AuthWrapper extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       body: StreamBuilder<User?>(
         stream: FirebaseAuth.instance.authStateChanges(),
         builder: (context, snapshot) {
