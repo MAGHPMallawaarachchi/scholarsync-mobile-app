@@ -5,7 +5,7 @@ import '../../club_profile/club_profile_page.dart';
 
 class ClubsRow extends StatelessWidget {
   final double containerSize;
-  final Stream<List<Map<String, String>>> imageStream; // Accept a list of maps
+  final Stream<List<Map<String, String>>> imageStream;
 
   const ClubsRow({
     Key? key,

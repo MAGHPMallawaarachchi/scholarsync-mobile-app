@@ -72,12 +72,12 @@ TextTheme getTextTheme(BuildContext context, bool isDarkTheme) {
               : PaletteLightMode.textColor,
         ),
         labelSmall: TextStyle(
-            fontSize: 13,
-            fontWeight: FontWeight.w400,
-            color: isDarkTheme
-                ? PaletteDarkMode.textColor
-                : PaletteLightMode.textColor,
-            height: 1.5),
+          fontSize: 14,
+          fontWeight: FontWeight.w400,
+          color: isDarkTheme
+              ? PaletteDarkMode.textColor
+              : PaletteLightMode.textColor,
+        ),
       );
 }
 
@@ -114,6 +114,26 @@ ThemeData getAppTheme(BuildContext context, bool isDarkTheme) {
         : const ListTileThemeData(
             textColor: PaletteLightMode.textColor,
           ),
+    inputDecorationTheme: InputDecorationTheme(
+      filled: true,
+      fillColor: isDarkTheme
+          ? PaletteDarkMode.containerColor
+          : PaletteLightMode.containerColor,
+      hintStyle: Theme.of(context).textTheme.displayMedium,
+      enabledBorder: OutlineInputBorder(
+        borderSide: BorderSide(
+            color: isDarkTheme
+                ? PaletteDarkMode.containerColor
+                : PaletteLightMode.containerColor,
+            width: 1.0),
+        borderRadius: BorderRadius.circular(12),
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderSide: const BorderSide(
+            color: CommonColors.secondaryGreenColor, width: 1.0),
+        borderRadius: BorderRadius.circular(12),
+      ),
+    ),
     textTheme: getTextTheme(context, isDarkTheme),
   );
 }

@@ -21,7 +21,14 @@ class CustomSearchBar extends StatefulWidget {
 
 class _CustomSearchBarState extends State<CustomSearchBar> {
   late FocusNode _focusNode;
+  final TextEditingController _textEditingController = TextEditingController();
+  bool _showClearIcon = false;
   Color? _currentIconColor;
+  List<String> suggestions = [
+    "Apple",
+    "Banana",
+    "Cherry",
+  ];
 
   @override
   void initState() {
@@ -29,12 +36,15 @@ class _CustomSearchBarState extends State<CustomSearchBar> {
     _focusNode = FocusNode();
     _currentIconColor = widget.iconColor;
     _focusNode.addListener(_onFocusChange);
+    _textEditingController.addListener(_onTextChanged);
   }
 
   @override
   void dispose() {
     _focusNode.removeListener(_onFocusChange);
     _focusNode.dispose();
+    _textEditingController.removeListener(_onTextChanged);
+    _textEditingController.dispose();
     super.dispose();
   }
 
@@ -43,7 +53,29 @@ class _CustomSearchBarState extends State<CustomSearchBar> {
       _currentIconColor = _focusNode.hasFocus
           ? CommonColors.secondaryGreenColor
           : widget.iconColor;
+      _showClearIcon = _textEditingController.text.isNotEmpty;
     });
+  }
+
+  List<String> getSuggestions(String query) {
+    return suggestions
+        .where((suggestion) =>
+            suggestion.toLowerCase().contains(query.toLowerCase()))
+        .toList();
+  }
+
+  void _onTextChanged() {
+    setState(() {
+      _showClearIcon = _textEditingController.text.isNotEmpty;
+      List<String> newSuggestions = getSuggestions(_textEditingController.text);
+    });
+  }
+
+  void _clearSearch() {
+    _textEditingController.clear();
+    if (widget.onSearchSubmitted != null) {
+      widget.onSearchSubmitted!('');
+    }
   }
 
   @override
@@ -66,6 +98,7 @@ class _CustomSearchBarState extends State<CustomSearchBar> {
           hoverColor: CommonColors.transparentColor,
         ),
         child: TextField(
+          controller: _textEditingController,
           onSubmitted: widget.onSearchSubmitted,
           style: Theme.of(context).textTheme.displayMedium,
           cursorColor: CommonColors.secondaryGreenColor,
@@ -77,9 +110,16 @@ class _CustomSearchBarState extends State<CustomSearchBar> {
             hintStyle: Theme.of(context).textTheme.displayMedium,
             prefixIcon: Padding(
               padding: const EdgeInsets.only(left: 20, right: 27),
-              child: Icon(PhosphorIcons.light.magnifyingGlass,
+              child: Icon(PhosphorIcons.bold.magnifyingGlass,
                   color: _currentIconColor),
             ),
+            suffixIcon: _showClearIcon
+                ? IconButton(
+                    icon: Icon(PhosphorIcons.light.x,
+                        size: 20, color: _currentIconColor),
+                    onPressed: _clearSearch,
+                  )
+                : null,
             enabledBorder: OutlineInputBorder(
               borderSide: const BorderSide(
                   color: CommonColors.transparentColor, width: 1.0),

@@ -6,8 +6,8 @@ import 'package:scholarsync/controllers/kuppi_service.dart';
 import 'package:scholarsync/controllers/student_service.dart';
 import 'package:scholarsync/model/student.dart';
 import 'package:scholarsync/views/pages/home/kuppi_page.dart';
-import 'package:scholarsync/views/widgets/search_bar.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
+import 'package:scholarsync/views/widgets/custom_searchbar.dart';
 import '../../../model/club.dart';
 import '../../../themes/palette.dart';
 import 'widgets/clubs_row.dart';
@@ -28,6 +28,23 @@ class _HomePageState extends State<HomePage> {
   final AuthService authService = AuthService();
   final User user = FirebaseAuth.instance.currentUser!;
 
+  bool isLoading = false;
+  late List<Map<String, dynamic>> suggestions = [];
+
+  Future<void> fetchSuggestions() async {
+    setState(() {
+      isLoading = true;
+    });
+
+    final List<Map<String, dynamic>> clubs =
+        await clubService.getAllClubsInfo();
+
+    setState(() {
+      isLoading = false;
+      suggestions = clubs;
+    });
+  }
+
   Future<Student?> _fetchStudent() async {
     final studentData = await studentService.fetchStudentData();
     return studentData;
@@ -37,6 +54,7 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
     clubService.listenForClubUpdates();
+    fetchSuggestions();
   }
 
   @override
@@ -149,14 +167,12 @@ class _HomePageState extends State<HomePage> {
             children: [
               // Search bar
               Padding(
-                padding: const EdgeInsets.only(bottom: 10),
-                child: CustomSearchBar(
-                  hint: 'Search for students and clubs...',
-                  onSearchSubmitted: (value) {
-                    // Search function
-                  },
+                padding: const EdgeInsets.only(bottom: 10, left: 5, right: 5),
+                child: MyCustomSearchBar(
+                  suggestions: suggestions,
                 ),
               ),
+
               const SizedBox(
                 height: 5,
               ),

@@ -94,8 +94,7 @@ class ClubService {
           final String imageUrl = data['profileImageURL'];
 
           if (imageUrl.isNotEmpty) {
-            final String email = data['email'] ??
-                ''; // Replace 'email' with the actual field name
+            final String email = data['email'] ?? '';
 
             final Map<String, String> imageInfo = {
               'email': email,
@@ -256,5 +255,52 @@ class ClubService {
     }
 
     return eventImageURLs;
+  }
+
+  Future<List<String>> getAllClubNames() async {
+    try {
+      final QuerySnapshot<Map<String, dynamic>> querySnapshot =
+          await _firestore.collection('clubs').get();
+
+      List<String> clubNames = [];
+
+      for (var doc in querySnapshot.docs) {
+        String name = doc.get('name');
+        clubNames.add(name);
+      }
+
+      return clubNames;
+    } catch (error) {
+      log(error.toString());
+      return [];
+    }
+  }
+
+  Future<List<Map<String, String>>> getAllClubsInfo() async {
+    try {
+      final QuerySnapshot<Map<String, dynamic>> querySnapshot =
+          await _firestore.collection('clubs').get();
+
+      List<Map<String, String>> clubInfoList = [];
+
+      for (var doc in querySnapshot.docs) {
+        String name = doc.get('name');
+        String profileImageURL = doc.get('profileImageURL');
+        String email = doc.get('email');
+
+        Map<String, String> clubInfo = {
+          'name': name,
+          'profileImageURL': profileImageURL,
+          'email': email,
+        };
+
+        clubInfoList.add(clubInfo);
+      }
+
+      return clubInfoList;
+    } catch (error) {
+      log(error.toString());
+      return [];
+    }
   }
 }

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
-import 'package:scholarsync/themes/palette.dart';
 import 'package:scholarsync/views/widgets/app_bar.dart';
 import 'widgets/settings_widget.dart';
 
