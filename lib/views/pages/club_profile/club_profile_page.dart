@@ -24,6 +24,10 @@ class _ClubProfilePageState extends State<ClubProfilePage> {
   final AuthService authService = AuthService();
   final ClubService clubService = ClubService();
 
+  final aboutController = TextEditingController();
+  final inChargeController = TextEditingController();
+  final presidentController = TextEditingController();
+
   bool isOwner = false;
 
   Future<bool> checkUserIsClub() async {
@@ -34,15 +38,11 @@ class _ClubProfilePageState extends State<ClubProfilePage> {
     return isUserClub;
   }
 
-  Future<Club?> _fetchClub() async {
-    final clubData = await clubService.getClubByEmail();
-    return clubData;
-  }
-
   @override
   void initState() {
     super.initState();
     checkUserIsClub();
+    clubService.getClubByEmail();
     clubService.listenForClubUpdatesByEmail();
   }
 
@@ -64,20 +64,19 @@ class _ClubProfilePageState extends State<ClubProfilePage> {
       body: SingleChildScrollView(
         physics: const BouncingScrollPhysics(),
         child: FutureBuilder<Club?>(
-          future: _fetchClub(),
+          future: clubService.getClubByEmail(),
           builder: (context, clubSnapshot) {
             if (clubSnapshot.connectionState == ConnectionState.done) {
               final club = clubSnapshot.data;
-
               return SingleChildScrollView(
                 physics: const BouncingScrollPhysics(),
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20),
                   child: Column(
                     children: [
-                      _buildImageBannerWithCircularImage(),
+                      _buildBannerImageWithCircularImage(club!),
                       Text(
-                        club?.name ?? 'Club Name',
+                        club.name,
                         style: Theme.of(context).textTheme.displayLarge,
                       ),
                       const SizedBox(height: 11),
@@ -88,7 +87,7 @@ class _ClubProfilePageState extends State<ClubProfilePage> {
                               horizontal: 0, vertical: 0),
                           textSize: 10,
                           onPressed: () {
-                            _showFormDialog(context, club!);
+                            _showFormDialog(context, club);
                           },
                           height: 20,
                           backgroundColor: CommonColors.secondaryGreenColor,
@@ -96,7 +95,7 @@ class _ClubProfilePageState extends State<ClubProfilePage> {
                       const SizedBox(height: 20),
                       CustomTextContainer(
                         heading: 'About',
-                        text: club?.about ?? 'About Club',
+                        text: club.about ?? 'About Club',
                         headingSize: 16.0,
                         backgroundColor:
                             Theme.of(context).dialogBackgroundColor,
@@ -109,7 +108,7 @@ class _ClubProfilePageState extends State<ClubProfilePage> {
                             child: CustomTextContainer(
                               heading: 'In Charge',
                               headingSize: 12.0,
-                              text: club?.inCharge ?? 'Master/Mistress Name',
+                              text: club.inCharge ?? 'Master/Mistress Name',
                               backgroundColor:
                                   Theme.of(context).dialogBackgroundColor,
                             ),
@@ -119,7 +118,7 @@ class _ClubProfilePageState extends State<ClubProfilePage> {
                             child: CustomTextContainer(
                               heading: 'President',
                               headingSize: 12.0,
-                              text: club?.president ?? 'President Name',
+                              text: club.president ?? 'President Name',
                               backgroundColor:
                                   Theme.of(context).dialogBackgroundColor,
                             ),
@@ -130,7 +129,7 @@ class _ClubProfilePageState extends State<ClubProfilePage> {
                       Align(
                         alignment: Alignment.centerLeft,
                         child: Text(
-                          'Upcoming Events by ${club?.name ?? 'Club Name'}',
+                          'Upcoming Events by ${club.name}',
                           style: Theme.of(context).textTheme.labelLarge,
                         ),
                       ),
@@ -138,11 +137,12 @@ class _ClubProfilePageState extends State<ClubProfilePage> {
 
                       //carousel
                       CustomCarousel(
-                          imageList: club?.events
+                          imageList: club.events
                                   ?.map<String>(
                                       (event) => event['imageUrl'] as String)
                                   .toList() ??
-                              []),
+                              [],
+                          showIconButton: isOwner),
                     ],
                   ),
                 ),
@@ -161,7 +161,7 @@ class _ClubProfilePageState extends State<ClubProfilePage> {
     );
   }
 
-  Widget _buildImageBannerWithCircularImage() {
+  Widget _buildBannerImageWithCircularImage(Club club) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 10),
       child: SizedBox(
@@ -169,10 +169,10 @@ class _ClubProfilePageState extends State<ClubProfilePage> {
         height: 200,
         child: Stack(
           children: [
-            _buildImageBannerWithCircularIconButton(),
+            _buildBannerImageWithCircularIconButton(club),
             Align(
               alignment: Alignment.bottomCenter,
-              child: _buildCircularImage(),
+              child: _buildProfileImage(club),
             ),
           ],
         ),
@@ -180,10 +180,10 @@ class _ClubProfilePageState extends State<ClubProfilePage> {
     );
   }
 
-  Widget _buildImageBannerWithCircularIconButton() {
+  Widget _buildBannerImageWithCircularIconButton(Club club) {
     return Stack(
       children: [
-        _buildImageBanner(),
+        _buildBannerImage(club),
         if (isOwner)
           Positioned(
             bottom: 10,
@@ -194,7 +194,7 @@ class _ClubProfilePageState extends State<ClubProfilePage> {
               iconColor: CommonColors.whiteColor,
               buttonColor: CommonColors.secondaryGreenColor,
               onPressed: () {
-                clubService.uploadBannerImage();
+                clubService.uploadImageAndUpdateClub('bannerImageURL', club);
                 setState(() {});
               },
             ),
@@ -203,38 +203,28 @@ class _ClubProfilePageState extends State<ClubProfilePage> {
     );
   }
 
-  Widget _buildImageBanner() {
+  Widget _buildBannerImage(Club club) {
+    final bannerImageURL = club.bannerImageURL ??
+        'https://w7.pngwing.com/pngs/869/370/png-transparent-low-polygon-background-green-banner-low-poly-materialized-flat-thumbnail.png';
+
     return SizedBox(
       width: MediaQuery.of(context).size.width,
       height: 170,
       child: ClipRRect(
         borderRadius: BorderRadius.circular(12),
-        child: FutureBuilder(
-          future: _fetchClub(),
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.done &&
-                snapshot.hasData) {
-              final club = snapshot.data!;
-              return Image.network(
-                club.bannerImageURL ?? '',
-                fit: BoxFit.cover,
-              );
-            } else {
-              return const Center(
-                child: CircularProgressIndicator(
-                  color: CommonColors.secondaryGreenColor,
-                ),
-              );
-            }
-          },
+        child: Image.network(
+          bannerImageURL,
+          fit: BoxFit.cover,
         ),
       ),
     );
   }
 
-  Widget _buildCircularImage() {
+  Widget _buildProfileImage(Club club) {
     const imageSize = 75.0;
     const buttonSize = 20.0;
+
+    final profileImageURL = club.profileImageURL;
 
     return Stack(
       children: [
@@ -245,24 +235,9 @@ class _ClubProfilePageState extends State<ClubProfilePage> {
             shape: BoxShape.circle,
             color: Colors.white,
           ),
-          child: FutureBuilder(
-            future: _fetchClub(),
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.done &&
-                  snapshot.hasData) {
-                final club = snapshot.data!;
-                return CircleAvatar(
-                  backgroundImage: NetworkImage(club.profileImageURL),
-                  radius: imageSize / 2,
-                );
-              } else {
-                return const Center(
-                  child: CircularProgressIndicator(
-                    color: CommonColors.secondaryGreenColor,
-                  ),
-                );
-              }
-            },
+          child: CircleAvatar(
+            backgroundImage: NetworkImage(profileImageURL),
+            radius: imageSize / 2,
           ),
         ),
         if (isOwner)
@@ -274,8 +249,9 @@ class _ClubProfilePageState extends State<ClubProfilePage> {
               iconAsset: IconConstants.cameraIcon,
               iconColor: CommonColors.whiteColor,
               buttonColor: CommonColors.secondaryGreenColor,
-              onPressed: () {
-                clubService.uploadProfileImage();
+              onPressed: () async {
+                await clubService.uploadImageAndUpdateClub(
+                    'profileImageURL', club);
                 setState(() {});
               },
             ),
@@ -285,12 +261,9 @@ class _ClubProfilePageState extends State<ClubProfilePage> {
   }
 
   void _showFormDialog(BuildContext context, Club club) {
-    TextEditingController aboutController =
-        TextEditingController(text: club.about);
-    TextEditingController inChargeController =
-        TextEditingController(text: club.inCharge);
-    TextEditingController presidentController =
-        TextEditingController(text: club.president);
+    aboutController.text = club.about ?? '';
+    inChargeController.text = club.inCharge ?? '';
+    presidentController.text = club.president ?? '';
 
     showDialog(
       context: context,
@@ -335,23 +308,12 @@ class _ClubProfilePageState extends State<ClubProfilePage> {
             ),
           ],
           onSubmit: (formData) async {
-            // print(club.id);
-
-            // Update the club properties
             club.about = aboutController.text;
             club.inCharge = inChargeController.text;
             club.president = presidentController.text;
 
-            // Update the club in the repository
-            try {
-              await clubService.updateClub(club);
-            } catch (e) {
-              log(e.toString() as num);
-            }
-
-            aboutController.dispose();
-            inChargeController.dispose();
-            presidentController.dispose();
+            await clubService.updateClub(club);
+            setState(() {});
           },
         );
       },

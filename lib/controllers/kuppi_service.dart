@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../model/kuppi.dart';
 
@@ -13,7 +15,7 @@ class KuppisService {
           .map((doc) => KuppiSession.fromSnapshot(doc))
           .toList();
     } catch (error) {
-      // print("Error fetching kuppi sessions: $error");
+      log("Error fetching kuppi sessions: $error");
       return [];
     }
   }
@@ -30,7 +32,7 @@ class KuppisService {
     try {
       await _firestore.collection('kuppiSessions').add(kuppiSession.toJson());
     } catch (error) {
-      // print("Error creating kuppi session: $error");
+      log("Error creating kuppi session: $error");
     }
   }
 
@@ -41,7 +43,7 @@ class KuppisService {
           .doc(kuppiSession.id)
           .update(kuppiSession.toJson());
     } catch (error) {
-      // print("Error updating kuppi session: $error");
+      log("Error updating kuppi session: $error");
     }
   }
 
@@ -49,7 +51,7 @@ class KuppisService {
     try {
       await _firestore.collection('kuppiSessions').doc(id).delete();
     } catch (error) {
-      // print("Error deleting kuppi session: $error");
+      log("Error deleting kuppi session: $error");
     }
   }
 
@@ -68,11 +70,9 @@ class KuppisService {
           }
         }
       }
-
-      print('Image URLs: $imageUrls');
       return imageUrls;
     }).handleError((error) {
-      print('Error fetching image URLs: $error');
+      log('Error fetching image URLs: $error');
       return [];
     });
   }

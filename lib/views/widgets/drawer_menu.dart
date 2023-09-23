@@ -30,11 +30,6 @@ class _DrawerMenuState extends State<DrawerMenu> {
     return userData;
   }
 
-  Future<Club?> _fetchUserAsClub() {
-    final clubData = clubService.getClubByEmail();
-    return clubData;
-  }
-
   @override
   void initState() {
     super.initState();
@@ -77,7 +72,7 @@ class _DrawerMenuState extends State<DrawerMenu> {
                   if (snapshot.data == true) {
                     // User is a club owner
                     return FutureBuilder<Club?>(
-                      future: _fetchUserAsClub(), // Fetch club data
+                      future: clubService.getClubByEmail(), // Fetch club data
                       builder: (context, clubSnapshot) {
                         if (clubSnapshot.connectionState ==
                             ConnectionState.done) {
@@ -137,7 +132,7 @@ class _DrawerMenuState extends State<DrawerMenu> {
                   if (snapshot.data == true) {
                     // User is a club owner
                     return FutureBuilder<Club?>(
-                      future: _fetchUserAsClub(),
+                      future: clubService.getClubByEmail(),
                       builder: (context, clubSnapshot) {
                         if (clubSnapshot.connectionState ==
                             ConnectionState.done) {

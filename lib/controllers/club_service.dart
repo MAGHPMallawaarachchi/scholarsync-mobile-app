@@ -133,10 +133,12 @@ class ClubService {
 
   Future<void> updateClub(Club club) async {
     try {
-      await _firestore
+      final docRef = await _firestore
           .collection('clubs')
-          .doc(club.email)
-          .update(club.toJson());
+          .where('email', isEqualTo: club.email)
+          .get()
+          .then((querySnapshot) => querySnapshot.docs.first.reference);
+      await docRef.update(club.toJson());
     } catch (error) {
       log(error.toString());
     }
@@ -150,95 +152,89 @@ class ClubService {
     }
   }
 
-  Future<void> uploadProfileImage() async {
+  Future<void> uploadImageAndUpdateClub(
+    String imageUrlField,
+    Club club,
+  ) async {
     try {
-      final Club? club = await getClubByEmail();
-
-      if (club != null) {
-        final File? profileImage = await _utils.pickImage();
-
-        if (profileImage != null) {
+      final File? image = await _utils.pickImage();
+      if (image != null) {
+        if (imageUrlField == 'profileImageURL') {
           final String imagePath = 'clubs/${club.name}/profileImage';
           final String? downloadURL =
-              await _firebaseService.uploadImage(profileImage, imagePath);
+              await _firebaseService.uploadImage(image, imagePath);
 
           if (downloadURL != null) {
-            club.bannerImageURL = downloadURL;
-
+            club.profileImageURL = downloadURL;
             await updateClub(club);
+          } else {
+            log('No image selected');
           }
-        }
-      }
-    } catch (error) {
-      log(error.toString());
-    }
-  }
-
-  Future<void> uploadBannerImage() async {
-    try {
-      final Club? club = await getClubByEmail();
-
-      if (club != null) {
-        final File? bannerImage = await _utils.pickImage();
-
-        if (bannerImage != null) {
+        } else if (imageUrlField == 'bannerImageURL') {
           final String imagePath = 'clubs/${club.name}/bannerImage';
           final String? downloadURL =
-              await _firebaseService.uploadImage(bannerImage, imagePath);
+              await _firebaseService.uploadImage(image, imagePath);
 
           if (downloadURL != null) {
             club.bannerImageURL = downloadURL;
-
             await updateClub(club);
+          } else {
+            log('No image selected');
           }
         }
+      } else {
+        log('No image selected');
       }
-    } catch (error) {
-      log(error.toString());
+    } catch (e) {
+      log(e.toString());
     }
   }
 
   Future<void> uploadEventImage() async {
-    final Club club = getClubByEmail() as Club;
+    final Club? club = await getClubByEmail();
     try {
-      final eventImage = await _utils.pickImage();
-      String imageName = eventImage!.path.split('/').last;
-      final storagePath = 'clubs/${club.name}/events/$imageName';
-      Future<String?> eventImageURL =
-          _firebaseService.uploadImage(eventImage, storagePath);
+      if (club != null) {
+        final eventImage = await _utils.pickImage();
+        String imageName = eventImage!.path.split('/').last;
+        final storagePath = 'clubs/${club.name}/events/$imageName';
+        Future<String?> eventImageURL =
+            _firebaseService.uploadImage(eventImage, storagePath);
 
-      Map<String, dynamic> eventData = {
-        'imageUrl': eventImageURL,
-        'approved': false,
-      };
+        Map<String, dynamic> eventData = {
+          'imageUrl': eventImageURL,
+          'approved': false,
+        };
 
-      if (club.events == null) {
-        club.events = [eventData];
-      } else {
-        club.events!.add(eventData);
+        if (club.events == null) {
+          club.events = [eventData];
+        } else {
+          club.events!.add(eventData);
+        }
+
+        await updateClub(club);
       }
-
-      await updateClub(club);
     } catch (error) {
       log(error.toString());
     }
   }
 
   Future<void> deleteEventImage(String uid, int eventIndex) async {
-    final Club club = getClubByEmail() as Club;
+    final Club? club = await getClubByEmail();
     try {
-      if (club.events != null &&
-          eventIndex >= 0 &&
-          eventIndex < club.events!.length) {
-        Map<String, dynamic> eventData = club.events![eventIndex];
+      if (club != null) {
+        if (club.events != null &&
+            eventIndex >= 0 &&
+            eventIndex < club.events!.length) {
+          Map<String, dynamic> eventData = club.events![eventIndex];
 
-        final imageUrl = eventData['imageUrl'];
-        final storageRef = FirebaseStorage.instance.refFromURL(imageUrl);
-        await storageRef.delete();
+          final imageUrl = eventData['imageUrl'];
+          final storageRef = FirebaseStorage.instance.refFromURL(imageUrl);
+          await storageRef.delete();
 
-        club.events!.removeAt(eventIndex);
+          club.events!.removeAt(eventIndex);
 
-        await updateClub(club);
+          await updateClub(club);
+        }
       }
     } catch (error) {
       log(error.toString());

@@ -30,11 +30,6 @@ class _HomePageState extends State<HomePage> {
     return studentData;
   }
 
-  Future<Club?> _fetchClub() {
-    final clubData = clubService.getClubByEmail();
-    return clubData;
-  }
-
   @override
   void initState() {
     super.initState();
@@ -57,7 +52,7 @@ class _HomePageState extends State<HomePage> {
                     if (snapshot.data == true) {
                       // User is a club owner
                       return FutureBuilder<Club?>(
-                        future: _fetchClub(),
+                        future: clubService.getClubByEmail(),
                         builder: (context, clubSnapshot) {
                           if (clubSnapshot.connectionState ==
                               ConnectionState.done) {
