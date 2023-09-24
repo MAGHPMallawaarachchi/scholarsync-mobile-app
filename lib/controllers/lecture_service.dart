@@ -1,37 +1,33 @@
 import 'dart:async';
-
+import 'dart:developer';
+import 'package:calendar_view/calendar_view.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:scholarsync/model/lectures.dart';
+import 'package:scholarsync/themes/palette.dart';
 
-class LecturesService {
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+class LectureService {
+  Future<List<CalendarEventData>> getAllLectures() async {
+    List<CalendarEventData> lectures = [];
 
-  Stream<List<Lecture>> streamLectures() {
-    return _firestore.collection('lectures').snapshots().map((snapshot) {
-      final List<Lecture> lectures = [];
+    try {
+      QuerySnapshot<Map<String, dynamic>> querySnapshot =
+          await FirebaseFirestore.instance.collection('lectures').get();
 
-      for (QueryDocumentSnapshot doc in snapshot.docs) {
-        final Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
-
-        // Create an Lecture object for each lecture and add it to the list
-        final Lecture lecture = Lecture(
-          id: doc.id,
-          startTime: (data['startTime'] as Timestamp).toDate(),
-          endTime: (data['endTime'] as Timestamp).toDate(),
-          batch: data['batch'] as String,
-          degreeProgram: data['degreeProgram'] as String,
-          lectureHall: data['lectureHall'] as String,
-          moduleCode: data['moduleCode'] as String,
-          lecturer: data['lecturer'] as String,
+      for (var doc in querySnapshot.docs) {
+        CalendarEventData lecture = CalendarEventData(
+          date: doc['date'].toDate(),
+          title: doc['title'],
+          description: doc['description'],
+          startTime: doc['startTime'].toDate(),
+          endTime: doc['endTime'].toDate(),
+          color: CommonColors.primaryGreenColor,
         );
 
         lectures.add(lecture);
       }
+    } catch (e) {
+      log('Error fetching data from Firestore: $e');
+    }
 
-      return lectures;
-    }).handleError((error) {
-      print('Error fetching lectures: $error');
-      return [];
-    });
+    return lectures;
   }
 }

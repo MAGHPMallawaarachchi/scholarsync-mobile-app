@@ -2,8 +2,11 @@ import 'package:calendar_view/calendar_view.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
+import 'package:scholarsync/model/lecture.dart';
 import 'package:scholarsync/views/widgets/app_bar.dart';
 import 'package:scholarsync/themes/palette.dart';
+
+import '../../../controllers/lecture_service.dart';
 
 class CalendarPage extends StatefulWidget {
   const CalendarPage({Key? key}) : super(key: key);
@@ -15,10 +18,18 @@ class CalendarPage extends StatefulWidget {
 class _CalendarPageState extends State<CalendarPage> {
   DateFormat monthYearFormat = DateFormat('dd MMMM yyyy');
   EventController eventController = EventController();
+  final LectureService lectureService = LectureService();
+  List<CalendarEventData> lectures = [];
 
   @override
   void initState() {
     super.initState();
+    lectureService.getAllLectures().then((data) {
+      setState(() {
+        lectures = data;
+        eventController.addAll(lectures);
+      });
+    });
   }
 
   @override
