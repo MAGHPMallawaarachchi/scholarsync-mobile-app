@@ -93,7 +93,7 @@ class _HomePageState extends State<HomePage> {
                     } else {
                       // User is a student
                       return FutureBuilder<Student?>(
-                        future: _fetchStudent(), // Fetch student data
+                        future: _fetchStudent(),
                         builder: (context, studentSnapshot) {
                           if (studentSnapshot.connectionState ==
                               ConnectionState.done) {

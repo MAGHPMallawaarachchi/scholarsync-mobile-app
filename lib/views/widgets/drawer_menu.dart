@@ -6,6 +6,7 @@ import 'package:scholarsync/views/pages/home/academic_staff_page.dart';
 import 'package:scholarsync/views/pages/home/feedback_page.dart';
 import 'package:scholarsync/views/pages/home/settings_page.dart';
 import 'package:scholarsync/model/student.dart';
+import 'package:scholarsync/views/widgets/alert_dialogs/logout_confirmation.dart';
 import '../../controllers/club_service.dart';
 import '../../controllers/student_service.dart';
 import '../../model/club.dart';
@@ -16,8 +17,7 @@ class DrawerMenu extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  // ignore: library_private_types_in_public_api
-  _DrawerMenuState createState() => _DrawerMenuState();
+  State<DrawerMenu> createState() => _DrawerMenuState();
 }
 
 class _DrawerMenuState extends State<DrawerMenu> {
@@ -62,9 +62,9 @@ class _DrawerMenuState extends State<DrawerMenu> {
     return Column(
       children: [
         const SizedBox(height: 80),
-        Row(
+        Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.end,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             FutureBuilder(
               future: authService.checkIfUserIsClub(),
@@ -103,9 +103,8 @@ class _DrawerMenuState extends State<DrawerMenu> {
                           final student = studentSnapshot.data;
                           return CircleAvatar(
                             radius: 40,
-                            backgroundImage: NetworkImage(student
-                                    ?.profileImageUrl ??
-                                'https://example.com/default-student-image.jpg'),
+                            backgroundImage:
+                                NetworkImage(student!.profileImageUrl!),
                           );
                         } else {
                           return const CircleAvatar(
@@ -126,7 +125,7 @@ class _DrawerMenuState extends State<DrawerMenu> {
                 }
               },
             ),
-            const SizedBox(width: 10),
+            const SizedBox(height: 15),
             FutureBuilder(
               future: authService.checkIfUserIsClub(),
               builder: (context, snapshot) {
@@ -160,8 +159,9 @@ class _DrawerMenuState extends State<DrawerMenu> {
                             ConnectionState.done) {
                           final student = studentSnapshot.data;
                           return Text(
-                            student?.firstName ?? 'Student',
+                            '${student!.firstName}\n${student.lastName}',
                             style: Theme.of(context).textTheme.displayLarge,
+                            textAlign: TextAlign.center,
                           );
                         } else {
                           return Text(
@@ -192,27 +192,6 @@ class _DrawerMenuState extends State<DrawerMenu> {
       padding: const EdgeInsets.only(left: 30),
       child: Column(
         children: [
-          ListTile(
-            contentPadding:
-                const EdgeInsets.symmetric(vertical: 10, horizontal: 25),
-            title: Text(
-              'Settings',
-              style: Theme.of(context).textTheme.headlineMedium,
-            ),
-            leading: Icon(
-              PhosphorIcons.light.gear,
-              size: 25,
-            ),
-            onTap: () {
-              Navigator.of(context).pop();
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const SettingsPage(),
-                ),
-              );
-            },
-          ),
           ListTile(
             contentPadding:
                 const EdgeInsets.symmetric(vertical: 10, horizontal: 25),
@@ -257,6 +236,23 @@ class _DrawerMenuState extends State<DrawerMenu> {
             contentPadding:
                 const EdgeInsets.symmetric(vertical: 10, horizontal: 25),
             title: Text(
+              'Settings',
+              style: Theme.of(context).textTheme.headlineMedium,
+            ),
+            leading: Icon(
+              PhosphorIcons.light.gear,
+              size: 25,
+            ),
+            onTap: () {
+              Route route =
+                  MaterialPageRoute(builder: (context) => const SettingsPage());
+              Navigator.push(context, route);
+            },
+          ),
+          ListTile(
+            contentPadding:
+                const EdgeInsets.symmetric(vertical: 10, horizontal: 25),
+            title: Text(
               'Logout',
               style: Theme.of(context).textTheme.headlineMedium,
             ),
@@ -265,11 +261,21 @@ class _DrawerMenuState extends State<DrawerMenu> {
               size: 25,
             ),
             onTap: () {
-              FirebaseAuth.instance.signOut();
+              Navigator.of(context).pop();
+              showDeleteConfirmationDialog(context);
             },
           ),
         ],
       ),
     );
   }
+}
+
+void showDeleteConfirmationDialog(BuildContext context) {
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return const LogoutConfirmationAlert();
+    },
+  );
 }
