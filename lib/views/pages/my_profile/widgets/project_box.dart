@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
-import 'package:scholarsync/constants/icon_constants.dart';
 import 'package:scholarsync/themes/palette.dart';
+
+import '../../../../constants/icons.dart';
 
 class ProjectBox extends StatelessWidget {
   final String projectNumber;

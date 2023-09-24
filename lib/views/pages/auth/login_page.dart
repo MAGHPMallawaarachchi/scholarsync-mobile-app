@@ -1,10 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
-import 'package:scholarsync/constants/image_constants.dart';
 import 'package:scholarsync/themes/palette.dart';
 import 'package:scholarsync/views/widgets/custom_elevated_button.dart';
-
+import '../../../constants/images.dart';
 import 'widgets/auth_field.dart';
 
 class LogInPage extends StatefulWidget {
@@ -112,23 +111,20 @@ class _LogInPageState extends State<LogInPage> {
                                   isChecked = !isChecked;
                                 });
                               },
-                              borderRadius: BorderRadius.circular(
-                                  30), // Match the container's shape
+                              borderRadius: BorderRadius.circular(30),
                               child: Container(
-                                width: 18, // Match the container's size
-                                height: 18, // Match the container's size
+                                width: 18,
+                                height: 18,
                                 decoration: isChecked
                                     ? const BoxDecoration(
                                         shape: BoxShape.circle,
-                                        color: CommonColors
-                                            .secondaryGreenColor, // Fill color when selected
+                                        color: CommonColors.secondaryGreenColor,
                                       )
                                     : null,
                                 child: isChecked
                                     ? const Icon(
                                         Icons.check,
-                                        color: Colors
-                                            .white, // Icon color when selected
+                                        color: Colors.white,
                                         size: 12,
                                       )
                                     : null,
