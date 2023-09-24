@@ -143,15 +143,11 @@ class _MyProjectsPageState extends State<MyProjectsPage> {
                                         project.date),
                                     githubLink: project.link,
                                   );
-                                } else if (index == projects.length) {
-                                  return _buildAddProjectBox();
                                 } else {
-                                  return Container();
+                                  return _buildAddProjectBox();
                                 }
                               },
-                              childCount: projects!.length < 4
-                                  ? projects.length + 1
-                                  : 4,
+                              childCount: projects!.length + 1,
                             ),
                           ),
                         ),

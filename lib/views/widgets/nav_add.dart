@@ -26,7 +26,9 @@ class _NavigationAddItemState extends State<NavigationAddItem> {
   final ClubService _clubService = ClubService();
   final StudentService _studentService = StudentService();
   final AuthService _authService = AuthService();
+
   final User user = FirebaseAuth.instance.currentUser!;
+
   final _nameController = TextEditingController();
   final _dateController = TextEditingController();
   final _linkController = TextEditingController();
@@ -56,6 +58,10 @@ class _NavigationAddItemState extends State<NavigationAddItem> {
   }
 
   Future<void> _uploadProject() async {
+    _nameController.clear();
+    _dateController.clear();
+    _linkController.clear();
+
     showDialog(
       context: context,
       builder: (BuildContext context) {
