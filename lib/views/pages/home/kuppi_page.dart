@@ -10,6 +10,7 @@ import 'package:scholarsync/views/widgets/reusable_form_dialog.dart';
 import 'package:scholarsync/themes/palette.dart';
 import '../../../controllers/kuppi_service.dart';
 import '../../../model/kuppi.dart';
+import '../../widgets/alert_dialogs/delete_alert.dart';
 import 'widgets/image_form_field.dart';
 
 class KuppiPage extends StatefulWidget {
@@ -189,10 +190,7 @@ class _KuppiPageState extends State<KuppiPage> {
                               imageUrl: session.imageUrl,
                               link: session.link,
                               onDelete: () {
-                                Future.delayed(Duration.zero).then((value) {
-                                  _handleDelete(session);
-                                });
-                                setState(() {});
+                                showDeleteConfirmationDialog(context, session);
                               },
                               onEdit: () {
                                 Future.delayed(Duration.zero).then((value) {
@@ -228,6 +226,27 @@ class _KuppiPageState extends State<KuppiPage> {
           },
         ),
       ),
+    );
+  }
+
+  void showDeleteConfirmationDialog(
+      BuildContext context, KuppiSession session) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return DeleteConfirmationAlert(
+          title: 'Delete Kuppi Session',
+          content: 'Are you sure you want to delete this kuppi session?',
+          confirmText: 'Delete',
+          onConfirmPressed: () {
+            Future.delayed(Duration.zero).then((value) {
+              _handleDelete(session);
+            });
+            setState(() {});
+            Navigator.of(context).pop();
+          },
+        );
+      },
     );
   }
 

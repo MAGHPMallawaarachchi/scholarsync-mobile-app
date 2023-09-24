@@ -5,6 +5,7 @@ import 'package:scholarsync/controllers/club_service.dart';
 import 'package:scholarsync/controllers/firebase_auth.dart';
 import 'package:scholarsync/model/club.dart';
 import 'package:scholarsync/themes/palette.dart';
+import 'package:scholarsync/views/widgets/alert_dialogs/delete_alert.dart';
 import '../../widgets/app_bar.dart';
 import '../../widgets/circular_icon_button.dart';
 import '../../widgets/custom_carousel.dart';
@@ -48,6 +49,16 @@ class _ClubProfilePageState extends State<ClubProfilePage> {
   Future<void> _refreshClubData() async {
     await Future.delayed(const Duration(seconds: 1));
     await clubService.getClubByEmail(widget.email);
+    setState(() {});
+  }
+
+  Future<void> handleDeleteEvent(int eventIndex, String imageUrl) async {
+    await clubService.deleteEvent(eventIndex, widget.email);
+    setState(() {});
+  }
+
+  Future<void> handleUpload(String field, Club club) async {
+    await clubService.uploadImageAndUpdateClub(field, club);
     setState(() {});
   }
 
@@ -161,8 +172,8 @@ class _ClubProfilePageState extends State<ClubProfilePage> {
                           showIconButton: isOwner,
                           enableAutoScroll: !isOwner,
                           onPressedDeleteButton: (eventIndex, imageUrl) {
-                            clubService.deleteEvent(eventIndex, widget.email);
-                            setState(() {});
+                            showDeleteConfirmationDialog(
+                                context, eventIndex, imageUrl);
                           },
                         ),
                       ],
@@ -217,8 +228,7 @@ class _ClubProfilePageState extends State<ClubProfilePage> {
               iconColor: CommonColors.whiteColor,
               buttonColor: CommonColors.secondaryGreenColor,
               onPressed: () {
-                clubService.uploadImageAndUpdateClub('bannerImageURL', club);
-                setState(() {});
+                handleUpload('bannerImageURL', club);
               },
             ),
           ),
@@ -272,14 +282,30 @@ class _ClubProfilePageState extends State<ClubProfilePage> {
               iconAsset: PhosphorIcons.light.camera,
               iconColor: CommonColors.whiteColor,
               buttonColor: CommonColors.secondaryGreenColor,
-              onPressed: () async {
-                await clubService.uploadImageAndUpdateClub(
-                    'profileImageURL', club);
-                setState(() {});
+              onPressed: () {
+                handleUpload(profileImageURL, club);
               },
             ),
           ),
       ],
+    );
+  }
+
+  void showDeleteConfirmationDialog(
+      BuildContext context, int eventIndex, String imageUrl) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return DeleteConfirmationAlert(
+          title: 'Delete Event',
+          content: 'Are you sure you want to delete this event?',
+          confirmText: 'Delete',
+          onConfirmPressed: () {
+            handleDeleteEvent(eventIndex, imageUrl);
+            Navigator.of(context).pop();
+          },
+        );
+      },
     );
   }
 

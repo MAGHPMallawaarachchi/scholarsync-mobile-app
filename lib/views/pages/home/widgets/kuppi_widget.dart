@@ -25,8 +25,7 @@ class KuppiWidget extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  // ignore: library_private_types_in_public_api
-  _KuppiWidgetState createState() => _KuppiWidgetState();
+  State<KuppiWidget> createState() => _KuppiWidgetState();
 }
 
 class _KuppiWidgetState extends State<KuppiWidget> {
@@ -143,8 +142,7 @@ class _KuppiWidgetState extends State<KuppiWidget> {
                         child: const Text('Join',
                             style: TextStyle(color: CommonColors.whiteColor)),
                       ),
-                      const SizedBox(
-                          width: 8), // Add some spacing between the buttons
+                      const SizedBox(width: 8),
                       IconButton(
                         onPressed: () {
                           setState(() {

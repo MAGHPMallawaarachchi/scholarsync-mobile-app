@@ -9,6 +9,7 @@ class CustomElevatedButton extends StatelessWidget {
   final EdgeInsets padding;
   final double textSize;
   final double height;
+  final Color labelColor;
 
   const CustomElevatedButton({
     Key? key,
@@ -16,9 +17,10 @@ class CustomElevatedButton extends StatelessWidget {
     this.onPressed,
     this.backgroundColor = CommonColors.secondaryGreenColor,
     this.borderRadius = const BorderRadius.all(Radius.circular(20)),
-    this.padding = const EdgeInsets.symmetric(horizontal: 34, vertical: 8),
+    this.padding = const EdgeInsets.symmetric(horizontal: 25, vertical: 8),
     this.textSize = 16,
     this.height = 35,
+    this.labelColor = CommonColors.whiteColor,
   }) : super(key: key);
 
   @override
@@ -34,7 +36,7 @@ class CustomElevatedButton extends StatelessWidget {
         ),
         child: Text(
           label,
-          style: TextStyle(fontSize: textSize, color: CommonColors.whiteColor),
+          style: TextStyle(fontSize: textSize, color: labelColor),
         ),
       ),
     );
