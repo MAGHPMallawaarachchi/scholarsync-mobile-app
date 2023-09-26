@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://github.com/MAGHPMallawaarachchi/scholarsync-mobile-app/blob/main/assets/images/logo_white.png?raw=true" height="400"/>
+  <img src="https://github.com/MAGHPMallawaarachchi/scholarsync-mobile-app/blob/main/assets/images/logo_white.png?raw=true" height="350"/>
 </p>
 
 <p align="center">
